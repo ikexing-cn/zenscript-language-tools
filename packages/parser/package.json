@@ -1,0 +1,12 @@
+{
+  "name": "@zenscript-language-tools/parser",
+  "version": "1.0.0",
+  "description": "",
+  "author": "ikx",
+  "license": "NUT",
+  "main": "main.js",
+  "scripts": {},
+  "dependencies": {
+    "chevrotain": "^10.5.0"
+  }
+}

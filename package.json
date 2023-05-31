@@ -1,0 +1,13 @@
+{
+  "name": "zenscript-language-tools",
+  "version": "1.0.0",
+  "description": "",
+  "author": "ikexing-cn",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {},
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.39.4",
+    "eslint": "^8.41.0"
+  }
+}
