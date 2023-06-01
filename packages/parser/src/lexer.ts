@@ -127,7 +127,7 @@ export const OR = createToken({ name: 'OR', pattern: /\|/ })
 export const ASSIGN = createToken({ name: 'ASSIGN', pattern: /=/ })
 
 // && || == != <= >= += -= *= /= %= ^= &= |= ~= ..
-export const PLUS_PLUS = createToken({ name: 'PLUS_PLUS', pattern: /\+\+/ })
+export const AND_AND = createToken({ name: 'AND_AND', pattern: /&&/ })
 export const OR_OR = createToken({ name: 'OR_OR', pattern: /\|\|/ })
 export const EQUAL = createToken({ name: 'EQUAL', pattern: /==/ })
 export const NOT_EQUAL = createToken({ name: 'NOT_EQUAL', pattern: /!=/ })
@@ -201,7 +201,7 @@ export const ZS_ALL_TOKENS = [
   ZEN_D_Expand,
   L_BRACKET, R_BRACKET, L_CURLY, R_CURLY, L_PAREN, R_PAREN, COMMA, DOT, SEMICOLON,
   PLUS, MINUS, MUL, DIV, MOD, CAT, NOT, LT, GT, XOR, QUESTION, BACKTICK, AND, OR, ASSIGN,
-  PLUS_PLUS, OR_OR, EQUAL, NOT_EQUAL, LESS_EQUAL, GREATER_EQUAL, PLUS_ASSIGN, MINUS_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, CAT_ASSIGN, XOR_ASSIGN, AND_ASSIGN, OR_ASSIGN, DOT_DOT,
+  AND_AND, OR_OR, EQUAL, NOT_EQUAL, LESS_EQUAL, GREATER_EQUAL, PLUS_ASSIGN, MINUS_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, CAT_ASSIGN, XOR_ASSIGN, AND_ASSIGN, OR_ASSIGN, DOT_DOT,
   INT_LITERAL, LONG_LITERAL, FLOAT_LITERAL, DOUBLE_LITERAL, NULL_LITERAL, TRUE_LITERAL, FALSE_LITERAL, STRING_LITERAL, DOUBLE_QUOTED_STRING, SINGLE_QUOTED_STRING,
 ]
 
