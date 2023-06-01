@@ -1,4 +1,4 @@
-import chevrotain from 'chevrotain'
+import * as chevrotain from 'chevrotain'
 
 const createToken = chevrotain.createToken
 
