@@ -249,7 +249,7 @@ export class ZenScriptParser extends CstParser {
 
   private ExpressionStatement = this.RULE('ExpressionStatement', () => {
     this.SUBRULE(this.Expression)
-    this.CONSUME(COMMA)
+    this.CONSUME(SEMICOLON)
   })
 
   private VariableDeclaration = this.RULE('VariableDeclaration', () => {
@@ -265,42 +265,42 @@ export class ZenScriptParser extends CstParser {
       this.SUBRULE(this.TypeLiteral)
     })
     this.OPTION2(() => {
-      this.CONSUME(EQUAL)
+      this.CONSUME(ASSIGN)
       this.SUBRULE(this.Expression, { LABEL: 'initializer' })
     })
-    this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
+    // this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
   })
 
   // ============================================================
 
   private Expression = this.RULE('Expression', () => {
-    this.MANY(() => {
-      this.SUBRULE(this.FunctionExpression)
-      this.SUBRULE(this.CallExpression)
-      this.SUBRULE(this.MemberAccessExpression)
-      this.SUBRULE(this.ArrayIndexExpression)
-      this.SUBRULE(this.TypeCastExpression)
-      this.SUBRULE(this.UnaryExpression)
-      this.SUBRULE(this.BinaryExpression)
-      this.SUBRULE(this.TernaryExpression)
-      this.SUBRULE(this.AssignmentExpression)
-      this.SUBRULE(this.BrackHandlerExpression)
-      this.SUBRULE(this.IntRangeExpression)
-      this.SUBRULE(this.ArrayInitializerExpression)
-      this.SUBRULE(this.MapInitializerExpression)
-      this.SUBRULE(this.ParensExpression)
-      this.SUBRULE(this.ThisExpression)
-      this.SUBRULE(this.SuperExpression)
-      this.CONSUME(INT_LITERAL, { LABEL: 'IntLiteralExpression' })
-      this.CONSUME(LONG_LITERAL, { LABEL: 'LongLiteralExpression' })
-      this.CONSUME(FLOAT_LITERAL, { LABEL: 'FloatLiteralExpression' })
-      this.CONSUME(DOUBLE_LITERAL, { LABEL: 'DoubleLiteralExpression' })
-      this.CONSUME(STRING_LITERAL, { LABEL: 'StringLiteralExpression' })
-      this.CONSUME(TRUE_LITERAL, { LABEL: 'TrueLiteralExpression' })
-      this.CONSUME(FALSE_LITERAL, { LABEL: 'FalseLiteralExpression' })
-      this.CONSUME(NULL_LITERAL, { LABEL: 'NullLiteralExpression' })
-      this.SUBRULE(this.Identifier, { LABEL: 'LocalAccessExpress' })
-    })
+    this.OR([
+      { ALT: () => this.SUBRULE(this.FunctionExpression) },
+      { ALT: () => this.SUBRULE(this.CallExpression) },
+      { ALT: () => this.SUBRULE(this.MemberAccessExpression) },
+      { ALT: () => this.SUBRULE(this.ArrayIndexExpression) },
+      { ALT: () => this.SUBRULE(this.TypeCastExpression) },
+      { ALT: () => this.SUBRULE(this.UnaryExpression) },
+      { ALT: () => this.SUBRULE(this.BinaryExpression) },
+      { ALT: () => this.SUBRULE(this.TernaryExpression) },
+      { ALT: () => this.SUBRULE(this.AssignmentExpression) },
+      { ALT: () => this.SUBRULE(this.BrackHandlerExpression) },
+      { ALT: () => this.SUBRULE(this.IntRangeExpression) },
+      { ALT: () => this.SUBRULE(this.ArrayInitializerExpression) },
+      { ALT: () => this.SUBRULE(this.MapInitializerExpression) },
+      { ALT: () => this.SUBRULE(this.ParensExpression) },
+      { ALT: () => this.SUBRULE(this.ThisExpression) },
+      { ALT: () => this.SUBRULE(this.SuperExpression) },
+      { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'IntLiteralExpression' }) },
+      { ALT: () => this.CONSUME(LONG_LITERAL, { LABEL: 'LongLiteralExpression' }) },
+      { ALT: () => this.CONSUME(FLOAT_LITERAL, { LABEL: 'FloatLiteralExpression' }) },
+      { ALT: () => this.CONSUME(DOUBLE_LITERAL, { LABEL: 'DoubleLiteralExpression' }) },
+      { ALT: () => this.CONSUME(STRING_LITERAL, { LABEL: 'StringLiteralExpression' }) },
+      { ALT: () => this.CONSUME(TRUE_LITERAL, { LABEL: 'TrueLiteralExpression' }) },
+      { ALT: () => this.CONSUME(FALSE_LITERAL, { LABEL: 'FalseLiteralExpression' }) },
+      { ALT: () => this.CONSUME(NULL_LITERAL, { LABEL: 'NullLiteralExpression' }) },
+      { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'LocalAccessExpress' }) },
+    ])
   })
 
   private FunctionExpression = this.RULE('FunctionExpression', () => {
