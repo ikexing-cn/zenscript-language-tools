@@ -1,3 +1,4 @@
+import type { CstNode, IToken } from 'chevrotain'
 import { CstParser } from 'chevrotain'
 import {
   AND, AND_AND, AND_ASSIGN, AS, ASSIGN, BREAK, CAT, CAT_ASSIGN, COLON, COMMA, CONTINUE, DIV, DIV_ASSIGN,
@@ -18,7 +19,12 @@ export class ZenScriptParser extends CstParser {
     this.performSelfAnalysis()
   }
 
-  private Progment = this.RULE('Program', () => {
+  parse(input: IToken[]): CstNode {
+    this.input = input
+    return this.Program()
+  }
+
+  private Program = this.RULE('Program', () => {
     this.MANY(() => {
       this.SUBRULE(this.ImportDeclaration)
     })
@@ -50,11 +56,11 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(FUNCTION)
     this.SUBRULE(this.Identifier)
     this.CONSUME(L_PAREN)
-    this.OPTION(() => {
+    this.OPTION2(() => {
       this.SUBRULE(this.ParameterList)
     })
     this.CONSUME(R_PAREN)
-    this.OPTION2(() => {
+    this.OPTION3(() => {
       this.CONSUME(AS)
       this.SUBRULE(this.TypeLiteral, { LABEL: 'returnType' })
     })
@@ -73,7 +79,7 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(R_PAREN)
     this.OPTION2(() => {
       this.CONSUME(AS)
-      this.SUBRULE(this.TypeLiteral, { LABEL: 'returnType' })
+      this.SUBRULE2(this.TypeLiteral, { LABEL: 'returnType' })
     })
     this.SUBRULE(this.FunctionBody)
   })
@@ -99,7 +105,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(AS)
       this.SUBRULE(this.TypeLiteral)
     })
-    this.OPTION(() => {
+    this.OPTION2(() => {
       this.CONSUME(ASSIGN)
       this.SUBRULE(this.Expression, { LABEL: 'defaultValue' })
     })
@@ -128,10 +134,14 @@ export class ZenScriptParser extends CstParser {
       }),
       { ALT: () => this.SUBRULE(this.QualifiedName) },
       { ALT: () => this.SUBRULE(this.FunctionType) },
-      { ALT: () => this.SUBRULE(this.ArrayType) },
       { ALT: () => this.SUBRULE(this.ListType) },
-      { ALT: () => this.SUBRULE(this.MapType) },
     ])
+    this.MANY(() => {
+      this.OR2([
+        { ALT: () => this.SUBRULE(this.ArrayType) },
+        { ALT: () => this.SUBRULE(this.MapType) },
+      ])
+    })
   })
 
   private FunctionType = this.RULE('FunctionType', () => {
@@ -142,13 +152,7 @@ export class ZenScriptParser extends CstParser {
       DEF: () => this.SUBRULE(this.TypeLiteral),
     })
     this.CONSUME(R_PAREN)
-    this.SUBRULE(this.TypeLiteral, { LABEL: 'return' })
-  })
-
-  private ArrayType = this.RULE('ArrayType', () => {
-    this.SUBRULE(this.TypeLiteral)
-    this.CONSUME(L_BRACKET)
-    this.CONSUME(R_BRACKET)
+    this.SUBRULE2(this.TypeLiteral, { LABEL: 'return' })
   })
 
   private ListType = this.RULE('ListType', () => {
@@ -157,11 +161,17 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(R_BRACKET)
   })
 
-  private MapType = this.RULE('MapType', () => {
-    this.SUBRULE(this.TypeLiteral, { LABEL: 'value' })
+  private ArrayType = this.RULE('ArrayType', () => {
     this.CONSUME(L_BRACKET)
-    this.SUBRULE(this.TypeLiteral, { LABEL: 'key' })
     this.CONSUME(R_BRACKET)
+  })
+
+  private MapType = this.RULE('MapType', () => {
+    this.AT_LEAST_ONE(() => {
+      this.CONSUME(L_BRACKET)
+      this.SUBRULE(this.TypeLiteral, { LABEL: 'key' })
+      this.CONSUME(R_BRACKET)
+    })
   })
 
   // ============================================================
@@ -213,7 +223,7 @@ export class ZenScriptParser extends CstParser {
     this.SUBRULE(this.Statement, { LABEL: 'then' })
     this.OPTION(() => {
       this.CONSUME(ELSE)
-      this.SUBRULE(this.Statement, { LABEL: 'else' })
+      this.SUBRULE2(this.Statement, { LABEL: 'else' })
     })
   })
 
@@ -254,7 +264,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(AS)
       this.SUBRULE(this.TypeLiteral)
     })
-    this.OPTION(() => {
+    this.OPTION2(() => {
       this.CONSUME(EQUAL)
       this.SUBRULE(this.Expression, { LABEL: 'initializer' })
     })
@@ -289,7 +299,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(TRUE_LITERAL, { LABEL: 'TrueLiteralExpression' })
       this.CONSUME(FALSE_LITERAL, { LABEL: 'FalseLiteralExpression' })
       this.CONSUME(NULL_LITERAL, { LABEL: 'NullLiteralExpression' })
-      this.CONSUME(this.Identifier, { LABEL: 'LocalAccessExpress' })
+      this.SUBRULE(this.Identifier, { LABEL: 'LocalAccessExpress' })
     })
   })
 
@@ -310,7 +320,7 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(L_PAREN)
     this.MANY_SEP({
       SEP: COMMA,
-      DEF: () => this.SUBRULE(this.Expression),
+      DEF: () => this.SUBRULE2(this.Expression),
     })
     this.CONSUME(R_PAREN)
   })
@@ -324,7 +334,7 @@ export class ZenScriptParser extends CstParser {
   private ArrayIndexExpression = this.RULE('ArrayIndexExpression', () => {
     this.SUBRULE(this.Expression, { LABEL: 'left' })
     this.CONSUME(L_BRACKET)
-    this.SUBRULE(this.Expression, { LABEL: 'index' })
+    this.SUBRULE2(this.Expression, { LABEL: 'index' })
     this.CONSUME(R_BRACKET)
   })
 
@@ -354,30 +364,29 @@ export class ZenScriptParser extends CstParser {
         ]),
       },
       {
-        ALT: () => this.OR([
+        ALT: () => this.OR3([
           { ALT: () => this.CONSUME(PLUS, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(MINUS, { LABEL: 'operator' }) },
         ]),
       },
       { ALT: () => this.CONSUME(CAT, { LABEL: 'operator' }) },
       {
-        ALT: () => this.OR2([
+        ALT: () => this.OR4([
           { ALT: () => this.CONSUME(EQUAL, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(NOT_EQUAL, { LABEL: 'operator' }) },
         ]),
       },
       {
-        ALT: () => this.OR2([
+        ALT: () => this.OR5([
           { ALT: () => this.CONSUME(LT, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(LESS_EQUAL, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(GT, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(GREATER_EQUAL, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(GREATER_EQUAL, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(INSTANCEOF, { LABEL: 'operator' }) },
         ]),
       },
       {
-        ALT: () => this.OR2([
+        ALT: () => this.OR6([
           { ALT: () => this.CONSUME(IN, { LABEL: 'operator' }) },
           { ALT: () => this.CONSUME(HAS, { LABEL: 'operator' }) },
         ])
@@ -389,15 +398,15 @@ export class ZenScriptParser extends CstParser {
       { ALT: () => this.CONSUME(AND_AND, { LABEL: 'operator' }) },
       { ALT: () => this.CONSUME(OR_OR, { LABEL: 'operator' }) },
     ])
-    this.SUBRULE(this.Expression, { LABEL: 'right' })
+    this.SUBRULE2(this.Expression, { LABEL: 'right' })
   })
 
   private TernaryExpression = this.RULE('TernaryExpression', () => {
     this.SUBRULE(this.Expression, { LABEL: 'condition' })
     this.CONSUME(QUESTION)
-    this.SUBRULE(this.Expression, { LABEL: 'truePart' })
+    this.SUBRULE2(this.Expression, { LABEL: 'truePart' })
     this.CONSUME(COLON)
-    this.SUBRULE(this.Expression, { LABEL: 'falsePart' })
+    this.SUBRULE3(this.Expression, { LABEL: 'falsePart' })
   })
 
   private AssignmentExpression = this.RULE('AssignmentExpression', () => {
@@ -414,12 +423,12 @@ export class ZenScriptParser extends CstParser {
       { ALT: () => this.CONSUME(OR_ASSIGN, { LABEL: 'operator' }) },
       { ALT: () => this.CONSUME(XOR_ASSIGN, { LABEL: 'operator' }) },
     ])
-    this.SUBRULE(this.Expression, { LABEL: 'right' })
+    this.SUBRULE2(this.Expression, { LABEL: 'right' })
   })
 
   private BrackHandlerExpression = this.RULE('BrackHandlerExpression', () => {
     this.CONSUME(L_BRACKET)
-    this.CONSUME(this.Identifier)
+    this.SUBRULE(this.Identifier)
     this.CONSUME(R_BRACKET)
   })
 
@@ -438,7 +447,7 @@ export class ZenScriptParser extends CstParser {
       SEP: COMMA,
       DEF: () => this.SUBRULE(this.Expression),
     })
-    this.CONSUME(R_BRACKET)
+    this.CONSUME2(R_BRACKET)
   })
 
   private MapInitializerExpression = this.RULE('MapInitializerExpression', () => {
@@ -467,7 +476,7 @@ export class ZenScriptParser extends CstParser {
   private MapEntry = this.RULE('MapEntry', () => {
     this.SUBRULE(this.Expression, { LABEL: 'key' })
     this.CONSUME(COLON)
-    this.SUBRULE(this.Expression, { LABEL: 'value' })
+    this.SUBRULE2(this.Expression, { LABEL: 'value' })
   })
 
   // ============================================================
@@ -492,3 +501,5 @@ export class ZenScriptParser extends CstParser {
     this.SUBRULE(this.BlockStatement, { LABEL: 'constructorBody' })
   })
 }
+
+export const ZSCstParser = new ZenScriptParser()
