@@ -11,6 +11,9 @@ importers:
       '@antfu/eslint-config':
         specifier: ^0.39.4
         version: 0.39.4(eslint@8.41.0)(typescript@5.0.4)
+      '@types/node':
+        specifier: ^20.2.5
+        version: 20.2.5
       eslint:
         specifier: ^8.41.0
         version: 8.41.0

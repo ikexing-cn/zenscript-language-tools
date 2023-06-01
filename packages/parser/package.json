@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "author": "ikx",
-  "license": "NUT",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "dev": "vitest -u",
