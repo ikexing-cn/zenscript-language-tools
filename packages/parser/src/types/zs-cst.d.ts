@@ -208,7 +208,6 @@ export interface BlockStatementCstNode extends CstNode {
 export type BlockStatementCstChildren = {
   LCURLY: IToken[];
   Statement?: StatementCstNode[];
-  COMMA?: IToken[];
   RCURLY: IToken[];
 };
 
@@ -294,6 +293,22 @@ export type ExpressionStatementCstChildren = {
   SEMICOLON: IToken[];
 };
 
+export interface GlobalStaticDeclarationCstNode extends CstNode {
+  name: "GlobalStaticDeclaration";
+  children: GlobalStaticDeclarationCstChildren;
+}
+
+export type GlobalStaticDeclarationCstChildren = {
+  GLOBAL?: IToken[];
+  STATIC?: IToken[];
+  vName: IToken[];
+  AS?: IToken[];
+  TypeLiteral?: TypeLiteralCstNode[];
+  ASSIGN: IToken[];
+  value: ExpressionCstNode[];
+  SEMICOLON: IToken[];
+};
+
 export interface VariableDeclarationCstNode extends CstNode {
   name: "VariableDeclaration";
   children: VariableDeclarationCstChildren;
@@ -302,8 +317,6 @@ export interface VariableDeclarationCstNode extends CstNode {
 export type VariableDeclarationCstChildren = {
   VAR?: IToken[];
   VAL?: IToken[];
-  STATIC?: IToken[];
-  GLOBAL?: IToken[];
   Identifier: IdentifierCstNode[];
   AS?: IToken[];
   TypeLiteral?: TypeLiteralCstNode[];
@@ -329,7 +342,7 @@ export interface AssignExpressionCstNode extends CstNode {
 export type AssignExpressionCstChildren = {
   expression: ConditionalExpressionCstNode[];
   operator?: (IToken)[];
-  rightExpression: AssignExpressionCstNode[];
+  rightExpression?: AssignExpressionCstNode[];
 };
 
 export interface ConditionalExpressionCstNode extends CstNode {
@@ -514,11 +527,48 @@ export interface PrimaryExpressionCstNode extends CstNode {
 
 export type PrimaryExpressionCstChildren = {
   literal?: (IToken)[];
-  identifier?: IToken[];
+  identifier?: IdentifierCstNode[];
   LambdaFunctionDeclaration?: LambdaFunctionDeclarationCstNode[];
-  LBRACKET?: IToken[];
+  ArrayInitializerExpression?: ArrayInitializerExpressionCstNode[];
+  MapInitializerExpression?: MapInitializerExpressionCstNode[];
+  LPAREN?: IToken[];
   AssignExpression?: AssignExpressionCstNode[];
-  RBRACKET?: IToken[];
+  RPAREN?: IToken[];
+};
+
+export interface ArrayInitializerExpressionCstNode extends CstNode {
+  name: "ArrayInitializerExpression";
+  children: ArrayInitializerExpressionCstChildren;
+}
+
+export type ArrayInitializerExpressionCstChildren = {
+  LBRACKET: IToken[];
+  AssignExpression?: (AssignExpressionCstNode)[];
+  COMMA?: (IToken)[];
+  RBRACKET: IToken[];
+};
+
+export interface MapInitializerExpressionCstNode extends CstNode {
+  name: "MapInitializerExpression";
+  children: MapInitializerExpressionCstChildren;
+}
+
+export type MapInitializerExpressionCstChildren = {
+  LCURLY: IToken[];
+  MapEntry?: (MapEntryCstNode)[];
+  COMMA?: (IToken)[];
+  RCURLY: IToken[];
+};
+
+export interface MapEntryCstNode extends CstNode {
+  name: "MapEntry";
+  children: MapEntryCstChildren;
+}
+
+export type MapEntryCstChildren = {
+  key: AssignExpressionCstNode[];
+  COLON: IToken[];
+  value: AssignExpressionCstNode[];
 };
 
 export interface LambdaFunctionDeclarationCstNode extends CstNode {
@@ -532,8 +582,8 @@ export type LambdaFunctionDeclarationCstChildren = {
   ParameterList?: ParameterListCstNode[];
   RPAREN: IToken[];
   AS?: IToken[];
-  TypeLiteral?: TypeLiteralCstNode[];
-  BlockStatement: BlockStatementCstNode[];
+  returnType?: TypeLiteralCstNode[];
+  FunctionBody: FunctionBodyCstNode[];
 };
 
 export interface ClassDeclarationCstNode extends CstNode {
@@ -588,6 +638,7 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   ForeachStatement(children: ForeachStatementCstChildren, param?: IN): OUT;
   WhileStatement(children: WhileStatementCstChildren, param?: IN): OUT;
   ExpressionStatement(children: ExpressionStatementCstChildren, param?: IN): OUT;
+  GlobalStaticDeclaration(children: GlobalStaticDeclarationCstChildren, param?: IN): OUT;
   VariableDeclaration(children: VariableDeclarationCstChildren, param?: IN): OUT;
   Expression(children: ExpressionCstChildren, param?: IN): OUT;
   AssignExpression(children: AssignExpressionCstChildren, param?: IN): OUT;
@@ -608,6 +659,9 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   PostfixExpressionArray(children: PostfixExpressionArrayCstChildren, param?: IN): OUT;
   PostfixExpressionFunctionCall(children: PostfixExpressionFunctionCallCstChildren, param?: IN): OUT;
   PrimaryExpression(children: PrimaryExpressionCstChildren, param?: IN): OUT;
+  ArrayInitializerExpression(children: ArrayInitializerExpressionCstChildren, param?: IN): OUT;
+  MapInitializerExpression(children: MapInitializerExpressionCstChildren, param?: IN): OUT;
+  MapEntry(children: MapEntryCstChildren, param?: IN): OUT;
   LambdaFunctionDeclaration(children: LambdaFunctionDeclarationCstChildren, param?: IN): OUT;
   ClassDeclaration(children: ClassDeclarationCstChildren, param?: IN): OUT;
   ConstructorDeclaration(children: ConstructorDeclarationCstChildren, param?: IN): OUT;
