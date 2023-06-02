@@ -64,3 +64,10 @@ it('ArrayInitializerExpression', () => {
 
   expect(ZSCstParser.errors.length).toBe(0)
 })
+
+it('BracketHandlerExpression', () => {
+  const lexResult = ZSLexer.tokenize('<minecraft:apple:1>;')
+  ZSCstParser.parse(lexResult.tokens)
+
+  expect(ZSCstParser.errors.length).toBe(0)
+})

@@ -1,8 +1,9 @@
 import type { CstNode, IToken } from 'chevrotain'
 import { CstParser } from 'chevrotain'
 import {
-  AND, AND_ASSIGN, AS, ASSIGN, BREAK, CAT, CAT_ASSIGN, COLON, COMMA, CONTINUE,
-  DIV, DIV_ASSIGN, DOLLAR, DOT, DOT_DOT, DOUBLE_LITERAL, ELSE, EQUAL, FALSE_LITERAL, FLOAT_LITERAL, FOR, FUNCTION, GLOBAL, GREATER_EQUAL, GT, IDENTIFIER, IF, IMPORT, IN,
+  AND, AND_ASSIGN, AS, ASSIGN, BREAK, CAT, CAT_ASSIGN, COLON, COMMA, CONTINUE, DIV,
+  DIV_ASSIGN, DOLLAR, DOT, DOT_DOT, DOUBLE_LITERAL, ELSE, EQUAL, FALSE_LITERAL, FLOAT_LITERAL,
+  FOR, FUNCTION, GLOBAL, GREATER_EQUAL, GT, IDENTIFIER, IF, IMPORT, IN,
   INSTANCEOF, INT_LITERAL, LESS_EQUAL, LONG_LITERAL, LT, L_BRACKET, L_CURLY, L_PAREN,
   MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, MUL, MUL_ASSIGN, NOT, NOT_EQUAL,
   NULL_LITERAL, OR, OR_ASSIGN, PLUS, PLUS_ASSIGN, QUESTION, RETURN, R_BRACKET, R_CURLY, R_PAREN, SEMICOLON,
@@ -539,6 +540,7 @@ export class ZenScriptParser extends CstParser {
       { ALT: () => this.CONSUME(STRING_LITERAL, { LABEL: 'literal' }) },
       { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'identifier' }) },
 
+      { ALT: () => this.SUBRULE(this.BracketHandlerExpression) },
       { ALT: () => this.SUBRULE(this.LambdaFunctionDeclaration) },
       { ALT: () => this.SUBRULE(this.ArrayInitializerExpression) },
       { ALT: () => this.SUBRULE(this.MapInitializerExpression) },
@@ -554,6 +556,22 @@ export class ZenScriptParser extends CstParser {
         },
       },
     ])
+  })
+
+  private BracketHandlerExpression = this.RULE('BracketHandlerExpression', () => {
+    this.CONSUME(LT)
+    this.MANY(() => {
+      this.OR([
+        { ALT: () => this.CONSUME(DOT) },
+        { ALT: () => this.CONSUME(COLON) },
+        { ALT: () => this.SUBRULE(this.Identifier) },
+        { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'literal' }) },
+        ...ZS_PRIMITIVE_TYPE_TOKENS.map((type) => {
+          return { ALT: () => this.CONSUME(type) }
+        }),
+      ])
+    })
+    this.CONSUME(GT)
   })
 
   private ArrayInitializerExpression = this.RULE('ArrayInitializerExpression', () => {

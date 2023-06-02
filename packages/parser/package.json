@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vitest -u",
     "test": "vitest",
-    "generate": "esno ./src/generate/gen-diagrams.ts && ./src/generate/gen-dts-signatures.ts"
+    "generate": "esno ./src/generate/gen-diagrams.ts && esno ./src/generate/gen-dts-signatures.ts"
   },
   "dependencies": {
     "chevrotain": "^10.5.0"
