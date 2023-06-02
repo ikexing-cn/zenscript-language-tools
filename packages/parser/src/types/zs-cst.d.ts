@@ -528,12 +528,36 @@ export interface PrimaryExpressionCstNode extends CstNode {
 export type PrimaryExpressionCstChildren = {
   literal?: (IToken)[];
   identifier?: IdentifierCstNode[];
+  BracketHandlerExpression?: BracketHandlerExpressionCstNode[];
   LambdaFunctionDeclaration?: LambdaFunctionDeclarationCstNode[];
   ArrayInitializerExpression?: ArrayInitializerExpressionCstNode[];
   MapInitializerExpression?: MapInitializerExpressionCstNode[];
   LPAREN?: IToken[];
   AssignExpression?: AssignExpressionCstNode[];
   RPAREN?: IToken[];
+};
+
+export interface BracketHandlerExpressionCstNode extends CstNode {
+  name: "BracketHandlerExpression";
+  children: BracketHandlerExpressionCstChildren;
+}
+
+export type BracketHandlerExpressionCstChildren = {
+  LT: IToken[];
+  DOT?: IToken[];
+  COLON?: IToken[];
+  Identifier?: IdentifierCstNode[];
+  literal?: IToken[];
+  ANY?: IToken[];
+  BYTE?: IToken[];
+  SHORT?: IToken[];
+  INT?: IToken[];
+  LONG?: IToken[];
+  DOUBLE?: IToken[];
+  BOOL?: IToken[];
+  VOID?: IToken[];
+  STRING?: IToken[];
+  GT: IToken[];
 };
 
 export interface ArrayInitializerExpressionCstNode extends CstNode {
@@ -659,6 +683,7 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   PostfixExpressionArray(children: PostfixExpressionArrayCstChildren, param?: IN): OUT;
   PostfixExpressionFunctionCall(children: PostfixExpressionFunctionCallCstChildren, param?: IN): OUT;
   PrimaryExpression(children: PrimaryExpressionCstChildren, param?: IN): OUT;
+  BracketHandlerExpression(children: BracketHandlerExpressionCstChildren, param?: IN): OUT;
   ArrayInitializerExpression(children: ArrayInitializerExpressionCstChildren, param?: IN): OUT;
   MapInitializerExpression(children: MapInitializerExpressionCstChildren, param?: IN): OUT;
   MapEntry(children: MapEntryCstChildren, param?: IN): OUT;
