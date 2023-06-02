@@ -1,11 +1,13 @@
 import type { CstNode, IToken } from 'chevrotain'
 import { CstParser } from 'chevrotain'
 import {
-  AND, AND_AND, AND_ASSIGN, AS, ASSIGN, BREAK, CAT, CAT_ASSIGN, COLON, COMMA, CONTINUE, DIV, DIV_ASSIGN,
-  DOLLAR, DOT, DOT_DOT, DOUBLE_LITERAL, ELSE, EQUAL, FALSE_LITERAL, FLOAT_LITERAL, FOR, FUNCTION, GLOBAL, GREATER_EQUAL, GT, HAS, IDENTIFIER, IF, IMPORT, IN,
-  INSTANCEOF, INT_LITERAL, LESS_EQUAL, LONG_LITERAL, LT, L_BRACKET, L_CURLY, L_PAREN, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, MUL,
-  MUL_ASSIGN, NOT, NOT_EQUAL, NULL_LITERAL, OR, OR_ASSIGN, OR_OR, PLUS, PLUS_ASSIGN, QUESTION, RETURN, R_BRACKET, R_CURLY,
-  R_PAREN, SEMICOLON, STATIC, STRING_LITERAL, SUPER, THIS, TO, TRUE_LITERAL, VAL, VAR, WHILE, XOR, XOR_ASSIGN, ZEN_CLASS, ZEN_CONSTRUCTOR, ZEN_D_Expand, ZS_ALL_TOKENS, ZS_PRIMITIVE_TYPE_TOKENS,
+  AND, AND_ASSIGN, AS, ASSIGN, BREAK, CAT, CAT_ASSIGN, COLON, COMMA, CONTINUE,
+  DIV, DIV_ASSIGN, DOLLAR, DOT, DOT_DOT, DOUBLE_LITERAL, ELSE, EQUAL, FALSE_LITERAL, FLOAT_LITERAL, FOR, FUNCTION, GLOBAL, GREATER_EQUAL, GT, IDENTIFIER, IF, IMPORT, IN,
+  INSTANCEOF, INT_LITERAL, LESS_EQUAL, LONG_LITERAL, LT, L_BRACKET, L_CURLY, L_PAREN,
+  MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, MUL, MUL_ASSIGN, NOT, NOT_EQUAL,
+  NULL_LITERAL, OR, OR_ASSIGN, PLUS, PLUS_ASSIGN, QUESTION, RETURN, R_BRACKET, R_CURLY, R_PAREN, SEMICOLON,
+  STATIC, STRING, STRING_LITERAL, TO, TRUE_LITERAL, VAL, VAR, WHILE, XOR, XOR_ASSIGN, ZEN_CLASS,
+  ZEN_CONSTRUCTOR, ZEN_D_Expand, ZS_ALL_TOKENS, ZS_PRIMITIVE_TYPE_TOKENS,
 } from './lexer'
 
 export class ZenScriptParser extends CstParser {
@@ -178,7 +180,10 @@ export class ZenScriptParser extends CstParser {
 
   private Statement = this.RULE('Statement', () => {
     this.OR([
-      { ALT: () => this.SUBRULE(this.BlockStatement) },
+      {
+        GATE: () => this.LA(1).tokenType === L_PAREN,
+        ALT: () => this.SUBRULE(this.BlockStatement),
+      },
       { ALT: () => this.SUBRULE(this.ReturnStatement) },
       { ALT: () => this.SUBRULE(this.BreakStatement) },
       { ALT: () => this.SUBRULE(this.ContinueStatement) },
@@ -192,9 +197,8 @@ export class ZenScriptParser extends CstParser {
 
   private BlockStatement = this.RULE('BlockStatement', () => {
     this.CONSUME(L_CURLY)
-    this.MANY_SEP({
-      SEP: COMMA,
-      DEF: () => this.SUBRULE(this.Statement),
+    this.MANY(() => {
+      this.SUBRULE(this.Statement)
     })
     this.CONSUME(R_CURLY)
   })
@@ -252,12 +256,33 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(SEMICOLON)
   })
 
+  protected GlobalStaticDeclaration = this.RULE(
+    'GlobalStaticDeclaration',
+    () => {
+      this.OR([
+        { ALT: () => this.CONSUME(GLOBAL) },
+        { ALT: () => this.CONSUME(STATIC) },
+      ])
+      this.CONSUME(IDENTIFIER, {
+        LABEL: 'vName',
+        ERR_MSG: 'Identifier expected.',
+      })
+      this.OPTION(() => {
+        this.CONSUME(AS)
+        this.SUBRULE(this.TypeLiteral)
+      })
+      this.CONSUME(ASSIGN, {
+        ERR_MSG: 'Global or Static variables must be initialized.',
+      })
+      this.SUBRULE(this.Expression, { LABEL: 'value' })
+      this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
+    },
+  )
+
   private VariableDeclaration = this.RULE('VariableDeclaration', () => {
     this.OR([
       { ALT: () => this.CONSUME(VAR) },
       { ALT: () => this.CONSUME(VAL) },
-      { ALT: () => this.CONSUME(STATIC) },
-      { ALT: () => this.CONSUME(GLOBAL) },
     ])
     this.SUBRULE(this.Identifier)
     this.OPTION(() => {
@@ -268,215 +293,317 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(ASSIGN)
       this.SUBRULE(this.Expression, { LABEL: 'initializer' })
     })
-    // this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
+    this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
   })
 
   // ============================================================
+  // Code refrence:
+  // https://github.com/Yesterday17/ZenScript/blob/master/server/parser/zenscript/zsParser.ts#L385
 
   private Expression = this.RULE('Expression', () => {
-    this.OR([
-      { ALT: () => this.SUBRULE(this.FunctionExpression) },
-      { ALT: () => this.SUBRULE(this.CallExpression) },
-      { ALT: () => this.SUBRULE(this.MemberAccessExpression) },
-      { ALT: () => this.SUBRULE(this.ArrayIndexExpression) },
-      { ALT: () => this.SUBRULE(this.TypeCastExpression) },
-      { ALT: () => this.SUBRULE(this.UnaryExpression) },
-      { ALT: () => this.SUBRULE(this.BinaryExpression) },
-      { ALT: () => this.SUBRULE(this.TernaryExpression) },
-      { ALT: () => this.SUBRULE(this.AssignmentExpression) },
-      { ALT: () => this.SUBRULE(this.BrackHandlerExpression) },
-      { ALT: () => this.SUBRULE(this.IntRangeExpression) },
-      { ALT: () => this.SUBRULE(this.ArrayInitializerExpression) },
-      { ALT: () => this.SUBRULE(this.MapInitializerExpression) },
-      { ALT: () => this.SUBRULE(this.ParensExpression) },
-      { ALT: () => this.SUBRULE(this.ThisExpression) },
-      { ALT: () => this.SUBRULE(this.SuperExpression) },
-      { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'IntLiteralExpression' }) },
-      { ALT: () => this.CONSUME(LONG_LITERAL, { LABEL: 'LongLiteralExpression' }) },
-      { ALT: () => this.CONSUME(FLOAT_LITERAL, { LABEL: 'FloatLiteralExpression' }) },
-      { ALT: () => this.CONSUME(DOUBLE_LITERAL, { LABEL: 'DoubleLiteralExpression' }) },
-      { ALT: () => this.CONSUME(STRING_LITERAL, { LABEL: 'StringLiteralExpression' }) },
-      { ALT: () => this.CONSUME(TRUE_LITERAL, { LABEL: 'TrueLiteralExpression' }) },
-      { ALT: () => this.CONSUME(FALSE_LITERAL, { LABEL: 'FalseLiteralExpression' }) },
-      { ALT: () => this.CONSUME(NULL_LITERAL, { LABEL: 'NullLiteralExpression' }) },
-      { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'LocalAccessExpress' }) },
-    ])
+    this.SUBRULE(this.AssignExpression, { LABEL: 'expression' })
   })
 
-  private FunctionExpression = this.RULE('FunctionExpression', () => {
-    this.CONSUME(FUNCTION)
-    this.CONSUME(L_PAREN)
-    this.SUBRULE(this.ParameterList)
-    this.CONSUME(R_PAREN)
+  private AssignExpression = this.RULE('AssignExpression', () => {
+    this.SUBRULE(this.ConditionalExpression, { LABEL: 'expression' })
     this.OPTION(() => {
-      this.CONSUME(AS)
-      this.SUBRULE(this.TypeLiteral)
+      this.OR([
+        { ALT: () => this.CONSUME(ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(PLUS_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(MINUS_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(CAT_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(MUL_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(DIV_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(MOD_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(OR_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(AND_ASSIGN, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(XOR_ASSIGN, { LABEL: 'operator' }) },
+      ])
+      this.SUBRULE(this.AssignExpression, { LABEL: 'rightExpression' })
     })
-    this.SUBRULE(this.FunctionBody)
   })
 
-  private CallExpression = this.RULE('CallExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'left' })
-    this.CONSUME(L_PAREN)
-    this.MANY_SEP({
-      SEP: COMMA,
-      DEF: () => this.SUBRULE2(this.Expression),
+  private ConditionalExpression = this.RULE('ConditionalExpression', () => {
+    this.SUBRULE(this.OrOrExpression)
+    this.OPTION(() => {
+      this.CONSUME(QUESTION)
+      this.SUBRULE2(this.OrOrExpression)
+      this.CONSUME(COLON)
+      this.SUBRULE(this.ConditionalExpression)
     })
-    this.CONSUME(R_PAREN)
   })
 
-  private MemberAccessExpression = this.RULE('MemberAccessExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'left' })
-    this.CONSUME(DOT)
-    this.SUBRULE(this.Identifier)
+  private OrOrExpression = this.RULE('OrOrExpression', () => {
+    this.SUBRULE(this.AndAndExpression)
+    this.MANY(() => {
+      this.CONSUME(OR_ASSIGN)
+      this.SUBRULE2(this.AndAndExpression)
+    })
   })
 
-  private ArrayIndexExpression = this.RULE('ArrayIndexExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'left' })
-    this.CONSUME(L_BRACKET)
-    this.SUBRULE2(this.Expression, { LABEL: 'index' })
-    this.CONSUME(R_BRACKET)
+  private AndAndExpression = this.RULE('AndAndExpression', () => {
+    this.SUBRULE(this.OrExpression)
+    this.MANY(() => {
+      this.CONSUME(AND_ASSIGN)
+      this.SUBRULE2(this.OrExpression)
+    })
   })
 
-  private TypeCastExpression = this.RULE('TypeCastExpression', () => {
-    this.SUBRULE(this.Expression)
-    this.CONSUME(AS)
-    this.SUBRULE(this.TypeLiteral)
+  private OrExpression = this.RULE('OrExpression', () => {
+    this.SUBRULE(this.XorExpression)
+    this.MANY(() => {
+      this.CONSUME(OR, { LABEL: 'operator' })
+      this.SUBRULE2(this.XorExpression)
+    })
+  })
+
+  private XorExpression = this.RULE('XorExpression', () => {
+    this.SUBRULE(this.AndExpression)
+    this.MANY(() => {
+      this.CONSUME(XOR, { LABEL: 'operator' })
+      this.SUBRULE2(this.AndExpression)
+    })
+  })
+
+  private AndExpression = this.RULE('AndExpression', () => {
+    this.SUBRULE(this.CompareExpression)
+    this.MANY(() => {
+      this.CONSUME(AND, { LABEL: 'operator' })
+      this.SUBRULE2(this.CompareExpression)
+    })
+  })
+
+  private CompareExpression = this.RULE('CompareExpression', () => {
+    this.SUBRULE(this.AddExpression)
+    this.OPTION(() => {
+      this.OR([
+        { ALT: () => this.CONSUME(EQUAL, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(NOT_EQUAL, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(LT, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(LESS_EQUAL, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(GT, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(GREATER_EQUAL, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(IN, { LABEL: 'operator' }) },
+      ])
+      this.SUBRULE2(this.AddExpression)
+    })
+  })
+
+  private AddExpression = this.RULE('AddExpression', () => {
+    this.SUBRULE(this.MultiplyExpression)
+    this.MANY(() => {
+      this.OR([
+        { ALT: () => this.CONSUME(PLUS, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(MINUS, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(CAT, { LABEL: 'operator' }) }, // TILDE can be used to concat strings
+      ])
+      this.SUBRULE2(this.MultiplyExpression)
+    })
+  })
+
+  private MultiplyExpression = this.RULE('MultiplyExpression', () => {
+    this.SUBRULE(this.UnaryExpression)
+    this.MANY(() => {
+      this.OR([
+        { ALT: () => this.CONSUME(MUL, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(DIV, { LABEL: 'operator' }) },
+        { ALT: () => this.CONSUME(MOD, { LABEL: 'operator' }) },
+      ])
+      this.SUBRULE2(this.UnaryExpression)
+    })
   })
 
   private UnaryExpression = this.RULE('UnaryExpression', () => {
     this.OR([
-      { ALT: () => this.CONSUME(NOT, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(MINUS, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(PLUS, { LABEL: 'operator' }) },
+      {
+        ALT: () => {
+          this.OR2([
+            { ALT: () => this.CONSUME(NOT, { LABEL: 'operator' }) },
+            { ALT: () => this.CONSUME(MINUS, { LABEL: 'operator' }) },
+          ])
+          this.SUBRULE(this.UnaryExpression, { LABEL: 'expression' })
+        },
+      },
+      {
+        ALT: () => {
+          this.SUBRULE(this.PostfixExpression, { LABEL: 'expression' })
+        },
+      },
     ])
-    this.SUBRULE(this.Expression)
   })
 
-  private BinaryExpression = this.RULE('BinaryExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'left' })
-    this.OR([
-      {
-        ALT: () => this.OR2([
-          { ALT: () => this.CONSUME(MUL, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(DIV, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(MOD, { LABEL: 'operator' }) },
-        ]),
-      },
-      {
-        ALT: () => this.OR3([
-          { ALT: () => this.CONSUME(PLUS, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(MINUS, { LABEL: 'operator' }) },
-        ]),
-      },
-      { ALT: () => this.CONSUME(CAT, { LABEL: 'operator' }) },
-      {
-        ALT: () => this.OR4([
-          { ALT: () => this.CONSUME(EQUAL, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(NOT_EQUAL, { LABEL: 'operator' }) },
-        ]),
-      },
-      {
-        ALT: () => this.OR5([
-          { ALT: () => this.CONSUME(LT, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(LESS_EQUAL, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(GT, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(GREATER_EQUAL, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(INSTANCEOF, { LABEL: 'operator' }) },
-        ]),
-      },
-      {
-        ALT: () => this.OR6([
-          { ALT: () => this.CONSUME(IN, { LABEL: 'operator' }) },
-          { ALT: () => this.CONSUME(HAS, { LABEL: 'operator' }) },
-        ])
-        ,
-      },
-      { ALT: () => this.CONSUME(AND, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(OR, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(XOR, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(AND_AND, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(OR_OR, { LABEL: 'operator' }) },
-    ])
-    this.SUBRULE2(this.Expression, { LABEL: 'right' })
+  private PostfixExpression = this.RULE('PostfixExpression', () => {
+    this.SUBRULE(this.PrimaryExpression)
+    this.MANY(() => {
+      this.OR([
+        {
+          ALT: () => {
+            this.SUBRULE(this.PostfixExpressionMemberCall)
+          },
+        },
+        {
+          GATE: () =>
+            this.LA(1).tokenType === IDENTIFIER && this.LA(1).image === 'to',
+          ALT: () => {
+            this.SUBRULE(this.PostfixExpressionTo)
+          },
+        },
+        {
+          ALT: () => {
+            this.SUBRULE(this.PostfixExpressionDotDot)
+          },
+        },
+        {
+          ALT: () => {
+            this.SUBRULE(this.PostfixExpressionArray)
+          },
+        },
+        {
+          ALT: () => {
+            this.SUBRULE(this.PostfixExpressionFunctionCall)
+          },
+        },
+        {
+          ALT: () => {
+            this.CONSUME(AS)
+            this.SUBRULE2(this.TypeLiteral)
+          },
+        },
+        {
+          ALT: () => {
+            this.CONSUME(INSTANCEOF)
+            this.SUBRULE(this.TypeLiteral, { LABEL: 'instanceof' })
+          },
+        },
+      ])
+    })
   })
 
-  private TernaryExpression = this.RULE('TernaryExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'condition' })
-    this.CONSUME(QUESTION)
-    this.SUBRULE2(this.Expression, { LABEL: 'truePart' })
-    this.CONSUME(COLON)
-    this.SUBRULE3(this.Expression, { LABEL: 'falsePart' })
+  private PostfixExpressionMemberCall = this.RULE(
+    'PostfixExpressionMemberCall',
+    () => {
+      this.CONSUME(DOT)
+      this.OR([
+        { ALT: () => this.CONSUME(IDENTIFIER, { LABEL: 'property' }) },
+        // { ALT: () => this.CONSUME(VERSION, { LABEL: 'property' }) },
+        { ALT: () => this.CONSUME(STRING, { LABEL: 'property' }) },
+      ])
+    },
+  )
+
+  private PostfixExpressionTo = this.RULE('PostfixExpressionTo', () => {
+    this.CONSUME(IDENTIFIER)
+    this.SUBRULE(this.AssignExpression, { LABEL: 'to' })
   })
 
-  private AssignmentExpression = this.RULE('AssignmentExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'left' })
-    this.OR([
-      { ALT: () => this.CONSUME(ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(PLUS_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(MINUS_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(MUL_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(DIV_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(MOD_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(CAT_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(AND_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(OR_ASSIGN, { LABEL: 'operator' }) },
-      { ALT: () => this.CONSUME(XOR_ASSIGN, { LABEL: 'operator' }) },
-    ])
-    this.SUBRULE2(this.Expression, { LABEL: 'right' })
-  })
+  private PostfixExpressionDotDot = this.RULE(
+    'PostfixExpressionDotDot',
+    () => {
+      this.CONSUME(DOT_DOT)
+      this.SUBRULE(this.AssignExpression, { LABEL: 'dotdot' })
+    },
+  )
 
-  private BrackHandlerExpression = this.RULE('BrackHandlerExpression', () => {
+  private PostfixExpressionArray = this.RULE('PostfixExpressionArray', () => {
     this.CONSUME(L_BRACKET)
-    this.SUBRULE(this.Identifier)
+    this.SUBRULE(this.AssignExpression, { LABEL: 'index' })
     this.CONSUME(R_BRACKET)
+    this.OPTION(() => {
+      this.CONSUME(ASSIGN)
+      this.SUBRULE2(this.AssignExpression, { LABEL: 'value' })
+    })
   })
 
-  private IntRangeExpression = this.RULE('IntRangeExpression', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'from' })
+  private PostfixExpressionFunctionCall = this.RULE(
+    'PostfixExpressionFunctionCall',
+    () => {
+      this.CONSUME(L_PAREN)
+      this.MANY_SEP({
+        SEP: COMMA,
+        DEF: () => {
+          this.SUBRULE(this.AssignExpression, {
+            LABEL: 'argument',
+          })
+        },
+      })
+      this.CONSUME(R_PAREN)
+    },
+  )
+
+  private PrimaryExpression = this.RULE('PrimaryExpression', () => {
     this.OR([
-      { ALT: () => this.CONSUME(DOT_DOT) },
-      { ALT: () => this.CONSUME(TO) },
+      { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(LONG_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(FLOAT_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(DOUBLE_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(STRING_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'identifier' }) },
+
+      { ALT: () => this.SUBRULE(this.LambdaFunctionDeclaration) },
+      { ALT: () => this.SUBRULE(this.ArrayInitializerExpression) },
+      { ALT: () => this.SUBRULE(this.MapInitializerExpression) },
+
+      { ALT: () => this.CONSUME(TRUE_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(FALSE_LITERAL, { LABEL: 'literal' }) },
+      { ALT: () => this.CONSUME(NULL_LITERAL, { LABEL: 'literal' }) },
+      {
+        ALT: () => {
+          this.CONSUME(L_PAREN)
+          this.SUBRULE(this.AssignExpression)
+          this.CONSUME(R_PAREN)
+        },
+      },
     ])
-    this.SUBRULE2(this.Expression, { LABEL: 'to' })
   })
 
   private ArrayInitializerExpression = this.RULE('ArrayInitializerExpression', () => {
     this.CONSUME(L_BRACKET)
-    this.MANY_SEP({
-      SEP: COMMA,
-      DEF: () => this.SUBRULE(this.Expression),
+    this.OPTION(() => {
+      this.SUBRULE(this.AssignExpression)
+      this.MANY(() => {
+        this.CONSUME(COMMA)
+        this.SUBRULE2(this.AssignExpression)
+      })
+      this.OPTION2(() => {
+        this.CONSUME2(COMMA)
+      })
     })
-    this.CONSUME2(R_BRACKET)
+    this.CONSUME(R_BRACKET)
   })
 
   private MapInitializerExpression = this.RULE('MapInitializerExpression', () => {
     this.CONSUME(L_CURLY)
-    this.MANY_SEP({
-      SEP: COMMA,
-      DEF: () => this.SUBRULE(this.MapEntry),
+    this.OPTION(() => {
+      this.SUBRULE(this.MapEntry)
+      this.MANY(() => {
+        this.CONSUME(COMMA)
+        this.SUBRULE2(this.MapEntry)
+      })
+      this.OPTION2(() => {
+        this.CONSUME2(COMMA)
+      })
     })
     this.CONSUME(R_CURLY)
   })
 
-  private ParensExpression = this.RULE('ParensExpression', () => {
-    this.CONSUME(L_PAREN)
-    this.SUBRULE(this.Expression)
-    this.CONSUME(R_PAREN)
-  })
-
-  private ThisExpression = this.RULE('ThisExpression', () => {
-    this.CONSUME(THIS)
-  })
-
-  private SuperExpression = this.RULE('SuperExpression', () => {
-    this.CONSUME(SUPER)
-  })
-
   private MapEntry = this.RULE('MapEntry', () => {
-    this.SUBRULE(this.Expression, { LABEL: 'key' })
+    this.SUBRULE(this.AssignExpression, { LABEL: 'key' })
     this.CONSUME(COLON)
-    this.SUBRULE2(this.Expression, { LABEL: 'value' })
+    this.SUBRULE2(this.AssignExpression, { LABEL: 'value' })
+  })
+
+  private LambdaFunctionDeclaration = this.RULE('LambdaFunctionDeclaration', () => {
+    this.CONSUME(FUNCTION)
+    this.CONSUME(L_PAREN)
+    this.OPTION2(() => {
+      this.SUBRULE(this.ParameterList)
+    })
+    this.CONSUME(R_PAREN)
+    this.OPTION3(() => {
+      this.CONSUME(AS)
+      this.SUBRULE(this.TypeLiteral, { LABEL: 'returnType' })
+    })
+    this.SUBRULE(this.FunctionBody)
   })
 
   // ============================================================
@@ -486,9 +613,11 @@ export class ZenScriptParser extends CstParser {
     this.SUBRULE(this.QualifiedName)
     this.CONSUME(L_CURLY)
     this.MANY(() => {
-      this.SUBRULE(this.VariableDeclaration)
-      this.SUBRULE(this.ConstructorDeclaration)
-      this.SUBRULE(this.FunctionDeclaration)
+      this.OR([
+        { ALT: () => this.SUBRULE(this.VariableDeclaration) },
+        { ALT: () => this.SUBRULE(this.ConstructorDeclaration) },
+        { ALT: () => this.SUBRULE(this.FunctionDeclaration) },
+      ])
     })
     this.CONSUME(R_CURLY)
   })

@@ -291,7 +291,7 @@ export interface ExpressionStatementCstNode extends CstNode {
 
 export type ExpressionStatementCstChildren = {
   Expression: ExpressionCstNode[];
-  COMMA: IToken[];
+  SEMICOLON: IToken[];
 };
 
 export interface VariableDeclarationCstNode extends CstNode {
@@ -307,7 +307,7 @@ export type VariableDeclarationCstChildren = {
   Identifier: IdentifierCstNode[];
   AS?: IToken[];
   TypeLiteral?: TypeLiteralCstNode[];
-  EQUAL?: IToken[];
+  ASSIGN?: IToken[];
   initializer?: ExpressionCstNode[];
   SEMICOLON: IToken[];
 };
@@ -318,93 +318,110 @@ export interface ExpressionCstNode extends CstNode {
 }
 
 export type ExpressionCstChildren = {
-  FunctionExpression?: FunctionExpressionCstNode[];
-  CallExpression?: CallExpressionCstNode[];
-  MemberAccessExpression?: MemberAccessExpressionCstNode[];
-  ArrayIndexExpression?: ArrayIndexExpressionCstNode[];
-  TypeCastExpression?: TypeCastExpressionCstNode[];
-  UnaryExpression?: UnaryExpressionCstNode[];
-  BinaryExpression?: BinaryExpressionCstNode[];
-  TernaryExpression?: TernaryExpressionCstNode[];
-  AssignmentExpression?: AssignmentExpressionCstNode[];
-  BrackHandlerExpression?: BrackHandlerExpressionCstNode[];
-  IntRangeExpression?: IntRangeExpressionCstNode[];
-  ArrayInitializerExpression?: ArrayInitializerExpressionCstNode[];
-  MapInitializerExpression?: MapInitializerExpressionCstNode[];
-  ParensExpression?: ParensExpressionCstNode[];
-  ThisExpression?: ThisExpressionCstNode[];
-  SuperExpression?: SuperExpressionCstNode[];
-  IntLiteralExpression?: IToken[];
-  LongLiteralExpression?: IToken[];
-  FloatLiteralExpression?: IToken[];
-  DoubleLiteralExpression?: IToken[];
-  StringLiteralExpression?: IToken[];
-  TrueLiteralExpression?: IToken[];
-  FalseLiteralExpression?: IToken[];
-  NullLiteralExpression?: IToken[];
-  LocalAccessExpress?: IdentifierCstNode[];
+  expression: AssignExpressionCstNode[];
 };
 
-export interface FunctionExpressionCstNode extends CstNode {
-  name: "FunctionExpression";
-  children: FunctionExpressionCstChildren;
+export interface AssignExpressionCstNode extends CstNode {
+  name: "AssignExpression";
+  children: AssignExpressionCstChildren;
 }
 
-export type FunctionExpressionCstChildren = {
-  FUNCTION: IToken[];
-  LPAREN: IToken[];
-  ParameterList: ParameterListCstNode[];
-  RPAREN: IToken[];
-  AS?: IToken[];
-  TypeLiteral?: TypeLiteralCstNode[];
-  FunctionBody: FunctionBodyCstNode[];
+export type AssignExpressionCstChildren = {
+  expression: ConditionalExpressionCstNode[];
+  operator?: (IToken)[];
+  rightExpression: AssignExpressionCstNode[];
 };
 
-export interface CallExpressionCstNode extends CstNode {
-  name: "CallExpression";
-  children: CallExpressionCstChildren;
+export interface ConditionalExpressionCstNode extends CstNode {
+  name: "ConditionalExpression";
+  children: ConditionalExpressionCstChildren;
 }
 
-export type CallExpressionCstChildren = {
-  left: ExpressionCstNode[];
-  LPAREN: IToken[];
-  Expression?: ExpressionCstNode[];
-  COMMA?: IToken[];
-  RPAREN: IToken[];
+export type ConditionalExpressionCstChildren = {
+  OrOrExpression: (OrOrExpressionCstNode)[];
+  QUESTION?: IToken[];
+  COLON?: IToken[];
+  ConditionalExpression?: ConditionalExpressionCstNode[];
 };
 
-export interface MemberAccessExpressionCstNode extends CstNode {
-  name: "MemberAccessExpression";
-  children: MemberAccessExpressionCstChildren;
+export interface OrOrExpressionCstNode extends CstNode {
+  name: "OrOrExpression";
+  children: OrOrExpressionCstChildren;
 }
 
-export type MemberAccessExpressionCstChildren = {
-  left: ExpressionCstNode[];
-  DOT: IToken[];
-  Identifier: IdentifierCstNode[];
+export type OrOrExpressionCstChildren = {
+  AndAndExpression: (AndAndExpressionCstNode)[];
+  OR_ASSIGN?: IToken[];
 };
 
-export interface ArrayIndexExpressionCstNode extends CstNode {
-  name: "ArrayIndexExpression";
-  children: ArrayIndexExpressionCstChildren;
+export interface AndAndExpressionCstNode extends CstNode {
+  name: "AndAndExpression";
+  children: AndAndExpressionCstChildren;
 }
 
-export type ArrayIndexExpressionCstChildren = {
-  left: ExpressionCstNode[];
-  LBRACKET: IToken[];
-  index: ExpressionCstNode[];
-  RBRACKET: IToken[];
+export type AndAndExpressionCstChildren = {
+  OrExpression: (OrExpressionCstNode)[];
+  AND_ASSIGN?: IToken[];
 };
 
-export interface TypeCastExpressionCstNode extends CstNode {
-  name: "TypeCastExpression";
-  children: TypeCastExpressionCstChildren;
+export interface OrExpressionCstNode extends CstNode {
+  name: "OrExpression";
+  children: OrExpressionCstChildren;
 }
 
-export type TypeCastExpressionCstChildren = {
-  Expression: ExpressionCstNode[];
-  AS: IToken[];
-  TypeLiteral: TypeLiteralCstNode[];
+export type OrExpressionCstChildren = {
+  XorExpression: (XorExpressionCstNode)[];
+  operator?: IToken[];
+};
+
+export interface XorExpressionCstNode extends CstNode {
+  name: "XorExpression";
+  children: XorExpressionCstChildren;
+}
+
+export type XorExpressionCstChildren = {
+  AndExpression: (AndExpressionCstNode)[];
+  operator?: IToken[];
+};
+
+export interface AndExpressionCstNode extends CstNode {
+  name: "AndExpression";
+  children: AndExpressionCstChildren;
+}
+
+export type AndExpressionCstChildren = {
+  CompareExpression: (CompareExpressionCstNode)[];
+  operator?: IToken[];
+};
+
+export interface CompareExpressionCstNode extends CstNode {
+  name: "CompareExpression";
+  children: CompareExpressionCstChildren;
+}
+
+export type CompareExpressionCstChildren = {
+  AddExpression: (AddExpressionCstNode)[];
+  operator?: (IToken)[];
+};
+
+export interface AddExpressionCstNode extends CstNode {
+  name: "AddExpression";
+  children: AddExpressionCstChildren;
+}
+
+export type AddExpressionCstChildren = {
+  MultiplyExpression: (MultiplyExpressionCstNode)[];
+  operator?: (IToken)[];
+};
+
+export interface MultiplyExpressionCstNode extends CstNode {
+  name: "MultiplyExpression";
+  children: MultiplyExpressionCstChildren;
+}
+
+export type MultiplyExpressionCstChildren = {
+  UnaryExpression: (UnaryExpressionCstNode)[];
+  operator?: (IToken)[];
 };
 
 export interface UnaryExpressionCstNode extends CstNode {
@@ -414,129 +431,109 @@ export interface UnaryExpressionCstNode extends CstNode {
 
 export type UnaryExpressionCstChildren = {
   operator?: (IToken)[];
-  Expression: ExpressionCstNode[];
+  expression?: (UnaryExpressionCstNode | PostfixExpressionCstNode)[];
 };
 
-export interface BinaryExpressionCstNode extends CstNode {
-  name: "BinaryExpression";
-  children: BinaryExpressionCstChildren;
+export interface PostfixExpressionCstNode extends CstNode {
+  name: "PostfixExpression";
+  children: PostfixExpressionCstChildren;
 }
 
-export type BinaryExpressionCstChildren = {
-  left: ExpressionCstNode[];
-  operator?: (IToken)[];
-  right: ExpressionCstNode[];
+export type PostfixExpressionCstChildren = {
+  PrimaryExpression: PrimaryExpressionCstNode[];
+  PostfixExpressionMemberCall?: PostfixExpressionMemberCallCstNode[];
+  PostfixExpressionTo?: PostfixExpressionToCstNode[];
+  PostfixExpressionDotDot?: PostfixExpressionDotDotCstNode[];
+  PostfixExpressionArray?: PostfixExpressionArrayCstNode[];
+  PostfixExpressionFunctionCall?: PostfixExpressionFunctionCallCstNode[];
+  AS?: IToken[];
+  TypeLiteral?: TypeLiteralCstNode[];
+  INSTANCEOF?: IToken[];
+  instanceof?: TypeLiteralCstNode[];
 };
 
-export interface TernaryExpressionCstNode extends CstNode {
-  name: "TernaryExpression";
-  children: TernaryExpressionCstChildren;
+export interface PostfixExpressionMemberCallCstNode extends CstNode {
+  name: "PostfixExpressionMemberCall";
+  children: PostfixExpressionMemberCallCstChildren;
 }
 
-export type TernaryExpressionCstChildren = {
-  condition: ExpressionCstNode[];
-  QUESTION: IToken[];
-  truePart: ExpressionCstNode[];
-  COLON: IToken[];
-  falsePart: ExpressionCstNode[];
+export type PostfixExpressionMemberCallCstChildren = {
+  DOT: IToken[];
+  property?: (IToken)[];
 };
 
-export interface AssignmentExpressionCstNode extends CstNode {
-  name: "AssignmentExpression";
-  children: AssignmentExpressionCstChildren;
+export interface PostfixExpressionToCstNode extends CstNode {
+  name: "PostfixExpressionTo";
+  children: PostfixExpressionToCstChildren;
 }
 
-export type AssignmentExpressionCstChildren = {
-  left: ExpressionCstNode[];
-  operator?: (IToken)[];
-  right: ExpressionCstNode[];
+export type PostfixExpressionToCstChildren = {
+  IDENTIFIER: IToken[];
+  to: AssignExpressionCstNode[];
 };
 
-export interface BrackHandlerExpressionCstNode extends CstNode {
-  name: "BrackHandlerExpression";
-  children: BrackHandlerExpressionCstChildren;
+export interface PostfixExpressionDotDotCstNode extends CstNode {
+  name: "PostfixExpressionDotDot";
+  children: PostfixExpressionDotDotCstChildren;
 }
 
-export type BrackHandlerExpressionCstChildren = {
+export type PostfixExpressionDotDotCstChildren = {
+  DOT_DOT: IToken[];
+  dotdot: AssignExpressionCstNode[];
+};
+
+export interface PostfixExpressionArrayCstNode extends CstNode {
+  name: "PostfixExpressionArray";
+  children: PostfixExpressionArrayCstChildren;
+}
+
+export type PostfixExpressionArrayCstChildren = {
   LBRACKET: IToken[];
-  Identifier: IdentifierCstNode[];
+  index: AssignExpressionCstNode[];
   RBRACKET: IToken[];
+  ASSIGN?: IToken[];
+  value?: AssignExpressionCstNode[];
 };
 
-export interface IntRangeExpressionCstNode extends CstNode {
-  name: "IntRangeExpression";
-  children: IntRangeExpressionCstChildren;
+export interface PostfixExpressionFunctionCallCstNode extends CstNode {
+  name: "PostfixExpressionFunctionCall";
+  children: PostfixExpressionFunctionCallCstChildren;
 }
 
-export type IntRangeExpressionCstChildren = {
-  from: ExpressionCstNode[];
-  DOT_DOT?: IToken[];
-  TO?: IToken[];
-  to: ExpressionCstNode[];
-};
-
-export interface ArrayInitializerExpressionCstNode extends CstNode {
-  name: "ArrayInitializerExpression";
-  children: ArrayInitializerExpressionCstChildren;
-}
-
-export type ArrayInitializerExpressionCstChildren = {
-  LBRACKET: IToken[];
-  Expression?: ExpressionCstNode[];
-  COMMA?: IToken[];
-  RBRACKET: IToken[];
-};
-
-export interface MapInitializerExpressionCstNode extends CstNode {
-  name: "MapInitializerExpression";
-  children: MapInitializerExpressionCstChildren;
-}
-
-export type MapInitializerExpressionCstChildren = {
-  LCURLY: IToken[];
-  MapEntry?: MapEntryCstNode[];
-  COMMA?: IToken[];
-  RCURLY: IToken[];
-};
-
-export interface ParensExpressionCstNode extends CstNode {
-  name: "ParensExpression";
-  children: ParensExpressionCstChildren;
-}
-
-export type ParensExpressionCstChildren = {
+export type PostfixExpressionFunctionCallCstChildren = {
   LPAREN: IToken[];
-  Expression: ExpressionCstNode[];
+  argument?: AssignExpressionCstNode[];
+  COMMA?: IToken[];
   RPAREN: IToken[];
 };
 
-export interface ThisExpressionCstNode extends CstNode {
-  name: "ThisExpression";
-  children: ThisExpressionCstChildren;
+export interface PrimaryExpressionCstNode extends CstNode {
+  name: "PrimaryExpression";
+  children: PrimaryExpressionCstChildren;
 }
 
-export type ThisExpressionCstChildren = {
-  THIS: IToken[];
+export type PrimaryExpressionCstChildren = {
+  literal?: (IToken)[];
+  identifier?: IToken[];
+  LambdaFunctionDeclaration?: LambdaFunctionDeclarationCstNode[];
+  LBRACKET?: IToken[];
+  AssignExpression?: AssignExpressionCstNode[];
+  RBRACKET?: IToken[];
 };
 
-export interface SuperExpressionCstNode extends CstNode {
-  name: "SuperExpression";
-  children: SuperExpressionCstChildren;
+export interface LambdaFunctionDeclarationCstNode extends CstNode {
+  name: "LambdaFunctionDeclaration";
+  children: LambdaFunctionDeclarationCstChildren;
 }
 
-export type SuperExpressionCstChildren = {
-  SUPER: IToken[];
-};
-
-export interface MapEntryCstNode extends CstNode {
-  name: "MapEntry";
-  children: MapEntryCstChildren;
-}
-
-export type MapEntryCstChildren = {
-  key: ExpressionCstNode[];
-  COLON: IToken[];
-  value: ExpressionCstNode[];
+export type LambdaFunctionDeclarationCstChildren = {
+  FUNCTION: IToken[];
+  LPAREN: IToken[];
+  ParameterList?: ParameterListCstNode[];
+  RPAREN: IToken[];
+  AS?: IToken[];
+  TypeLiteral?: TypeLiteralCstNode[];
+  BlockStatement: BlockStatementCstNode[];
 };
 
 export interface ClassDeclarationCstNode extends CstNode {
@@ -593,23 +590,25 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   ExpressionStatement(children: ExpressionStatementCstChildren, param?: IN): OUT;
   VariableDeclaration(children: VariableDeclarationCstChildren, param?: IN): OUT;
   Expression(children: ExpressionCstChildren, param?: IN): OUT;
-  FunctionExpression(children: FunctionExpressionCstChildren, param?: IN): OUT;
-  CallExpression(children: CallExpressionCstChildren, param?: IN): OUT;
-  MemberAccessExpression(children: MemberAccessExpressionCstChildren, param?: IN): OUT;
-  ArrayIndexExpression(children: ArrayIndexExpressionCstChildren, param?: IN): OUT;
-  TypeCastExpression(children: TypeCastExpressionCstChildren, param?: IN): OUT;
+  AssignExpression(children: AssignExpressionCstChildren, param?: IN): OUT;
+  ConditionalExpression(children: ConditionalExpressionCstChildren, param?: IN): OUT;
+  OrOrExpression(children: OrOrExpressionCstChildren, param?: IN): OUT;
+  AndAndExpression(children: AndAndExpressionCstChildren, param?: IN): OUT;
+  OrExpression(children: OrExpressionCstChildren, param?: IN): OUT;
+  XorExpression(children: XorExpressionCstChildren, param?: IN): OUT;
+  AndExpression(children: AndExpressionCstChildren, param?: IN): OUT;
+  CompareExpression(children: CompareExpressionCstChildren, param?: IN): OUT;
+  AddExpression(children: AddExpressionCstChildren, param?: IN): OUT;
+  MultiplyExpression(children: MultiplyExpressionCstChildren, param?: IN): OUT;
   UnaryExpression(children: UnaryExpressionCstChildren, param?: IN): OUT;
-  BinaryExpression(children: BinaryExpressionCstChildren, param?: IN): OUT;
-  TernaryExpression(children: TernaryExpressionCstChildren, param?: IN): OUT;
-  AssignmentExpression(children: AssignmentExpressionCstChildren, param?: IN): OUT;
-  BrackHandlerExpression(children: BrackHandlerExpressionCstChildren, param?: IN): OUT;
-  IntRangeExpression(children: IntRangeExpressionCstChildren, param?: IN): OUT;
-  ArrayInitializerExpression(children: ArrayInitializerExpressionCstChildren, param?: IN): OUT;
-  MapInitializerExpression(children: MapInitializerExpressionCstChildren, param?: IN): OUT;
-  ParensExpression(children: ParensExpressionCstChildren, param?: IN): OUT;
-  ThisExpression(children: ThisExpressionCstChildren, param?: IN): OUT;
-  SuperExpression(children: SuperExpressionCstChildren, param?: IN): OUT;
-  MapEntry(children: MapEntryCstChildren, param?: IN): OUT;
+  PostfixExpression(children: PostfixExpressionCstChildren, param?: IN): OUT;
+  PostfixExpressionMemberCall(children: PostfixExpressionMemberCallCstChildren, param?: IN): OUT;
+  PostfixExpressionTo(children: PostfixExpressionToCstChildren, param?: IN): OUT;
+  PostfixExpressionDotDot(children: PostfixExpressionDotDotCstChildren, param?: IN): OUT;
+  PostfixExpressionArray(children: PostfixExpressionArrayCstChildren, param?: IN): OUT;
+  PostfixExpressionFunctionCall(children: PostfixExpressionFunctionCallCstChildren, param?: IN): OUT;
+  PrimaryExpression(children: PrimaryExpressionCstChildren, param?: IN): OUT;
+  LambdaFunctionDeclaration(children: LambdaFunctionDeclarationCstChildren, param?: IN): OUT;
   ClassDeclaration(children: ClassDeclarationCstChildren, param?: IN): OUT;
   ConstructorDeclaration(children: ConstructorDeclarationCstChildren, param?: IN): OUT;
 }
