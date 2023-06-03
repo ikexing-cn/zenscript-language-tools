@@ -1,0 +1,69 @@
+{
+  "name": "@zenscript-language-tools/vscode-ext",
+  "displayName": "ZenScript Language Tools",
+  "version": "1.0.0",
+  "description": "",
+  "author": "ikx",
+  "license": "MIT",
+  "keywords": [],
+  "main": "./out/main",
+  "engines": {
+    "vscode": "^1.78.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "zenscript",
+        "aliases": [
+          "ZenScript"
+        ],
+        "extensions": [
+          ".zs"
+        ],
+        "configuration": "./language/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "zenscript",
+        "scopeName": "source.zs",
+        "path": "./language/ZenScript.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "ZenScript Language Tools",
+      "properties": {
+        "zenscript.languageServer.debug": {
+          "order": 0,
+          "type": "boolean",
+          "default": false,
+          "description": "Enable/disable debug mode for language server"
+        },
+        "zenscript.languageServer.suspend": {
+          "order": 1,
+          "type": "boolean",
+          "default": false,
+          "description": "Suspend to wait for the debugger to attach"
+        },
+        "zenscript.languageServer.javaHome": {
+          "order": 2,
+          "type": "string",
+          "default": null,
+          "description": "Path of java home"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "dev": "tsc -b ./tsconfig.json -w",
+    "compile": "npm run yaml2json && tsc -b ./tsconfig.json",
+    "yaml2json": "cd ./src && yamljson ZenScript.tmLanguage.yaml > ../language/ZenScript.tmLanguage.json"
+  },
+  "dependencies": {
+    "@types/vscode": "^1.78.1",
+    "vscode-languageclient": "^8.1.0"
+  },
+  "devDependencies": {
+    "yamljson": "^1.0.70"
+  }
+}

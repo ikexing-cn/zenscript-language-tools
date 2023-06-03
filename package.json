@@ -2,13 +2,17 @@
   "name": "zenscript-language-tools",
   "version": "1.0.0",
   "description": "",
-  "author": "ikexing-cn",
+  "author": "ikx",
   "license": "MIT",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "ext:dev": "pnpm --filter vscode-ext run dev",
+    "ext:build": "pnpm --filter vscode-ext run compile"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.4",
     "@types/node": "^20.2.5",
-    "eslint": "^8.41.0"
+    "eslint": "^8.41.0",
+    "typescript": "^5.1.3"
   }
 }
