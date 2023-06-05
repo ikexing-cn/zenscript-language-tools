@@ -4,9 +4,8 @@
     "lib": [
       "ES2021"
     ],
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
-    "composite": true,
     "declaration": true,
     "strict": true,
     "alwaysStrict": false,
@@ -14,7 +13,7 @@
     "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "out",
+    "outDir": "dist",
     "sourceMap": true,
     "rootDir": "src"
   },
@@ -23,5 +22,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }
