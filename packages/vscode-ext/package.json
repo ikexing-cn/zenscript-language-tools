@@ -31,20 +31,7 @@
       }
     ],
     "configuration": {
-      "title": "ZenScript Language Tools",
-      "properties": {
-        "zenscript.languageServer.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VS Code and the language server."
-        }
-      }
+      "title": "ZenScript Language Tools"
     }
   },
   "scripts": {
@@ -55,11 +42,10 @@
     "yaml2json": "cd ./src && yamljson ZenScript.tmLanguage.yaml > ../language/ZenScript.tmLanguage.json"
   },
   "dependencies": {
-    "@types/vscode": "^1.78.1",
-    "@zenscript-language-tools/language-server": "workspace:^",
     "vscode-languageclient": "^8.1.0"
   },
   "devDependencies": {
-    "yamljson": "^1.0.70"
+    "yamljson": "^1.0.70",
+    "@types/vscode": "^1.78.1"
   }
 }
