@@ -1,5 +1,5 @@
 import { ZSCstParser } from '../cst-parser'
-import type { ProgramCstNode } from '../types/zs-cst'
+import type { ProgramCstChildren } from '../types/zs-cst'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructorWithDefaults()
 
@@ -9,8 +9,8 @@ class ZenScriptBasicVisitor extends BasicCstVisitor {
     this.validateVisitor()
   }
 
-  protected Program(ctx: ProgramCstNode) {
-    console.log(ctx)
+  protected Program(ctx: ProgramCstChildren) {
+    // TODO
   }
 }
 

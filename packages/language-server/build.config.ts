@@ -2,7 +2,7 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: [
-    './src/server',
+    './src/main',
   ],
   outDir: './out',
   declaration: true,

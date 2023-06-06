@@ -9,7 +9,7 @@ let client: LanguageClient
 
 export function activate(context: ExtensionContext) {
   const serverModule = context.asAbsolutePath(
-    join('../', 'language-server', 'out', 'server.cjs'),
+    join('../', 'language-server', 'out', 'main.cjs'),
   )
   const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] }
 
