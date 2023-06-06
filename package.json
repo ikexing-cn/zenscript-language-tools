@@ -6,6 +6,10 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "parser:dev": "pnpm --filter parser run dev",
+    "parser:build": "pnpm --filter parser run build",
+    "server:dev": "pnpm --filter language-server run dev",
+    "server:build": "pnpm --filter language-server run build",
     "ext:dev": "pnpm --filter vscode-ext run dev",
     "ext:build": "pnpm --filter vscode-ext run compile"
   },

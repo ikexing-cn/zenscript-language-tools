@@ -53,6 +53,9 @@ importers:
       '@types/vscode':
         specifier: ^1.78.1
         version: 1.78.1
+      '@zenscript-language-tools/language-server':
+        specifier: workspace:^
+        version: link:../language-server
       vscode-languageclient:
         specifier: ^8.1.0
         version: 8.1.0

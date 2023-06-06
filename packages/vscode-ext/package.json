@@ -48,12 +48,15 @@
     }
   },
   "scripts": {
-    "dev": "npx tsc -b ./tsconfig.json -w",
-    "compile": "npm run yaml2json && npx tsc -b ./tsconfig.json",
+    "dev": "nr watch:tsc",
+    "compile": "nr yaml2json && npx tsc -b ./tsconfig.json",
+    "watch:tsc": "tsc -b ./tsconfig.json -w",
+    "build:tsc": "tsc -b ./tsconfig.json",
     "yaml2json": "cd ./src && yamljson ZenScript.tmLanguage.yaml > ../language/ZenScript.tmLanguage.json"
   },
   "dependencies": {
     "@types/vscode": "^1.78.1",
+    "@zenscript-language-tools/language-server": "workspace:^",
     "vscode-languageclient": "^8.1.0"
   },
   "devDependencies": {
