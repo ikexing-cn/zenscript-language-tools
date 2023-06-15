@@ -1,6 +1,8 @@
 import type { Connection, InitializeParams, InitializeResult } from 'vscode-languageserver/node'
 import { ProposedFeatures, createConnection } from 'vscode-languageserver/node'
 import type { URI } from 'vscode-uri'
+import HandleInitialized from '../services/initialized'
+import type { ZsFile } from './file'
 
 export class ZsServer {
   hasDZS = false
@@ -8,7 +10,8 @@ export class ZsServer {
   baseFolderUri: URI | null = null
   connection: Connection | null = null
 
-  folders: Array<{ name?: string; uri: string }> = [1]
+  folders: Array<{ name?: string; uri: string }> = []
+  files: Map<String, ZsFile> = new Map()
 
   constructor() {
     this.reset()
@@ -16,25 +19,10 @@ export class ZsServer {
 
   public init() {
     this.connection = createConnection(ProposedFeatures.all)
-    this.connection.onInitialize(this.handleInitialize)
+    this.connection.onInitialize(init => this.handleInitialize(init))
+    this.connection.onInitialized(HandleInitialized)
 
     this.connection.listen()
-  }
-
-  private handleInitialized() {
-    let folderUri: URI
-
-    // for (const folder of this.folders) {
-    //   const furi = folder.uri.match(/^(file:\/\/\/)?(.*)$/)
-    //     ? URI.parse(folder.uri)
-    //     : URI.file(folder.uri)
-    //   const fbase = furi.path
-
-    //   if (folder.name === 'scripts' || fbase === 'scrtips')
-    //     folderUri = furi
-
-    //   console.log({ folder })
-    // }
   }
 
   private handleInitialize(init: InitializeParams): InitializeResult {
@@ -48,32 +36,20 @@ export class ZsServer {
       },
     }
 
-    console.log({
-      folders: this.folders,
-    })
-
-    // if (init.rootPath) {
-    //   this.folders.push({
-    //     name: init.rootPath.split('/').pop(),
-    //     uri: init.rootPath,
-    //   })
-    // }
-
-    // if (init.rootUri) {
-    //   this.folders.push({
-    //     name: init.rootUri.split('/').pop(),
-    //     uri: init.rootUri,
-    //   })
-    // }
-
-    // if (init.workspaceFolders)
-    //   this.folders.push(...init.workspaceFolders)
+    if (init.workspaceFolders) {
+      // TODO: let's ignore multi-root for now
+      this.folders.push(init.workspaceFolders[0])
+    }
 
     return result
   }
 
   private reset() {
-    // todo
+    this.folders = []
+    this.hasDZS = false
+    this.isProject = false
+    this.connection = null
+    this.files = new Map()
   }
 }
 

@@ -1,4 +1,5 @@
-import type { Connection, URI } from 'vscode-languageserver'
+import type { Connection } from 'vscode-languageserver'
+import type { URI } from 'vscode-uri'
 
 type ParseStep = 'NotLoaded' | 'Loaded' | 'Preprocessed' | 'Parsed'
 
@@ -15,8 +16,8 @@ export class ZsFile {
 
   constructor(uri: URI, name: string, pkg: string, connection: Connection) {
     this.uri = uri
-    this.name = name
     this.pkg = pkg
+    this.name = name
     this.connection = connection
   }
 
