@@ -12,41 +12,50 @@ export interface ASTError extends Offset {
 }
 
 export interface ASTBasicProgram {
-  scopes: Record<string, 'function' | 'class' | 'global' | 'static'>
+  scopes: Record<string, 'function' | 'zen-class' | 'global' | 'static'>
   errors: ASTError[]
 }
 
 export interface ASTNodeDeclare extends ASTNode { 
-  type: 'global' | 'static' | 'var' | 'val';
-  vName: string;
-  vType: ASTNode;
+  type: 'global' | 'static' | 'var' | 'val'
+  vName: string
+  vType: ASTNode
 
-  value?: ASTNode;
+  value?: ASTNode
 }
 
 export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare {
-  type: 'global' | 'static';
+  type: 'global' | 'static'
+}
+
+
+export interface ASTNodeVariableDDeclare extends ASTNodeDeclare {
+  type: 'var' | 'val' 
 }
 
 export interface ASTNodeFunction extends ASTNode {
-  type: 'function';
-  fName: string;
-  fPara: ASTNodeParameterList;
-  fType: ASTNode;
+  type: 'function'
+  fName: string
+  fPara: ASTNodeParameterList
+  fType: ASTNode
 }
 
 export interface ASTNodeParameter extends ASTNode {
-  type: 'parameter';
-  pName: string;
-  pType: ASTNode;
+  type: 'parameter'
+  pName: string
+  pType: ASTNode
 }
 
 export interface ASTNodeParameterList extends ASTNode {
-  type: 'parameter-list';
-  pList: ASTNodeParameter[];
+  type: 'parameter-list'
+  pList: ASTNodeParameter[]
 }
 
 export interface ASTNodeZenClass extends ASTNode {
-  type: 'class'
+  type: 'zen-class'
   cName: string
+}
+
+export interface ASTNodeZenConstructor extends ASTNodeParameterList {
+  type: 'zen-constructor'
 }
