@@ -7,6 +7,7 @@ export interface ProgramCstNode extends CstNode {
 
 export type ProgramCstChildren = {
   ImportDeclaration?: ImportDeclarationCstNode[];
+  GlobalStaticDeclaration?: GlobalStaticDeclarationCstNode[];
   FunctionDeclaration?: FunctionDeclarationCstNode[];
   DExpandFunctionDeclaration?: DExpandFunctionDeclarationCstNode[];
   ClassDeclaration?: ClassDeclarationCstNode[];
@@ -617,7 +618,7 @@ export interface ClassDeclarationCstNode extends CstNode {
 
 export type ClassDeclarationCstChildren = {
   ZEN_CLASS: IToken[];
-  QualifiedName: QualifiedNameCstNode[];
+  Identifier: IdentifierCstNode[];
   LCURLY: IToken[];
   VariableDeclaration?: VariableDeclarationCstNode[];
   ConstructorDeclaration?: ConstructorDeclarationCstNode[];

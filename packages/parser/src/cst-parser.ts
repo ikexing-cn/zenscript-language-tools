@@ -34,6 +34,7 @@ export class ZenScriptParser extends CstParser {
 
     this.MANY2(() => {
       this.OR([
+        { ALT: () => this.SUBRULE(this.GlobalStaticDeclaration) },
         { ALT: () => this.SUBRULE(this.FunctionDeclaration) },
         { ALT: () => this.SUBRULE(this.DExpandFunctionDeclaration) },
         { ALT: () => this.SUBRULE(this.ClassDeclaration) },
@@ -628,7 +629,7 @@ export class ZenScriptParser extends CstParser {
 
   private ClassDeclaration = this.RULE('ClassDeclaration', () => {
     this.CONSUME(ZEN_CLASS)
-    this.SUBRULE(this.QualifiedName)
+    this.SUBRULE(this.Identifier)
     this.CONSUME(L_CURLY)
     this.MANY(() => {
       this.OR([

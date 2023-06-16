@@ -32,7 +32,11 @@ export class ZsServer {
         version: '0.0.1',
       },
       capabilities: {
-        // todo
+        workspace: {
+          workspaceFolders: {
+            supported: true,
+          },
+        },
       },
     }
 
