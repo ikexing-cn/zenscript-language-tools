@@ -4,10 +4,22 @@ import type { URI } from 'vscode-uri'
 import HandleInitialized from '../services/initialized'
 import type { ZsFile } from './file'
 
+export interface Packages {
+  name?: string
+  author?: string
+  license?: string
+  version?: string
+  description?: string
+
+  dzs?: string | boolean
+  scripts?: URI | null
+}
+
 export class ZsServer {
   hasDZS = false
   isProject = false
-  baseFolderUri: URI | null = null
+  packages: Packages | null = null
+  scriptsFolderUri: URI | null = null
   connection: Connection | null = null
 
   folders: Array<{ name?: string; uri: string }> = []
@@ -52,6 +64,7 @@ export class ZsServer {
     this.folders = []
     this.hasDZS = false
     this.isProject = false
+    this.packages = null
     this.connection = null
     this.files = new Map()
   }

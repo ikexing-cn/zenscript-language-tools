@@ -1,16 +1,17 @@
 import { extname, join } from 'node:path'
-import { existsSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { URI } from 'vscode-uri'
+import type { Packages } from '../api/server'
 import { zServer } from '../api/server'
 import { ZsFile } from '../api/file'
+import { objectOmit } from '../utils'
 
-function parseZenPackages() {
-  // TODO
-  zServer.isProject = true
-}
+type InputPackages = Omit<Packages, 'scripts'> & { scripts: string }
 
 function getLocalPkg(filePath: string) {
-  return `scripts.${filePath.replace(zServer.baseFolderUri!.path, '').replace(/\//g, '.').substring(1)}`.replace('.zs', '')
+  return `scripts.${filePath.replace(zServer.scriptsFolderUri!.path, '')
+    .replace(/\//g, '.').substring(1)}`
+    .replace('.zs', '')
 }
 
 async function traverseDirectory(dirUri: URI, _files: [string, URI][] = []) {
@@ -44,30 +45,83 @@ async function traverseDirectory(dirUri: URI, _files: [string, URI][] = []) {
   })
 }
 
-export default async function () {
-  const folderUri: URI = URI.parse(zServer.folders[0].uri)
+function searchDefaultScritps(folderUri: URI) {
   // when the folder is a file then search `scripts`
   if (folderUri.scheme === 'file') {
     if (['scripts', 'zenscript-example'].includes(zServer.folders[0].name!))
-      zServer.baseFolderUri = folderUri
-    else if (existsSync(join(folderUri.path, 'scripts')))
-      zServer.baseFolderUri = folderUri
+      return folderUri
+
+    else if (existsSync(join(folderUri.path, 'scripts'))
+      && (folderUri.path.endsWith('minecraft')
+        || folderUri.path.endsWith('.minecraft')))
+      return folderUri
+  }
+  return null
+}
+
+function parseZenPackages(folderUri: URI, zenPackages: string) {
+  const defaultPackage: Packages = {
+    dzs: true,
+    scripts: searchDefaultScritps(folderUri),
   }
 
-  if (zServer.baseFolderUri) {
-    const zenPackages = join(zServer.baseFolderUri.path, 'zen-packages.json')
-    // when the `zen-packages.json` is exist
-    if (!existsSync(zenPackages))
-      return
-    parseZenPackages()
+  const inputPackages: InputPackages = JSON.parse(readFileSync(zenPackages, 'utf-8'))
+  if (inputPackages == null)
+    return
 
-    // load all files
-    const files = await traverseDirectory(zServer.baseFolderUri)
-    for (const [pkg, file] of files)
-      zServer.files.set(file.path, new ZsFile(file, file.path, pkg, zServer.connection!))
+  if (!(inputPackages.scripts && existsSync(join(zServer.folders[0].uri, inputPackages.scripts))))
+    return
 
-    console.log(zServer.files)
+  defaultPackage.scripts = URI.file(join(zServer.folders[0].uri, inputPackages.scripts))
+
+  const packages: Packages = {
+    ...defaultPackage,
+    ...objectOmit(inputPackages, ['scripts']),
   }
 
-  // load file
+  if (packages.scripts == null)
+    return
+
+  zServer.packages = packages
+  zServer.scriptsFolderUri = packages.scripts
+
+  console.log({ packages })
+}
+
+export default async function () {
+  if (zServer.folders.length <= 0)
+    return
+
+  const folderUri: URI = URI.parse(zServer.folders[0].uri)
+
+  const zenPackages = join(folderUri.path, 'zen-packages.json')
+
+  if (!existsSync(zenPackages)) {
+    const scriptsFoldUri = searchDefaultScritps(folderUri)
+    scriptsFoldUri && (zServer.scriptsFolderUri = scriptsFoldUri)
+  }
+  else {
+    console.log(222)
+    parseZenPackages(folderUri, zenPackages)
+  }
+
+  // check if the folder is a project
+  const dzs = typeof zServer.packages?.dzs === 'boolean'
+    ? zServer.packages.dzs === true ? '.d.zs' : ''
+    : zServer.packages?.dzs ?? '.d.zs'
+
+  if (existsSync(join(zServer.folders[0].uri, dzs))) {
+    zServer.hasDZS = true
+    zServer.isProject = true
+  }
+
+  if (!zServer.scriptsFolderUri)
+    return
+
+  // load all files
+  const files = await traverseDirectory(zServer.scriptsFolderUri)
+  for (const [pkg, file] of files)
+    zServer.files.set(file.path, new ZsFile(file, file.path, pkg, zServer.connection!))
+
+  console.log(zServer)
 }
