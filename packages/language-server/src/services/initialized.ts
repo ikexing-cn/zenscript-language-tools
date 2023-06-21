@@ -45,15 +45,15 @@ async function traverseDirectory(dirUri: URI, _files: [string, URI][] = []) {
   })
 }
 
-function searchDefaultScritps(folderUri: URI) {
+function searchDefaultScripts(folderUri: URI) {
   // when the folder is a file then search `scripts`
   if (folderUri.scheme === 'file') {
     if (['scripts', 'zenscript-example'].includes(zServer.folders[0].name!))
       return folderUri
 
     else if (existsSync(join(folderUri.path, 'scripts'))
-      && (folderUri.path.endsWith('minecraft')
-        || folderUri.path.endsWith('.minecraft')))
+      && (folderUri.path.endsWith('/minecraft')
+        || folderUri.path.endsWith('/.minecraft')))
       return folderUri
   }
   return null
@@ -62,17 +62,15 @@ function searchDefaultScritps(folderUri: URI) {
 function parseZenPackages(folderUri: URI, zenPackages: string) {
   const defaultPackage: Packages = {
     dzs: true,
-    scripts: searchDefaultScritps(folderUri),
+    scripts: searchDefaultScripts(folderUri),
   }
 
   const inputPackages: InputPackages = JSON.parse(readFileSync(zenPackages, 'utf-8'))
   if (inputPackages == null)
     return
 
-  if (!(inputPackages.scripts && existsSync(join(zServer.folders[0].uri, inputPackages.scripts))))
-    return
-
-  defaultPackage.scripts = URI.file(join(zServer.folders[0].uri, inputPackages.scripts))
+  if (inputPackages.scripts && existsSync(join(zServer.folders[0].uri, inputPackages.scripts)))
+    defaultPackage.scripts = URI.file(join(zServer.folders[0].uri, inputPackages.scripts))
 
   const packages: Packages = {
     ...defaultPackage,
@@ -95,7 +93,7 @@ export default async function () {
   const zenPackages = join(folderUri.path, 'zen-packages.json')
 
   if (!existsSync(zenPackages)) {
-    const scriptsFoldUri = searchDefaultScritps(folderUri)
+    const scriptsFoldUri = searchDefaultScripts(folderUri)
     scriptsFoldUri && (zServer.scriptsFolderUri = scriptsFoldUri)
   }
   else {
