@@ -84,8 +84,6 @@ function parseZenPackages(folderUri: URI, zenPackages: string) {
 
   zServer.packages = packages
   zServer.scriptsFolderUri = packages.scripts
-
-  console.log({ packages })
 }
 
 export default async function () {
@@ -101,7 +99,6 @@ export default async function () {
     scriptsFoldUri && (zServer.scriptsFolderUri = scriptsFoldUri)
   }
   else {
-    console.log(222)
     parseZenPackages(folderUri, zenPackages)
   }
 
@@ -122,6 +119,4 @@ export default async function () {
   const files = await traverseDirectory(zServer.scriptsFolderUri)
   for (const [pkg, file] of files)
     zServer.files.set(file.path, new ZsFile(file, file.path, pkg, zServer.connection!))
-
-  console.log(zServer)
 }
