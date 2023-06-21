@@ -18,7 +18,8 @@
           "ZenScript"
         ],
         "extensions": [
-          ".zs"
+          ".zs",
+          "zen-packages.json"
         ],
         "configuration": "./language/language-configuration.json"
       }

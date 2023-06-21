@@ -23,8 +23,5 @@
     "dev:test": "vitest -u",
     "build": "nr generate && unbuild",
     "generate": "esno ./src/generate/gen-diagrams.ts && esno ./src/generate/gen-dts-signatures.ts"
-  },
-  "dependencies": {
-    "chevrotain": "^10.5.0"
   }
 }

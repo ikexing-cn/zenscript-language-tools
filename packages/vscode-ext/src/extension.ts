@@ -1,5 +1,4 @@
 import { join } from 'node:path'
-import { workspace } from 'vscode'
 import { LanguageClient, TransportKind } from 'vscode-languageclient/node'
 
 import type { ExtensionContext } from 'vscode'
@@ -23,12 +22,11 @@ export function activate(context: ExtensionContext) {
   }
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'plaintext' }],
+    documentSelector: [{ scheme: '*', language: 'zenscript' }],
     synchronize: {
-      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
+      configurationSection: 'zenscript',
     },
   }
-
   client = new LanguageClient(
     'zenscript_language_server',
     'ZenScript Language Server',

@@ -13,6 +13,7 @@
   "author": "ikx",
   "license": "MIT",
   "dependencies": {
+    "@zenscript-language-tools/parser": "workspace:^",
     "vscode-languageserver": "^8.1.0",
     "vscode-languageserver-textdocument": "^1.0.8",
     "vscode-uri": "^3.0.7"

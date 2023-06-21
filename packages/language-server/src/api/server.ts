@@ -1,7 +1,10 @@
 import type { Connection, InitializeParams, InitializeResult } from 'vscode-languageserver/node'
-import { ProposedFeatures, createConnection } from 'vscode-languageserver/node'
+import { ProposedFeatures, TextDocumentSyncKind, TextDocuments, createConnection } from 'vscode-languageserver/node'
 import type { URI } from 'vscode-uri'
+import { TextDocument } from 'vscode-languageserver-textdocument'
 import HandleInitialized from '../services/initialized'
+import HandleDocumentChangeContent from '../services/document-change-content'
+import { StateEventBus } from '../utils/state-event-bus'
 import type { ZsFile } from './file'
 
 export interface Packages {
@@ -21,9 +24,12 @@ export class ZsServer {
   packages: Packages | null = null
   scriptsFolderUri: URI | null = null
   connection: Connection | null = null
+  documents: TextDocuments<TextDocument> | null = null
 
   folders: Array<{ name?: string; uri: string }> = []
   files: Map<String, ZsFile> = new Map()
+
+  bus = new StateEventBus()
 
   constructor() {
     this.reset()
@@ -34,6 +40,10 @@ export class ZsServer {
     this.connection.onInitialize(init => this.handleInitialize(init))
     this.connection.onInitialized(HandleInitialized)
 
+    this.documents = new TextDocuments(TextDocument)
+    this.documents?.onDidChangeContent(change => HandleDocumentChangeContent(change.document))
+
+    this.documents.listen(this.connection)
     this.connection.listen()
   }
 
@@ -49,6 +59,7 @@ export class ZsServer {
             supported: true,
           },
         },
+        textDocumentSync: TextDocumentSyncKind.Incremental,
       },
     }
 
@@ -66,6 +77,7 @@ export class ZsServer {
     this.isProject = false
     this.packages = null
     this.connection = null
+    this.documents = null
     this.files = new Map()
   }
 }

@@ -85,8 +85,25 @@ function parseZenPackages(folderUri: URI, zenPackages: string) {
 }
 
 export default async function () {
-  if (zServer.folders.length <= 0)
+  if (zServer.folders.length <= 0) {
+    const result = zServer.connection?.window
+      .showInformationMessage(
+        'ZenScript Languages Plugin can\'t enable all features. If you require full support, please follow this guide.',
+        { title: 'Open Guide' },
+        { title: 'Never remind me again' },
+      )
+
+    if ((await result)!.title === 'Open Guide') {
+      // TODO
+      // zServer.connection?.sendNotification('open-url', 'http://baidu.com')
+    }
+    else {
+      // TODO
+      // zServer.connection?.sendNotification('set-config', { key: 'zenScript.showInitialGuide', value: false })
+    }
+
     return
+  }
 
   const folderUri: URI = URI.parse(zServer.folders[0].uri)
 
@@ -114,7 +131,14 @@ export default async function () {
     return
 
   // load all files
+
+  zServer.bus.revoke('all-zs-parsed')
   const files = await traverseDirectory(zServer.scriptsFolderUri)
-  for (const [pkg, file] of files)
-    zServer.files.set(file.path, new ZsFile(file, file.path, pkg, zServer.connection!))
+  for (const [pkg, file] of files) {
+    const zsFile = new ZsFile(file, file.path, pkg, zServer.connection!)
+    zServer.files.set(file.path, zsFile)
+    zsFile.load()
+    zsFile.parser()
+  }
+  zServer.bus.finish('all-zs-parsed')
 }
