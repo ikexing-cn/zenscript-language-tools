@@ -1,3 +1,4 @@
+import { ASTProgram } from './zs-ast';
 export interface Offset {
   start: number
   end?: number
@@ -14,6 +15,11 @@ export interface ASTError extends Offset {
 export interface ASTBasicProgram {
   scopes: Record<string, 'function' | 'zen-class' | 'global' | 'static'>
   errors: ASTError[]
+}
+
+export interface ASTProgram extends Offset {
+  type: 'program'
+  body: ASTNode[]
 }
 
 export interface ASTNodeDeclare extends ASTNode { 
