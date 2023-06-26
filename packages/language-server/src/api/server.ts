@@ -30,6 +30,7 @@ export class ZsServer {
   files: Map<String, ZsFile> = new Map()
 
   bus = new StateEventBus()
+  scopes: Map<string, [string, string]> = new Map()
 
   constructor() {
     this.reset()
@@ -59,7 +60,7 @@ export class ZsServer {
             supported: true,
           },
         },
-        textDocumentSync: TextDocumentSyncKind.Incremental,
+        textDocumentSync: TextDocumentSyncKind.Full,
       },
     }
 

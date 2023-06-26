@@ -5,14 +5,9 @@ import type { Packages } from '../api/server'
 import { zServer } from '../api/server'
 import { ZsFile } from '../api/file'
 import { objectOmit } from '../utils'
+import { getLocalPkg } from '../utils/file'
 
 type InputPackages = Omit<Packages, 'scripts'> & { scripts: string }
-
-function getLocalPkg(filePath: string) {
-  return `scripts.${filePath.replace(zServer.scriptsFolderUri!.path, '')
-    .replace(/\//g, '.').substring(1)}`
-    .replace('.zs', '')
-}
 
 async function traverseDirectory(dirUri: URI, _files: [string, URI][] = []) {
   const dirPath = dirUri.path
@@ -80,6 +75,7 @@ function parseZenPackages(folderUri: URI, zenPackages: string) {
   if (packages.scripts == null)
     return
 
+  zServer.isProject = true
   zServer.packages = packages
   zServer.scriptsFolderUri = packages.scripts
 }
@@ -122,10 +118,8 @@ export default async function () {
     ? zServer.packages.dzs === true ? '.d.zs' : ''
     : zServer.packages?.dzs ?? '.d.zs'
 
-  if (existsSync(join(zServer.folders[0].uri, dzs))) {
+  if (existsSync(join(zServer.folders[0].uri, dzs)))
     zServer.hasDZS = true
-    zServer.isProject = true
-  }
 
   if (!zServer.scriptsFolderUri)
     return
@@ -138,7 +132,7 @@ export default async function () {
     const zsFile = new ZsFile(file, file.path, pkg, zServer.connection!)
     zServer.files.set(file.path, zsFile)
     zsFile.load()
-    zsFile.parser()
+    zsFile.parse()
   }
   zServer.bus.finish('all-zs-parsed')
 }
