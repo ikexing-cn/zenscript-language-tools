@@ -633,9 +633,9 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(L_CURLY)
     this.MANY(() => {
       this.OR([
-        { ALT: () => this.SUBRULE(this.VariableDeclaration) },
-        { ALT: () => this.SUBRULE(this.ConstructorDeclaration) },
-        { ALT: () => this.SUBRULE(this.FunctionDeclaration) },
+        { ALT: () => this.SUBRULE(this.VariableDeclaration, { LABEL: 'classBody' }) },
+        { ALT: () => this.SUBRULE(this.ConstructorDeclaration, { LABEL: 'classBody' }) },
+        { ALT: () => this.SUBRULE(this.FunctionDeclaration, { LABEL: 'classBody' }) },
       ])
     })
     this.CONSUME(R_CURLY)

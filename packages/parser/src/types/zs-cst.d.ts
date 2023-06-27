@@ -620,9 +620,7 @@ export type ClassDeclarationCstChildren = {
   ZEN_CLASS: IToken[];
   Identifier: IdentifierCstNode[];
   LCURLY: IToken[];
-  VariableDeclaration?: VariableDeclarationCstNode[];
-  ConstructorDeclaration?: ConstructorDeclarationCstNode[];
-  FunctionDeclaration?: FunctionDeclarationCstNode[];
+  classBody?: (VariableDeclarationCstNode | ConstructorDeclarationCstNode | FunctionDeclarationCstNode)[];
   RCURLY: IToken[];
 };
 

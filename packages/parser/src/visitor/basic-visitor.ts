@@ -3,7 +3,7 @@ import { ZSCstParser } from '../cst-parser'
 import type {
   ASTBasicProgram, ASTNode, ASTNodeFunction, ASTNodeGlobalStaticDeclare, ASTNodeParameter,
   ASTNodeParameterList,
-  ASTNodeVariableDDeclare, ASTNodeZenClass, ASTNodeZenConstructor,
+  ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor,
 } from '../types/zs-ast'
 import type {
   ClassDeclarationCstChildren, ConstructorDeclarationCstChildren, FunctionDeclarationCstChildren,
@@ -31,12 +31,6 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
 
     return node
-  }
-
-  private zsVisitArray(
-    elements: CstNode[],
-  ) {
-    elements.forEach(element => this.zsVisit(element))
   }
 
   private program: ASTBasicProgram = {
@@ -94,56 +88,39 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
         continue
       }
 
+      if (!declaration.children.classBody) {
+        this.program.scopes[child.cName] = child.type
+        continue
+      }
+
+      let constructorFlag = false
       // duplicate constructor / field / method checks
       const fieldMethodNames: Array<string> = []
-
-      if (declaration.children.ConstructorDeclaration) {
-        this.zsVisitArray(declaration.children.ConstructorDeclaration)
-
-        if (declaration.children.ConstructorDeclaration.length > 1) {
-          declaration.children.ConstructorDeclaration.forEach((constructor) => {
+      for (const bodyDeclaration of declaration.children.classBody) {
+        this.zsVisit(bodyDeclaration)
+        if (bodyDeclaration.name === 'ConstructorDeclaration') {
+          if (!constructorFlag) {
+            constructorFlag = !constructorFlag
+          }
+          else {
             this.program.errors.push({
-              start: constructor.location!.startOffset,
-              end: constructor.location!.endOffset,
+              start: bodyDeclaration.location!.startOffset,
+              end: bodyDeclaration.location!.endOffset,
               message: `Duplicate constructor of ${child.cName}`,
             })
-          })
+          }
         }
-      }
-
-      if (declaration.children.VariableDeclaration) {
-        const variables = declaration.children.VariableDeclaration
-        this.zsVisitArray(variables)
-
-        for (const variable of variables) {
-          const vName = handleIdentifier(variable.children.Identifier)
-          if (fieldMethodNames.includes(vName)) {
+        else {
+          const name = handleIdentifier(bodyDeclaration.children.Identifier)
+          if (fieldMethodNames.includes(name)) {
             this.program.errors.push({
-              start: variable.location!.startOffset,
-              end: variable.location!.endOffset,
-              message: `Duplicate field of ${vName}`,
+              start: bodyDeclaration.location!.startOffset,
+              end: bodyDeclaration.location!.endOffset,
+              message: `Duplicate field or method of ${name}`,
             })
             continue
           }
-          fieldMethodNames.push(vName)
-        }
-      }
-
-      if (declaration.children.FunctionDeclaration) {
-        const functions = declaration.children.FunctionDeclaration
-        this.zsVisitArray(functions)
-
-        for (const _function of functions) {
-          const fName = handleIdentifier(_function.children.Identifier)
-          if (fieldMethodNames.includes(fName)) {
-            this.program.errors.push({
-              start: _function.location!.startOffset,
-              end: _function.location!.endOffset,
-              message: `Duplicate method of ${fName}`,
-            })
-            continue
-          }
-          fieldMethodNames.push(fName)
+          fieldMethodNames.push(name)
         }
       }
 
@@ -151,7 +128,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
   }
 
-  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDDeclare {
+  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclare {
     return {
       start: 0,
       end: 0,
@@ -171,11 +148,6 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       end: 0,
       type: ctx.GLOBAL ? 'global' : 'static',
       name: ctx.vName[0].image,
-      vType: {
-        type: 'any',
-        start: -1,
-        end: -1,
-      },
     }
   }
 
@@ -188,11 +160,6 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       paramList: ctx.ParameterList
         ? this.visit(ctx.ParameterList)
         : [],
-      fType: {
-        type: 'any',
-        start: -1,
-        end: -1,
-      },
     }
   }
 
@@ -236,11 +203,6 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       type: 'parameter',
       start: ctx.Identifier![0].location?.startOffset ?? -1,
       name: handleIdentifier(ctx.Identifier),
-      pType: {
-        type: 'any',
-        start: -1,
-        end: -1,
-      },
     }
   }
 

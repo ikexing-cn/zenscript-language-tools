@@ -48,23 +48,18 @@ it('Basic Visitor', () => {
           "start": 321,
         },
         {
-          "end": 285,
-          "message": "Duplicate constructor of ErrorClass",
-          "start": 267,
-        },
-        {
           "end": 332,
           "message": "Duplicate constructor of ErrorClass",
           "start": 293,
         },
         {
           "end": 398,
-          "message": "Duplicate field of b",
+          "message": "Duplicate field or method of b",
           "start": 373,
         },
         {
           "end": 420,
-          "message": "Duplicate method of b",
+          "message": "Duplicate field or method of b",
           "start": 406,
         },
       ],
