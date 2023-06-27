@@ -42,31 +42,31 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     if (ctx.GlobalStaticDeclaration) {
       for (const declaration of ctx.GlobalStaticDeclaration) {
         const child: ASTNodeGlobalStaticDeclare = this.zsVisit(declaration)
-        if (child.name in this.program.scopes) {
+        if (child.id in this.program.scopes) {
           this.program.errors.push({
             start: child.start,
             end: child.end,
-            message: `Duplicate ${child.type} variable of ${child.name}`,
+            message: `Duplicate ${child.type} variable of ${child.id}`,
           })
           continue
         }
-        this.program.scopes[child.name] = child.type
+        this.program.scopes[child.id] = child.type
       }
     }
 
     if (ctx.FunctionDeclaration) {
       for (const declaration of ctx.FunctionDeclaration!) {
         const child: ASTNodeFunction = this.zsVisit(declaration)
-        if (child.name in this.program.scopes) {
+        if (child.id in this.program.scopes) {
           this.program.errors.push({
             start: child.start,
             end: child.end,
-            message: `Duplicate function of ${child.name}`,
+            message: `Duplicate function of ${child.id}`,
           })
           continue
         }
 
-        this.program.scopes[child.name] = child.type
+        this.program.scopes[child.id] = child.type
       }
     }
 
@@ -79,17 +79,17 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
   private handleClassDeclaration(ctx: ProgramCstChildren) {
     for (const declaration of ctx.ClassDeclaration!) {
       const child: ASTNodeZenClass = this.zsVisit(declaration)
-      if (child.cName in this.program.scopes) {
+      if (child.id in this.program.scopes) {
         this.program.errors.push({
           start: child.start,
           end: child.end,
-          message: `Duplicate class of ${child.cName}`,
+          message: `Duplicate class of ${child.id}`,
         })
         continue
       }
 
       if (!declaration.children.classBody) {
-        this.program.scopes[child.cName] = child.type
+        this.program.scopes[child.id] = child.type
         continue
       }
 
@@ -106,7 +106,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
             this.program.errors.push({
               start: bodyDeclaration.location!.startOffset,
               end: bodyDeclaration.location!.endOffset,
-              message: `Duplicate constructor of ${child.cName}`,
+              message: `Duplicate constructor of ${child.id}`,
             })
           }
         }
@@ -124,7 +124,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
         }
       }
 
-      this.program.scopes[child.cName] = child.type
+      this.program.scopes[child.id] = child.type
     }
   }
 
@@ -133,7 +133,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       start: 0,
       end: 0,
       type: ctx.VAL ? 'val' : 'var',
-      name: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
       vType: {
         type: 'any',
         start: -1,
@@ -147,7 +147,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       start: 0,
       end: 0,
       type: ctx.GLOBAL ? 'global' : 'static',
-      name: ctx.vName[0].image,
+      id: ctx.vName[0].image,
     }
   }
 
@@ -156,7 +156,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       type: 'function',
       start: 0,
       end: 0,
-      name: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
       paramList: ctx.ParameterList
         ? this.visit(ctx.ParameterList)
         : [],
@@ -202,7 +202,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       end,
       type: 'parameter',
       start: ctx.Identifier![0].location?.startOffset ?? -1,
-      name: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
     }
   }
 
@@ -211,7 +211,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       type: 'zen-class',
       start: 0,
       end: 0,
-      cName: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
     }
   }
 

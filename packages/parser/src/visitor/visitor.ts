@@ -2,15 +2,18 @@ import type { CstNode } from 'chevrotain'
 import { objectAssign } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
 import type {
-  ASTError, ASTNode, ASTNodeParameter, ASTNodeParameterList,
+  ASTError, ASTNode, ASTNodeFunction, ASTNodeParameter, ASTNodeParameterList,
+  ASTNodeTypeLiteral,
+  ASTNodeVariableDeclare,
   ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram,
 } from '../types/zs-ast'
 import type {
   ClassDeclarationCstChildren, ConstructorDeclarationCstChildren,
+  FunctionDeclarationCstChildren,
   ParameterCstChildren,
-  ParameterListCstChildren, ProgramCstChildren,
+  ParameterListCstChildren, ProgramCstChildren, TypeLiteralCstChildren, VariableDeclarationCstChildren,
 } from '../types/zs-cst'
-import { handleIdentifier } from './visitor-helper'
+import { getTypeLiteral, handleIdentifier } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructor()
 
@@ -53,19 +56,49 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       program.body.push(...res)
     }
 
-    return program
+    return objectAssign(program, { end: program.body[program.body.length - 1].end })
   }
 
   Parameter(ctx: ParameterCstChildren): ASTNodeParameter {
+    const pType = ctx.TypeLiteral && this.zsVisit(ctx.TypeLiteral[0])
     const defaultValue = ctx.defaultValue && this.zsVisit(ctx.defaultValue[0])
     const toReturn: ASTNodeParameter = {
       end: 0,
       start: 0,
       type: 'parameter',
-      name: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
     }
 
-    return objectAssign(toReturn, { defaultValue })
+    return objectAssign(toReturn, { defaultValue, pType })
+  }
+
+  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclare {
+    const value = ctx.initializer && this.zsVisit(ctx.initializer[0])
+    const vType = ctx.TypeLiteral && this.zsVisit(ctx.TypeLiteral[0])
+
+    const toReturn: ASTNodeVariableDeclare = {
+      end: 0,
+      start: 0,
+      type: ctx.VAL ? 'val' : 'var',
+      id: handleIdentifier(ctx.Identifier),
+    }
+
+    return objectAssign(toReturn, { value, vType })
+  }
+
+  FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
+    const paramList = ctx.ParameterList && this.zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
+
+    // TODO: I guess no one like writing this type of code, so we need to try to infer it.
+    const fType = ctx.returnType && getTypeLiteral(ctx.returnType[0] as TypeLiteralCstChildren)
+    const toReturn: ASTNodeFunction = {
+      id: handleIdentifier(ctx.Identifier),
+      type: 'function',
+      start: 0,
+      end: 0,
+    }
+
+    return objectAssign(toReturn, { paramList, fType })
   }
 
   ParameterList(ctx: ParameterListCstChildren): ASTNodeParameterList {
@@ -81,23 +114,16 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   }
 
   ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeZenClass {
-    const classBody: ASTNode<string>[] = []
-
-    if (ctx.ConstructorDeclaration)
-      classBody.push(this.zsVisit(ctx.ConstructorDeclaration[0]))
-    // else if (ctx.VariableDeclaration)
-    //   body.push(...this.zsVisitArray(ctx.VariableDeclaration))
-    // else if (ctx.FunctionDeclaration)
-    //   body.push(...this.zsVisitArray(ctx.FunctionDeclaration))
-
     return {
-      cName: handleIdentifier(ctx.Identifier),
+      id: handleIdentifier(ctx.Identifier),
       start: 0,
       end: 0,
       type: 'zen-class',
       body: {
+        start: ctx.LCURLY[0].startOffset + 1,
+        end: ctx.RCURLY[0].startOffset - 1,
         type: 'class-body',
-        body: classBody,
+        body: ctx.classBody ? this.zsVisitArray(ctx.classBody) : [],
       },
     }
   }
@@ -111,5 +137,18 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     return objectAssign(toReturn, { parameterList })
+  }
+
+  TypeLiteral(ctx: TypeLiteralCstChildren): ASTNodeTypeLiteral {
+    const typeName = getTypeLiteral(ctx)
+
+    const toReturn: ASTNodeTypeLiteral = {
+      end: 0,
+      start: 0,
+      name: typeName,
+      type: 'type-literal',
+    }
+
+    return toReturn
   }
 }
