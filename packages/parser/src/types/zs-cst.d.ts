@@ -302,7 +302,7 @@ export interface GlobalStaticDeclarationCstNode extends CstNode {
 export type GlobalStaticDeclarationCstChildren = {
   GLOBAL?: IToken[];
   STATIC?: IToken[];
-  vName: IToken[];
+  Identifier: IdentifierCstNode[];
   AS?: IToken[];
   TypeLiteral?: TypeLiteralCstNode[];
   ASSIGN: IToken[];

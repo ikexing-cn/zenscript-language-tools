@@ -2,7 +2,7 @@ import type { CstNode } from 'chevrotain'
 import { objectAssign } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
 import type {
-  ASTError, ASTNode, ASTNodeFunction, ASTNodeParameter, ASTNodeParameterList,
+  ASTError, ASTNode, ASTNodeFunction, ASTNodeGlobalStaticDeclare, ASTNodeParameter, ASTNodeParameterList,
   ASTNodeTypeLiteral,
   ASTNodeVariableDeclare,
   ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram,
@@ -10,8 +10,9 @@ import type {
 import type {
   ClassDeclarationCstChildren, ConstructorDeclarationCstChildren,
   FunctionDeclarationCstChildren,
-  ParameterCstChildren,
-  ParameterListCstChildren, ProgramCstChildren, TypeLiteralCstChildren, VariableDeclarationCstChildren,
+  GlobalStaticDeclarationCstChildren,
+  ParameterCstChildren, ParameterListCstChildren, ProgramCstChildren, TypeLiteralCstChildren,
+  VariableDeclarationCstChildren,
 } from '../types/zs-cst'
 import { getTypeLiteral, handleIdentifier } from './visitor-helper'
 
@@ -52,8 +53,8 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     if (ctx.ClassDeclaration) {
-      const res = this.zsVisitArray(ctx.ClassDeclaration)
-      program.body.push(...res)
+      const nodes = this.zsVisitArray(ctx.ClassDeclaration)
+      program.body.push(...nodes)
     }
 
     return objectAssign(program, { end: program.body[program.body.length - 1].end })
@@ -70,6 +71,20 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     return objectAssign(toReturn, { defaultValue, pType })
+  }
+
+  GlobalStaticDeclaration(ctx: GlobalStaticDeclarationCstChildren): ASTNodeGlobalStaticDeclare {
+    const value = ctx.value && this.zsVisit(ctx.value[0])
+    const vType = ctx.TypeLiteral && this.zsVisit(ctx.TypeLiteral[0])
+
+    const toReturn: ASTNodeGlobalStaticDeclare = {
+      end: 0,
+      start: 0,
+      type: ctx.GLOBAL ? 'global' : 'static',
+      id: handleIdentifier(ctx.Identifier),
+    }
+
+    return objectAssign(toReturn, { value, vType })
   }
 
   VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclare {
@@ -89,8 +104,9 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
     const paramList = ctx.ParameterList && this.zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
 
-    // TODO: I guess no one like writing this type of code, so we need to try to infer it.
-    const fType = ctx.returnType && getTypeLiteral(ctx.returnType[0] as TypeLiteralCstChildren)
+    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
+    const fType = ctx.returnType && this.zsVisit(ctx.returnType[0])
+
     const toReturn: ASTNodeFunction = {
       id: handleIdentifier(ctx.Identifier),
       type: 'function',

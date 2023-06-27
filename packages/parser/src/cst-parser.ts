@@ -265,10 +265,7 @@ export class ZenScriptParser extends CstParser {
         { ALT: () => this.CONSUME(GLOBAL) },
         { ALT: () => this.CONSUME(STATIC) },
       ])
-      this.CONSUME(IDENTIFIER, {
-        LABEL: 'vName',
-        ERR_MSG: 'Identifier expected.',
-      })
+      this.SUBRULE(this.Identifier)
       this.OPTION(() => {
         this.CONSUME(AS)
         this.SUBRULE(this.TypeLiteral)

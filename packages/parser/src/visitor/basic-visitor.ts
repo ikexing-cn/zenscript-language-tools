@@ -147,7 +147,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       start: 0,
       end: 0,
       type: ctx.GLOBAL ? 'global' : 'static',
-      id: ctx.vName[0].image,
+      id: handleIdentifier(ctx.Identifier),
     }
   }
 
