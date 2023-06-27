@@ -2,13 +2,15 @@ import type { CstNode } from 'chevrotain'
 import { ZSCstParser } from '../cst-parser'
 import type {
   ASTBasicProgram, ASTNode, ASTNodeFunction, ASTNodeGlobalStaticDeclare, ASTNodeParameter,
-  ASTNodeParameterList, ASTNodeVariableDDeclare, ASTNodeZenClass, ASTNodeZenConstructor,
+  ASTNodeParameterList,
+  ASTNodeVariableDDeclare, ASTNodeZenClass, ASTNodeZenConstructor,
 } from '../types/zs-ast'
 import type {
   ClassDeclarationCstChildren, ConstructorDeclarationCstChildren, FunctionDeclarationCstChildren,
-  GlobalStaticDeclarationCstChildren, IdentifierCstNode, ParameterCstChildren, ParameterListCstChildren,
+  GlobalStaticDeclarationCstChildren, ParameterCstChildren, ParameterListCstChildren,
   ProgramCstChildren, VariableDeclarationCstChildren,
 } from '../types/zs-cst'
+import { handleIdentifier } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructorWithDefaults()
 
@@ -18,7 +20,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     this.validateVisitor()
   }
 
-  private zsVisit<T extends ASTNode>(
+  private zsVisit<T extends ASTNode<string>>(
     element: CstNode,
   ): T {
     const node: T = this.visit(element)
@@ -46,31 +48,31 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     if (ctx.GlobalStaticDeclaration) {
       for (const declaration of ctx.GlobalStaticDeclaration) {
         const child: ASTNodeGlobalStaticDeclare = this.zsVisit(declaration)
-        if (child.vName in this.program.scopes) {
+        if (child.name in this.program.scopes) {
           this.program.errors.push({
             start: child.start,
             end: child.end,
-            message: `Duplicate ${child.type} variable of ${child.vName}`,
+            message: `Duplicate ${child.type} variable of ${child.name}`,
           })
           continue
         }
-        this.program.scopes[child.vName] = child.type
+        this.program.scopes[child.name] = child.type
       }
     }
 
     if (ctx.FunctionDeclaration) {
       for (const declaration of ctx.FunctionDeclaration!) {
         const child: ASTNodeFunction = this.zsVisit(declaration)
-        if (child.fName in this.program.scopes) {
+        if (child.name in this.program.scopes) {
           this.program.errors.push({
             start: child.start,
             end: child.end,
-            message: `Duplicate function of ${child.fName}`,
+            message: `Duplicate function of ${child.name}`,
           })
           continue
         }
 
-        this.program.scopes[child.fName] = child.type
+        this.program.scopes[child.name] = child.type
       }
     }
 
@@ -114,7 +116,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
         this.zsVisitArray(variables)
 
         for (const variable of variables) {
-          const vName = this.handleIdentifier(variable.children.Identifier)
+          const vName = handleIdentifier(variable.children.Identifier)
           if (fieldMethodNames.includes(vName)) {
             this.program.errors.push({
               start: variable.location!.startOffset,
@@ -132,7 +134,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
         this.zsVisitArray(functions)
 
         for (const _function of functions) {
-          const fName = this.handleIdentifier(_function.children.Identifier)
+          const fName = handleIdentifier(_function.children.Identifier)
           if (fieldMethodNames.includes(fName)) {
             this.program.errors.push({
               start: _function.location!.startOffset,
@@ -150,15 +152,11 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
   }
 
   VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDDeclare {
-    const variable = ctx.VAL
-      ? ctx.VAL[0]
-      : ctx.VAR![0]
-
     return {
-      start: variable.startOffset,
-      end: ctx.SEMICOLON[0].endOffset,
+      start: 0,
+      end: 0,
       type: ctx.VAL ? 'val' : 'var',
-      vName: this.handleIdentifier(ctx.Identifier),
+      name: handleIdentifier(ctx.Identifier),
       vType: {
         type: 'any',
         start: -1,
@@ -169,10 +167,10 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
 
   GlobalStaticDeclaration(ctx: GlobalStaticDeclarationCstChildren): ASTNodeGlobalStaticDeclare {
     return {
-      start: ctx.GLOBAL ? ctx.GLOBAL[0].startOffset : ctx.STATIC![0].startOffset,
-      end: ctx.SEMICOLON?.[0].endOffset ?? -1,
+      start: 0,
+      end: 0,
       type: ctx.GLOBAL ? 'global' : 'static',
-      vName: ctx.vName[0].image,
+      name: ctx.vName[0].image,
       vType: {
         type: 'any',
         start: -1,
@@ -184,10 +182,10 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
   FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
     return {
       type: 'function',
-      start: ctx.FUNCTION[0].startOffset,
-      end: ctx.FunctionBody[0].location?.endOffset,
-      fName: this.handleIdentifier(ctx.Identifier),
-      fPara: ctx.ParameterList
+      start: 0,
+      end: 0,
+      name: handleIdentifier(ctx.Identifier),
+      paramList: ctx.ParameterList
         ? this.visit(ctx.ParameterList)
         : [],
       fType: {
@@ -205,7 +203,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
 
     if (params.length > 0) {
       for (const _param of params) {
-        const paramName = this.handleIdentifier(_param.children.Identifier)
+        const paramName = handleIdentifier(_param.children.Identifier)
         if (parameters.includes(paramName)) {
           this.program.errors.push({
             start: _param.location!.startOffset,
@@ -220,9 +218,9 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
 
     return {
       type: 'parameter-list',
-      start: ctx.Parameter ? (ctx.Parameter[0].location!.startOffset) : -1,
-      end: ctx.Parameter ? (ctx.Parameter[ctx.Parameter.length - 1].location!.endOffset) : -1,
-      pList: ctx.Parameter ? ctx.Parameter.map(item => this.visit(item)) : [],
+      start: 0,
+      end: 0,
+      params: ctx.Parameter ? ctx.Parameter.map(item => this.visit(item)) : [],
     }
   }
 
@@ -237,7 +235,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
       end,
       type: 'parameter',
       start: ctx.Identifier![0].location?.startOffset ?? -1,
-      pName: this.handleIdentifier(ctx.Identifier),
+      name: handleIdentifier(ctx.Identifier),
       pType: {
         type: 'any',
         start: -1,
@@ -249,26 +247,20 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
   ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeZenClass {
     return {
       type: 'zen-class',
-      start: ctx.ZEN_CLASS![0].startOffset,
-      end: ctx.RCURLY?.[0].endOffset,
-      cName: this.handleIdentifier(ctx.Identifier),
+      start: 0,
+      end: 0,
+      cName: handleIdentifier(ctx.Identifier),
     }
   }
 
   ConstructorDeclaration(ctx: ConstructorDeclarationCstChildren): ASTNodeZenConstructor {
     return {
       type: 'zen-constructor',
-      start: ctx.ZEN_CONSTRUCTOR[0].startOffset,
-      end: ctx.constructorBody[0].location?.endOffset,
-      pList: ctx.ParameterList
+      start: 0,
+      end: 0,
+      parameterList: ctx.ParameterList
         ? this.visit(ctx.ParameterList)
-        : [],
+        : undefined,
     }
-  }
-
-  handleIdentifier(identifier: IdentifierCstNode[]) {
-    return identifier?.[0].children?.IDENTIFIER?.[0].image
-      ?? identifier?.[0].children?.TO?.[0].image
-      ?? 'unknown'
   }
 }

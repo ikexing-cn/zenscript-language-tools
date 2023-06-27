@@ -1,0 +1,55 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Visitor 1`] = `
+{
+  "body": [
+    {
+      "body": {
+        "body": [],
+        "type": "class-body",
+      },
+      "cName": "To",
+      "end": 82,
+      "start": 69,
+      "type": "zen-class",
+    },
+    {
+      "body": {
+        "body": [
+          {
+            "end": 187,
+            "parameterList": {
+              "end": 183,
+              "params": [
+                {
+                  "end": 173,
+                  "name": "a",
+                  "start": 163,
+                  "type": "parameter",
+                },
+                {
+                  "end": 183,
+                  "name": "b",
+                  "start": 176,
+                  "type": "parameter",
+                },
+              ],
+              "start": 163,
+              "type": "parameter-list",
+            },
+            "start": 148,
+            "type": "zen-constructor",
+          },
+        ],
+        "type": "class-body",
+      },
+      "cName": "TheClass",
+      "end": 225,
+      "start": 122,
+      "type": "zen-class",
+    },
+  ],
+  "start": 0,
+  "type": "program",
+}
+`;

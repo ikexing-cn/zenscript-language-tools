@@ -1,10 +1,10 @@
 import { extname, join } from 'node:path'
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { URI } from 'vscode-uri'
+import { objectOmit } from '@zenscript-language-tools/shared'
 import type { Packages } from '../api/server'
 import { zServer } from '../api/server'
 import { ZsFile } from '../api/file'
-import { objectOmit } from '../utils'
 import { getLocalPkg } from '../utils/file'
 
 type InputPackages = Omit<Packages, 'scripts'> & { scripts: string }

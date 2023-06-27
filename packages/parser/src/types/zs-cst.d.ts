@@ -79,7 +79,7 @@ export interface ParameterListCstNode extends CstNode {
 }
 
 export type ParameterListCstChildren = {
-  Parameter?: ParameterCstNode[];
+  Parameter: ParameterCstNode[];
   COMMA?: IToken[];
 };
 
@@ -634,7 +634,7 @@ export interface ConstructorDeclarationCstNode extends CstNode {
 export type ConstructorDeclarationCstChildren = {
   ZEN_CONSTRUCTOR: IToken[];
   LPAREN: IToken[];
-  ParameterList: ParameterListCstNode[];
+  ParameterList?: ParameterListCstNode[];
   RPAREN: IToken[];
   constructorBody: BlockStatementCstNode[];
 };

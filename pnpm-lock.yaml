@@ -42,6 +42,9 @@ importers:
       '@zenscript-language-tools/parser':
         specifier: workspace:^
         version: link:../parser
+      '@zenscript-language-tools/shared':
+        specifier: workspace:^
+        version: link:../shared
       vscode-languageserver:
         specifier: ^8.1.0
         version: 8.1.0
@@ -52,7 +55,13 @@ importers:
         specifier: ^3.0.7
         version: 3.0.7
 
-  packages/parser: {}
+  packages/parser:
+    dependencies:
+      '@zenscript-language-tools/shared':
+        specifier: workspace:^
+        version: link:../shared
+
+  packages/shared: {}
 
   packages/vscode-ext:
     dependencies:

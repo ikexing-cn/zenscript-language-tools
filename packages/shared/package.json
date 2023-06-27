@@ -1,5 +1,5 @@
 {
-  "name": "@zenscript-language-tools/parser",
+  "name": "@zenscript-language-tools/shared",
   "version": "1.0.0",
   "description": "",
   "author": "ikx",
@@ -19,12 +19,6 @@
   ],
   "scripts": {
     "dev": "unbuild --stub",
-    "test": "vitest",
-    "dev:test": "vitest -u",
-    "build": "nr generate && unbuild",
-    "generate": "esno ./src/generate/gen-diagrams.ts && esno ./src/generate/gen-dts-signatures.ts"
-  },
-  "dependencies": {
-    "@zenscript-language-tools/shared": "workspace:^"
+    "build": "unbuild"
   }
 }

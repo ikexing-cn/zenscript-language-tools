@@ -11,7 +11,9 @@
     "server:dev": "pnpm --filter language-server run dev",
     "server:build": "pnpm --filter language-server run build",
     "ext:dev": "pnpm --filter vscode-ext run dev",
-    "ext:build": "pnpm --filter vscode-ext run compile"
+    "ext:build": "pnpm --filter vscode-ext run compile",
+    "shared:dev": "pnpm --filter shared run dev",
+    "shared:build": "pnpm --filter shared run build"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.4",

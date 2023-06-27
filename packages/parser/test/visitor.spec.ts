@@ -10,30 +10,16 @@ it('Visitor', () => {
 
     zenClass To {}
 
-    function fun(a as string, b as int = 1) as string {}
+    function fun() as string {}
 
-    static b as string = 'true';
-
-    function errorFunc(a as string, a as int) as void {}
-
-    zenClass ErrorClass {
-      zenConstructor() {}
-      zenConstructor(c as string, c as int) {}
-
+    zenClass TheClass {
+      zenConstructor(a as string, b as int) {}
       var b as string = 'true';
-      val b as string = 'false';
-      function b() {}
     }
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
   expect(ZSCstParser.errors.length).toBe(0)
   const res = new ZenScriptVisitor().visit(cst)
 
-  expect(res).toMatchInlineSnapshot(`
-    {
-      "body": [],
-      "start": 0,
-      "type": "program",
-    }
-  `)
+  expect(res).toMatchSnapshot()
 })

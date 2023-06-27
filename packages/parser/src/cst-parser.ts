@@ -97,7 +97,7 @@ export class ZenScriptParser extends CstParser {
   })
 
   private ParameterList = this.RULE('ParameterList', () => {
-    this.MANY_SEP({
+    this.AT_LEAST_ONE_SEP({
       SEP: COMMA,
       DEF: () => this.SUBRULE(this.Parameter),
     })
@@ -644,7 +644,7 @@ export class ZenScriptParser extends CstParser {
   private ConstructorDeclaration = this.RULE('ConstructorDeclaration', () => {
     this.CONSUME(ZEN_CONSTRUCTOR)
     this.CONSUME(L_PAREN)
-    this.SUBRULE(this.ParameterList)
+    this.OPTION(() => this.SUBRULE(this.ParameterList))
     this.CONSUME(R_PAREN)
     this.SUBRULE(this.BlockStatement, { LABEL: 'constructorBody' })
   })

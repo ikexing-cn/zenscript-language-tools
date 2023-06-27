@@ -345,7 +345,7 @@
     "orgText": "",
     "definition": [
       {
-        "type": "RepetitionWithSeparator",
+        "type": "RepetitionMandatoryWithSeparator",
         "idx": 0,
         "separator": {
           "type": "Terminal",
@@ -2992,9 +2992,15 @@
         "pattern": "\\("
       },
       {
-        "type": "NonTerminal",
-        "name": "ParameterList",
-        "idx": 0
+        "type": "Option",
+        "idx": 0,
+        "definition": [
+          {
+            "type": "NonTerminal",
+            "name": "ParameterList",
+            "idx": 0
+          }
+        ]
       },
       {
         "type": "Terminal",

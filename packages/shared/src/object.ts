@@ -9,3 +9,15 @@ export function objectOmit<T extends object, K extends keyof T>(obj: T, keys: K[
 
   return result
 }
+
+export function objectAssign<T extends object>(obj: T, obj2: Partial<T>): T {
+  const _obj = {} as any satisfies T
+
+  for (const key in obj2) {
+    if (obj2[key] !== undefined
+      && obj2[key] !== null)
+      _obj[key] = obj2[key]
+  }
+
+  return Object.assign(obj, _obj)
+}
