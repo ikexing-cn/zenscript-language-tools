@@ -57,9 +57,12 @@ export class ZsFile {
       this.basicVisitError = basicAst.errors
 
       if (this.basicVisitError.length === 0) {
-        for (const scope in basicAst.scopes) {
-          const scopeNode = basicAst.scopes[scope]
-          zServer.scopes.set(this.pkg, [scope, scopeNode])
+        for (const scopeNode in basicAst.scopes) {
+          const scopeType = basicAst.scopes[scopeNode]
+          if (!zServer.scopes.has(this.pkg))
+            zServer.scopes.set(this.pkg, [[scopeNode, scopeType]])
+          else
+            zServer.scopes.get(this.pkg)!.push([scopeNode, scopeType])
         }
       }
     }

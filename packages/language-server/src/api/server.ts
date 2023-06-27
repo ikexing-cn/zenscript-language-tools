@@ -30,7 +30,7 @@ export class ZsServer {
   files: Map<String, ZsFile> = new Map()
 
   bus = new StateEventBus()
-  scopes: Map<string, [string, string]> = new Map()
+  scopes: Map<string, [string, string][]> = new Map()
 
   constructor() {
     this.reset()
