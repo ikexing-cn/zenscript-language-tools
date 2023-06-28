@@ -1,4 +1,5 @@
 import { ASTProgram } from './zs-ast';
+import { IDENTIFIER } from '../lexer';
 export interface Offset {
   start: number
   end?: number
@@ -41,6 +42,10 @@ export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare<'global' | 's
 
 export interface ASTNodeVariableDeclare extends ASTNodeDeclare<'var' | 'val'> { }
 
+export interface ASTNodeQualifiedName extends ASTNode<'qualified-name'> {
+  value: string[]
+}
+
 export interface ASTNodeParameter extends ASTNodeHasId<'parameter'> {
   // TODO: TYPE
   pType?: ASTNode
@@ -67,10 +72,33 @@ export interface ASTNodeZenConstructor extends ASTNode<'zen-constructor'> {
   parameterList?: ASTNodeParameterList
 }
 
-export interface ASTNodeTypeLiteral extends
-  ASTNode<'type-literal'>
-{
-  name: 'any' | 'byte' | 'short' | 'int' | 'long' | 'double' | 'bool' | 'void' | 'string' |
-  'qualified-name' | 'function-type' | 'list-type' | 'array-type' | 'map-type'
-  body?: ASTNodeTypeLiteral[]
+export type PrimitiveType = 'any' | 'byte' | 'short' | 'int' | 'long' | 'double' | 'bool' | 'void' | 'string'
+
+export interface ASTNodeTypeLiteral extends ASTNode<'type-literal'> {
+  name: PrimitiveType | 'class-type' | 'function-type' | 'list-type' | 'array-type' | 'map-type'
+  value?: ASTNodeTypeLiteral
+}
+
+export interface ASTNodeArrayType extends ASTNodeTypeLiteral { name: 'array-type' }
+
+export interface ASTNodeMapType extends ASTNodeTypeLiteral { 
+  name: 'map-type'
+  key: ASTNodeTypeLiteral
+  value: ASTNodeTypeLiteral
+}
+
+export interface ASTNodeFunctionType extends ASTNodeTypeLiteral { 
+  name: 'function-type'
+  returnType: ASTNodeTypeLiteral<'return-type'>
+  paramTypes: ASTNodeTypeLiteral<'params-type'>[]
+}
+
+export interface ASTNodeClassType extends ASTNodeTypeLiteral { 
+  name: 'class-type'
+  value: IDENTIFIER
+}
+
+export interface ASTNodeListType extends ASTNodeTypeLiteral {
+  name: 'list-type'
+  value: ASTNodeTypeLiteral
 }

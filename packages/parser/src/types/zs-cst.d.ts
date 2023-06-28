@@ -151,7 +151,7 @@ export type FunctionTypeCstChildren = {
   TypeLiteral: TypeLiteralCstNode[];
   COMMA?: IToken[];
   RPAREN: IToken[];
-  return: TypeLiteralCstNode[];
+  returnType: TypeLiteralCstNode[];
 };
 
 export interface ListTypeCstNode extends CstNode {

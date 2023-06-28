@@ -15,8 +15,12 @@ it('Visitor', () => {
     function fun() as string {}
 
     zenClass TheClass {
-      zenConstructor(a as string, b as int) {}
+      zenConstructor(a as string[int][string][]) {}
       var b as string;
+      var funTypeCase as [function(string)void[]];'
+      var classTypeCase as a.b.C[];
+      var classTypeCase2 as C[];
+      var listTypeCase as [[string]][];
       function c(c as string) {}
     }
   `)

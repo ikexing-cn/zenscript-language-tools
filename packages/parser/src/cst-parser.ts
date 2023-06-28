@@ -161,7 +161,7 @@ export class ZenScriptParser extends CstParser {
       DEF: () => this.SUBRULE(this.TypeLiteral),
     })
     this.CONSUME(R_PAREN)
-    this.SUBRULE2(this.TypeLiteral, { LABEL: 'return' })
+    this.SUBRULE2(this.TypeLiteral, { LABEL: 'returnType' })
   })
 
   private ListType = this.RULE('ListType', () => {

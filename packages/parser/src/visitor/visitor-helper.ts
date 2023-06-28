@@ -1,4 +1,4 @@
-import type { ASTNodeTypeLiteral } from '../types/zs-ast'
+import type { ASTNodeTypeLiteral, PrimitiveType } from '../types/zs-ast'
 import type { IdentifierCstNode, TypeLiteralCstChildren } from '../types/zs-cst'
 
 export function handleIdentifier(identifier: IdentifierCstNode[]) {
@@ -7,40 +7,35 @@ export function handleIdentifier(identifier: IdentifierCstNode[]) {
       ?? 'unknown'
 }
 
-export function getTypeLiteral(ctx: TypeLiteralCstChildren): ASTNodeTypeLiteral['name'] {
-  if (ctx.ANY)
-    return 'any'
-  if (ctx.BOOL)
-    return 'bool'
-  if (ctx.BYTE)
-    return 'byte'
-  if (ctx.DOUBLE)
-    return 'double'
-  if (ctx.SHORT)
-    return 'short'
-  if (ctx.LONG)
-    return 'long'
-  if (ctx.STRING)
-    return 'string'
-  if (ctx.VOID)
-    return 'void'
-  if (ctx.INT)
-    return 'int'
-  if (ctx.ArrayType)
-    return 'array-type'
-  if (ctx.ListType)
-    return 'list-type'
-  if (ctx.MapType)
-    return 'map-type'
-  if (ctx.QualifiedName)
-    return 'qualified-name'
-  if (ctx.FunctionType)
-    return 'function-type'
-
-  return 'any'
+export function isPrimitiveType(type: ASTNodeTypeLiteral['name']): type is PrimitiveType {
+  return ['any', 'byte', 'short', 'int', 'long', 'double', 'bool', 'void', 'string'].includes(type)
 }
 
-export function inferType(value: string): ASTNodeTypeLiteral['name'] {
-  // TODO: infer type
-  return 'any'
+export function getLastBody(body: ASTNodeTypeLiteral) {
+  let cur = body
+  while (true) {
+    if (cur.value === undefined)
+      break
+    cur = cur.value
+  }
+  return cur
+}
+
+export function getTypeLiteral(ctx: TypeLiteralCstChildren): ASTNodeTypeLiteral['name'][] {
+  const types: ASTNodeTypeLiteral['name'][] = []
+
+  if (ctx.primitiveType)
+    types.push(ctx.primitiveType[0].image as PrimitiveType)
+  if (ctx.listType)
+    types.push(...ctx.listType.map(() => 'list-type') as 'list-type'[])
+  if (ctx.functionType)
+    types.push(...ctx.functionType.map(() => 'function-type') as 'function-type'[])
+  if (ctx.classType)
+    types.push(...ctx.classType.map(() => 'class-type') as 'class-type'[])
+  if (ctx.mapType)
+    types.push(...ctx.mapType.map(() => 'map-type') as 'map-type'[])
+  if (ctx.arrayType)
+    types.push(...ctx.arrayType.map(() => 'array-type') as 'array-type'[])
+
+  return types.reverse()
 }
