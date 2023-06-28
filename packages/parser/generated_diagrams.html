@@ -492,6 +492,7 @@
                 "name": "ANY",
                 "label": "ANY",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "any"
               }
             ]
@@ -504,6 +505,7 @@
                 "name": "BYTE",
                 "label": "BYTE",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "byte"
               }
             ]
@@ -516,6 +518,7 @@
                 "name": "SHORT",
                 "label": "SHORT",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "short"
               }
             ]
@@ -528,6 +531,7 @@
                 "name": "INT",
                 "label": "INT",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "int"
               }
             ]
@@ -540,6 +544,7 @@
                 "name": "LONG",
                 "label": "LONG",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "long"
               }
             ]
@@ -552,6 +557,7 @@
                 "name": "DOUBLE",
                 "label": "DOUBLE",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "double"
               }
             ]
@@ -564,6 +570,7 @@
                 "name": "BOOL",
                 "label": "BOOL",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "bool"
               }
             ]
@@ -576,6 +583,7 @@
                 "name": "VOID",
                 "label": "VOID",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "void"
               }
             ]
@@ -588,6 +596,7 @@
                 "name": "STRING",
                 "label": "STRING",
                 "idx": 0,
+                "terminalLabel": "primitiveType",
                 "pattern": "string"
               }
             ]
@@ -597,8 +606,20 @@
             "definition": [
               {
                 "type": "NonTerminal",
+                "name": "ListType",
+                "idx": 0,
+                "label": "listType"
+              }
+            ]
+          },
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "NonTerminal",
                 "name": "QualifiedName",
-                "idx": 0
+                "idx": 0,
+                "label": "classType"
               }
             ]
           },
@@ -608,53 +629,79 @@
               {
                 "type": "NonTerminal",
                 "name": "FunctionType",
-                "idx": 0
-              }
-            ]
-          },
-          {
-            "type": "Alternative",
-            "definition": [
-              {
-                "type": "NonTerminal",
-                "name": "ListType",
-                "idx": 0
+                "idx": 0,
+                "label": "functionType"
               }
             ]
           }
         ]
       },
       {
-        "type": "Repetition",
-        "idx": 0,
+        "type": "Alternation",
+        "idx": 2,
         "definition": [
           {
-            "type": "Alternation",
-            "idx": 2,
+            "type": "Alternative",
             "definition": [
               {
-                "type": "Alternative",
-                "definition": [
-                  {
-                    "type": "NonTerminal",
-                    "name": "ArrayType",
-                    "idx": 0
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
+                "type": "Repetition",
+                "idx": 2,
                 "definition": [
                   {
                     "type": "NonTerminal",
                     "name": "MapType",
-                    "idx": 0
+                    "idx": 0,
+                    "label": "mapType"
                   }
                 ]
               }
             ]
           }
         ]
+      },
+      {
+        "type": "Alternation",
+        "idx": 3,
+        "definition": [
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "Repetition",
+                "idx": 0,
+                "definition": [
+                  {
+                    "type": "NonTerminal",
+                    "name": "ArrayType",
+                    "idx": 0,
+                    "label": "arrayType"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Rule",
+    "name": "ArrayType",
+    "orgText": "",
+    "definition": [
+      {
+        "type": "Terminal",
+        "name": "LBRACKET",
+        "label": "LBRACKET",
+        "idx": 0,
+        "pattern": "\\["
+      },
+      {
+        "type": "Terminal",
+        "name": "RBRACKET",
+        "label": "RBRACKET",
+        "idx": 0,
+        "pattern": "\\]"
       }
     ]
   },
@@ -738,7 +785,7 @@
   },
   {
     "type": "Rule",
-    "name": "ArrayType",
+    "name": "MapType",
     "orgText": "",
     "definition": [
       {
@@ -749,44 +796,17 @@
         "pattern": "\\["
       },
       {
+        "type": "NonTerminal",
+        "name": "TypeLiteral",
+        "idx": 0,
+        "label": "key"
+      },
+      {
         "type": "Terminal",
         "name": "RBRACKET",
         "label": "RBRACKET",
         "idx": 0,
         "pattern": "\\]"
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "MapType",
-    "orgText": "",
-    "definition": [
-      {
-        "type": "RepetitionMandatory",
-        "idx": 0,
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "LBRACKET",
-            "label": "LBRACKET",
-            "idx": 0,
-            "pattern": "\\["
-          },
-          {
-            "type": "NonTerminal",
-            "name": "TypeLiteral",
-            "idx": 0,
-            "label": "key"
-          },
-          {
-            "type": "Terminal",
-            "name": "RBRACKET",
-            "label": "RBRACKET",
-            "idx": 0,
-            "pattern": "\\]"
-          }
-        ]
       }
     ]
   },

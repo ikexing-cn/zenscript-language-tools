@@ -122,20 +122,22 @@ export interface TypeLiteralCstNode extends CstNode {
 }
 
 export type TypeLiteralCstChildren = {
-  ANY?: IToken[];
-  BYTE?: IToken[];
-  SHORT?: IToken[];
-  INT?: IToken[];
-  LONG?: IToken[];
-  DOUBLE?: IToken[];
-  BOOL?: IToken[];
-  VOID?: IToken[];
-  STRING?: IToken[];
-  QualifiedName?: QualifiedNameCstNode[];
-  FunctionType?: FunctionTypeCstNode[];
-  ListType?: ListTypeCstNode[];
-  ArrayType?: ArrayTypeCstNode[];
-  MapType?: MapTypeCstNode[];
+  primitiveType?: (IToken)[];
+  listType?: ListTypeCstNode[];
+  classType?: QualifiedNameCstNode[];
+  functionType?: FunctionTypeCstNode[];
+  mapType?: MapTypeCstNode[];
+  arrayType?: ArrayTypeCstNode[];
+};
+
+export interface ArrayTypeCstNode extends CstNode {
+  name: "ArrayType";
+  children: ArrayTypeCstChildren;
+}
+
+export type ArrayTypeCstChildren = {
+  LBRACKET: IToken[];
+  RBRACKET: IToken[];
 };
 
 export interface FunctionTypeCstNode extends CstNode {
@@ -160,16 +162,6 @@ export interface ListTypeCstNode extends CstNode {
 export type ListTypeCstChildren = {
   LBRACKET: IToken[];
   TypeLiteral: TypeLiteralCstNode[];
-  RBRACKET: IToken[];
-};
-
-export interface ArrayTypeCstNode extends CstNode {
-  name: "ArrayType";
-  children: ArrayTypeCstChildren;
-}
-
-export type ArrayTypeCstChildren = {
-  LBRACKET: IToken[];
   RBRACKET: IToken[];
 };
 
@@ -648,9 +640,9 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   Identifier(children: IdentifierCstChildren, param?: IN): OUT;
   QualifiedName(children: QualifiedNameCstChildren, param?: IN): OUT;
   TypeLiteral(children: TypeLiteralCstChildren, param?: IN): OUT;
+  ArrayType(children: ArrayTypeCstChildren, param?: IN): OUT;
   FunctionType(children: FunctionTypeCstChildren, param?: IN): OUT;
   ListType(children: ListTypeCstChildren, param?: IN): OUT;
-  ArrayType(children: ArrayTypeCstChildren, param?: IN): OUT;
   MapType(children: MapTypeCstChildren, param?: IN): OUT;
   Statement(children: StatementCstChildren, param?: IN): OUT;
   BlockStatement(children: BlockStatementCstChildren, param?: IN): OUT;

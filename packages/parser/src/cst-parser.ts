@@ -134,18 +134,23 @@ export class ZenScriptParser extends CstParser {
   private TypeLiteral = this.RULE('TypeLiteral', () => {
     this.OR([
       ...ZS_PRIMITIVE_TYPE_TOKENS.map((type) => {
-        return { ALT: () => this.CONSUME(type) }
+        return { ALT: () => this.CONSUME(type, { LABEL: 'primitiveType' }) }
       }),
-      { ALT: () => this.SUBRULE(this.QualifiedName) },
-      { ALT: () => this.SUBRULE(this.FunctionType) },
-      { ALT: () => this.SUBRULE(this.ListType) },
+      { ALT: () => this.SUBRULE(this.ListType, { LABEL: 'listType' }) },
+      { ALT: () => this.SUBRULE(this.QualifiedName, { LABEL: 'classType' }) },
+      { ALT: () => this.SUBRULE(this.FunctionType, { LABEL: 'functionType' }) },
     ])
-    this.MANY(() => {
-      this.OR2([
-        { ALT: () => this.SUBRULE(this.ArrayType) },
-        { ALT: () => this.SUBRULE(this.MapType) },
-      ])
-    })
+    this.OR2([
+      { ALT: () => this.MANY2(() => this.SUBRULE(this.MapType, { LABEL: 'mapType' })) },
+    ])
+    this.OR3([
+      { ALT: () => this.MANY(() => this.SUBRULE(this.ArrayType, { LABEL: 'arrayType' })) },
+    ])
+  })
+
+  private ArrayType = this.RULE('ArrayType', () => {
+    this.CONSUME(L_BRACKET)
+    this.CONSUME(R_BRACKET)
   })
 
   private FunctionType = this.RULE('FunctionType', () => {
@@ -165,17 +170,10 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(R_BRACKET)
   })
 
-  private ArrayType = this.RULE('ArrayType', () => {
-    this.CONSUME(L_BRACKET)
-    this.CONSUME(R_BRACKET)
-  })
-
   private MapType = this.RULE('MapType', () => {
-    this.AT_LEAST_ONE(() => {
-      this.CONSUME(L_BRACKET)
-      this.SUBRULE(this.TypeLiteral, { LABEL: 'key' })
-      this.CONSUME(R_BRACKET)
-    })
+    this.CONSUME(L_BRACKET)
+    this.SUBRULE(this.TypeLiteral, { LABEL: 'key' })
+    this.CONSUME(R_BRACKET)
   })
 
   // ============================================================

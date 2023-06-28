@@ -71,3 +71,15 @@ it('BracketHandlerExpression', () => {
 
   expect(ZSCstParser.errors.length).toBe(0)
 })
+
+it('ComplexType', () => {
+  const lexResult = ZSLexer.tokenize('val typeCase as int[[list]][int][];')
+  ZSCstParser.parse(lexResult.tokens)
+
+  // const res = ZSCstParser.parse(lexResult.tokens)
+  // // @ts-expect-error error
+  // // eslint-disable-next-line no-console
+  // console.log({ res: res.children.Statement[0].children.VariableDeclaration[0].children.TypeLiteral[0].children })
+
+  expect(ZSCstParser.errors.length).toBe(0)
+})
