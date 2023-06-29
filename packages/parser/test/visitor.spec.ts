@@ -5,6 +5,8 @@ import { ZenScriptVisitor } from '../src/visitor/visitor'
 
 it('Visitor', () => {
   const lexResult = ZSLexer.tokenize(`
+    import a.b.C;
+    
     // TODO: handle variable expression and type
     // TODO: global or static variable must to be initialized
     var a as bool;
