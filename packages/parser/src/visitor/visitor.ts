@@ -11,8 +11,10 @@ import type {
 } from '../types/zs-ast'
 import type {
   ArrayTypeCstChildren, ClassDeclarationCstChildren, ConstructorDeclarationCstChildren,
+  DExpandFunctionDeclarationCstChildren,
   FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, ImportDeclarationCstChildren, ListTypeCstChildren, MapTypeCstChildren,
   ParameterCstChildren, ParameterListCstChildren, ProgramCstChildren, QualifiedNameCstChildren,
+  StatementCstNode,
   TypeLiteralCstChildren,
   VariableDeclarationCstChildren,
 } from '../types/zs-cst'
@@ -68,10 +70,16 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       type: 'program',
     }
 
+    function handleStatement(statement: StatementCstNode[]): ASTNode<string>[] {
+      const statements: ASTNode<string>[] = []
+
+      return statements
+    }
+
     /**
      * Import
      *  - global / static
-     *  - function
+     *  - function / $expand function
      *  - class
      *  - statement(expression / variable / etc.)
      */
@@ -80,14 +88,26 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       const nodes = this.zsVisitArray(ctx.ImportDeclaration)
       program.body.push(...nodes)
     }
+    // if (ctx.GlobalStaticDeclaration) {
+    //   const nodes = this.zsVisitArray(ctx.GlobalStaticDeclaration)
+    //   program.body.push(...nodes)
+    // }
     if (ctx.FunctionDeclaration) {
       const nodes = this.zsVisitArray(ctx.FunctionDeclaration)
+      program.body.push(...nodes)
+    }
+    if (ctx.DExpandFunctionDeclaration) {
+      const nodes = this.zsVisitArray(ctx.DExpandFunctionDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.ClassDeclaration) {
       const nodes = this.zsVisitArray(ctx.ClassDeclaration)
       program.body.push(...nodes)
     }
+    // if (ctx.Statement) {
+    //   const nodes = handleStatement(ctx.Statement)
+    //   program.body.push(...nodes)
+    // }
 
     return objectAssign(program, { end: program.body[program.body.length - 1].end })
   }
@@ -165,6 +185,10 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     return objectAssign(toReturn, { paramList, returnType: fType })
+  }
+
+  DExpandFunctionDeclaration(ctx: DExpandFunctionDeclarationCstChildren) {
+
   }
 
   ParameterList(ctx: ParameterListCstChildren): ASTNodeParameterList {

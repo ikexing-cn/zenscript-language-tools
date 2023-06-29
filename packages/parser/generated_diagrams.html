@@ -242,7 +242,7 @@
         "type": "NonTerminal",
         "name": "TypeLiteral",
         "idx": 0,
-        "label": "expand"
+        "label": "expandType"
       },
       {
         "type": "Terminal",
@@ -1172,11 +1172,17 @@
         "idx": 0
       },
       {
-        "type": "Terminal",
-        "name": "SEMICOLON",
-        "label": "SEMICOLON",
+        "type": "Option",
         "idx": 0,
-        "pattern": ";"
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "SEMICOLON",
+            "label": "SEMICOLON",
+            "idx": 0,
+            "pattern": ";"
+          }
+        ]
       }
     ]
   },

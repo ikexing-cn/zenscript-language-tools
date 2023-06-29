@@ -16,6 +16,8 @@ it('Visitor', () => {
 
     function fun() as string {}
 
+    $expand string $createArray() as void {}
+
     zenClass TheClass {
       zenConstructor(a as string[int][string][]) {}
       var b as string;
@@ -27,6 +29,7 @@ it('Visitor', () => {
     }
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
+  console.log(ZSCstParser.errors[0])
   expect(ZSCstParser.errors.length).toBe(0)
   const res = new ZenScriptVisitor().visit(cst)
 

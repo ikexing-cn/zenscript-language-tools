@@ -59,10 +59,14 @@ export interface ASTNodeImport extends ASTNode<'import'> {
   name: ASTNodeQualifiedName
 }
 
-export interface ASTNodeFunction extends ASTNodeHasId<'function'> {
+export interface ASTNodeFunction<T extends 'function' | 'expand-function' = 'function'> extends ASTNodeHasId<T> {
   returnType?: ASTNodeTypeLiteral
   paramList?: ASTNodeParameterList
   body?: ASTNodeBody<'function-body'>
+}
+
+export interface ASTNodeDExpandFunction extends ASTNodeFunction<'expand-function'> {
+  expandType: ASTNodeTypeLiteral
 }
 
 export interface ASTNodeZenClass extends ASTNodeHasId<'zen-class'> {

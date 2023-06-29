@@ -51,7 +51,7 @@ export interface DExpandFunctionDeclarationCstNode extends CstNode {
 
 export type DExpandFunctionDeclarationCstChildren = {
   ZEN_D_Expand: IToken[];
-  expand: TypeLiteralCstNode[];
+  expandType: TypeLiteralCstNode[];
   DOLLAR: IToken[];
   Identifier: IdentifierCstNode[];
   LPAREN: IToken[];
@@ -283,7 +283,7 @@ export interface ExpressionStatementCstNode extends CstNode {
 
 export type ExpressionStatementCstChildren = {
   Expression: ExpressionCstNode[];
-  SEMICOLON: IToken[];
+  SEMICOLON?: IToken[];
 };
 
 export interface GlobalStaticDeclarationCstNode extends CstNode {

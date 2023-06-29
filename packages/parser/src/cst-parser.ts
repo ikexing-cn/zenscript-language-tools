@@ -73,7 +73,7 @@ export class ZenScriptParser extends CstParser {
 
   private DExpandFunctionDeclaration = this.RULE('DExpandFunctionDeclaration', () => {
     this.CONSUME(ZEN_D_Expand)
-    this.SUBRULE(this.TypeLiteral, { LABEL: 'expand' })
+    this.SUBRULE(this.TypeLiteral, { LABEL: 'expandType' })
     this.CONSUME(DOLLAR)
     this.SUBRULE(this.Identifier)
     this.CONSUME(L_PAREN)
