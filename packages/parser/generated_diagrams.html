@@ -9,12 +9,12 @@
 </style>
 
 
-<link rel='stylesheet' href='https://unpkg.com/chevrotain@10.5.0/diagrams/diagrams.css'>
+<link rel='stylesheet' href='https://unpkg.com/chevrotain@11.0.0/diagrams/diagrams.css'>
 
-<script src='https://unpkg.com/chevrotain@10.5.0/diagrams/vendor/railroad-diagrams.js'></script>
-<script src='https://unpkg.com/chevrotain@10.5.0/diagrams/src/diagrams_builder.js'></script>
-<script src='https://unpkg.com/chevrotain@10.5.0/diagrams/src/diagrams_behavior.js'></script>
-<script src='https://unpkg.com/chevrotain@10.5.0/diagrams/src/main.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/vendor/railroad-diagrams.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/diagrams_builder.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/diagrams_behavior.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/main.js'></script>
 
 <div id="diagrams" align="center"></div>    
 
@@ -825,7 +825,8 @@
               {
                 "type": "NonTerminal",
                 "name": "BlockStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -835,7 +836,8 @@
               {
                 "type": "NonTerminal",
                 "name": "ReturnStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -845,7 +847,8 @@
               {
                 "type": "NonTerminal",
                 "name": "BreakStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -855,7 +858,8 @@
               {
                 "type": "NonTerminal",
                 "name": "ContinueStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -865,7 +869,8 @@
               {
                 "type": "NonTerminal",
                 "name": "IfStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -875,7 +880,8 @@
               {
                 "type": "NonTerminal",
                 "name": "ForeachStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -885,7 +891,8 @@
               {
                 "type": "NonTerminal",
                 "name": "WhileStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -895,7 +902,8 @@
               {
                 "type": "NonTerminal",
                 "name": "ExpressionStatement",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           },
@@ -905,7 +913,8 @@
               {
                 "type": "NonTerminal",
                 "name": "VariableDeclaration",
-                "idx": 0
+                "idx": 0,
+                "label": "statement"
               }
             ]
           }
@@ -1587,6 +1596,7 @@
             "name": "OR_ASSIGN",
             "label": "OR_ASSIGN",
             "idx": 0,
+            "terminalLabel": "operator",
             "pattern": "\\|="
           },
           {
@@ -1617,6 +1627,7 @@
             "name": "AND_ASSIGN",
             "label": "AND_ASSIGN",
             "idx": 0,
+            "terminalLabel": "operator",
             "pattern": "&="
           },
           {

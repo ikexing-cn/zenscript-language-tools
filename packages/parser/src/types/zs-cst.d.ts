@@ -182,15 +182,7 @@ export interface StatementCstNode extends CstNode {
 }
 
 export type StatementCstChildren = {
-  BlockStatement?: BlockStatementCstNode[];
-  ReturnStatement?: ReturnStatementCstNode[];
-  BreakStatement?: BreakStatementCstNode[];
-  ContinueStatement?: ContinueStatementCstNode[];
-  IfStatement?: IfStatementCstNode[];
-  ForeachStatement?: ForeachStatementCstNode[];
-  WhileStatement?: WhileStatementCstNode[];
-  ExpressionStatement?: ExpressionStatementCstNode[];
-  VariableDeclaration?: VariableDeclarationCstNode[];
+  statement?: (BlockStatementCstNode | ReturnStatementCstNode | BreakStatementCstNode | ContinueStatementCstNode | IfStatementCstNode | ForeachStatementCstNode | WhileStatementCstNode | ExpressionStatementCstNode | VariableDeclarationCstNode)[];
 };
 
 export interface BlockStatementCstNode extends CstNode {
@@ -357,7 +349,7 @@ export interface OrOrExpressionCstNode extends CstNode {
 
 export type OrOrExpressionCstChildren = {
   AndAndExpression: (AndAndExpressionCstNode)[];
-  OR_ASSIGN?: IToken[];
+  operator?: IToken[];
 };
 
 export interface AndAndExpressionCstNode extends CstNode {
@@ -367,7 +359,7 @@ export interface AndAndExpressionCstNode extends CstNode {
 
 export type AndAndExpressionCstChildren = {
   OrExpression: (OrExpressionCstNode)[];
-  AND_ASSIGN?: IToken[];
+  operator?: IToken[];
 };
 
 export interface OrExpressionCstNode extends CstNode {

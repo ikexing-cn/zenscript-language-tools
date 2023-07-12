@@ -182,16 +182,16 @@ export class ZenScriptParser extends CstParser {
     this.OR([
       {
         GATE: () => this.LA(1).tokenType === L_PAREN,
-        ALT: () => this.SUBRULE(this.BlockStatement),
+        ALT: () => this.SUBRULE(this.BlockStatement, { LABEL: 'statement' }),
       },
-      { ALT: () => this.SUBRULE(this.ReturnStatement) },
-      { ALT: () => this.SUBRULE(this.BreakStatement) },
-      { ALT: () => this.SUBRULE(this.ContinueStatement) },
-      { ALT: () => this.SUBRULE(this.IfStatement) },
-      { ALT: () => this.SUBRULE(this.ForeachStatement) },
-      { ALT: () => this.SUBRULE(this.WhileStatement) },
-      { ALT: () => this.SUBRULE(this.ExpressionStatement) },
-      { ALT: () => this.SUBRULE(this.VariableDeclaration) },
+      { ALT: () => this.SUBRULE(this.ReturnStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.BreakStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.ContinueStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.IfStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.ForeachStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.WhileStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.ExpressionStatement, { LABEL: 'statement' }) },
+      { ALT: () => this.SUBRULE(this.VariableDeclaration, { LABEL: 'statement' }) },
     ])
   })
 
@@ -334,7 +334,7 @@ export class ZenScriptParser extends CstParser {
   private OrOrExpression = this.RULE('OrOrExpression', () => {
     this.SUBRULE(this.AndAndExpression)
     this.MANY(() => {
-      this.CONSUME(OR_ASSIGN)
+      this.CONSUME(OR_ASSIGN, { LABEL: 'operator' })
       this.SUBRULE2(this.AndAndExpression)
     })
   })
@@ -342,7 +342,7 @@ export class ZenScriptParser extends CstParser {
   private AndAndExpression = this.RULE('AndAndExpression', () => {
     this.SUBRULE(this.OrExpression)
     this.MANY(() => {
-      this.CONSUME(AND_ASSIGN)
+      this.CONSUME(AND_ASSIGN, { LABEL: 'operator' })
       this.SUBRULE2(this.OrExpression)
     })
   })

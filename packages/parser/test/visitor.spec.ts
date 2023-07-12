@@ -9,8 +9,8 @@ it('Visitor', () => {
     
     // TODO: handle variable expression and type
     // TODO: global or static variable must to be initialized
-    var a as bool;
-    val b as string;
+    // global a as bool;
+    // static b as string;
 
     zenClass To {}
 
@@ -27,9 +27,12 @@ it('Visitor', () => {
       var listTypeCase as [[string]][];
       function c(c as string) {}
     }
+
+    // expression
+    // AssignExpression
+    1 + 1;
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
-  console.log(ZSCstParser.errors[0])
   expect(ZSCstParser.errors.length).toBe(0)
   const res = new ZenScriptVisitor().visit(cst)
 

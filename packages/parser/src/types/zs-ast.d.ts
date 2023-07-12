@@ -112,3 +112,31 @@ export interface ASTNodeListType extends ASTNodeTypeLiteral {
   name: 'list-type'
   value: ASTNodeTypeLiteral
 }
+
+export interface ASTNodeAssignExpression extends ASTNode<'assign-expression'> {
+  left: ASTNodeConditionalExpression
+  operator: string
+  right: ASTNodeAssignExpression
+}
+
+export interface ASTNodeConditionalExpression extends ASTNode<'conditional-expression'> {
+  condition: ASTNodeOrOrExpression
+  valid?: ASTNodeOrOrExpression
+  invalid?: ASTNodeConditionalExpression
+}
+
+export interface ASTNodeBinaryExpression extends ASTNode<'binary-expression'> {
+  left: ASTNode
+  operator: string
+  right: ASTNode
+}
+
+export interface ASTNodeUnaryExpression extends ASTNode<'unary-expression'> {
+  operator: string
+  expression: ASTNodeUnaryExpression | ASTNodePostfixExpression
+}
+
+export interface ASTNodePostfixExpression extends ASTNode {
+  type: 'PostfixExpression'
+  primary: ASTNode
+}
