@@ -2,12 +2,12 @@ import type { CstNode, CstNodeLocation } from 'chevrotain'
 import { objectAssign } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
 import type {
-  ASTError, ASTNode, ASTNodeArrayType, ASTNodeClassType, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare,
+  ASTError, ASTNode, ASTNodeArrayType, ASTNodeClassType, ASTNodeDExpandFunction, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare,
   ASTNodeImport,
   ASTNodeListType,
   ASTNodeMapType,
   ASTNodeParameter, ASTNodeParameterList, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeVariableDeclare,
-  ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, PrimitiveType,
+  ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType,
 } from '../types/zs-ast'
 import type {
   ArrayTypeCstChildren, ClassDeclarationCstChildren, ConstructorDeclarationCstChildren,
@@ -172,23 +172,17 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   }
 
   FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
-    const paramList = ctx.ParameterList && this.zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
-
-    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
-    const fType = ctx.returnType && this.zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
-
-    const toReturn: ASTNodeFunction = {
-      id: handleIdentifier(ctx.Identifier),
-      type: 'function',
-      start: 0,
-      end: 0,
-    }
-
-    return objectAssign(toReturn, { paramList, returnType: fType })
+    return this.$generateFunctionAst(ctx)
   }
 
-  DExpandFunctionDeclaration(ctx: DExpandFunctionDeclarationCstChildren) {
+  DExpandFunctionDeclaration(ctx: DExpandFunctionDeclarationCstChildren): ASTNodeDExpandFunction {
+    const baseFunctionAst = this.$generateFunctionAst<true>(ctx, true)
+    const expandType = this.zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.expandType[0], ctx.expandType[0].location)
 
+    return {
+      ...baseFunctionAst,
+      expandType,
+    }
   }
 
   ParameterList(ctx: ParameterListCstChildren): ASTNodeParameterList {
@@ -422,5 +416,27 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     return objectAssign(toReturn, { value: type })
+  }
+
+  private $generateFunctionAst<
+    T extends boolean = false,
+    IS_EXPAND extends FunctionId = T extends true ? 'expand-function' : 'function',
+  >(
+    ctx: Pick<FunctionDeclarationCstChildren, 'ParameterList' | 'returnType' | 'Identifier'>,
+    isDxpand?: T,
+  ) {
+    const paramList = ctx.ParameterList && this.zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
+
+    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
+    const fType = ctx.returnType && this.zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
+
+    const toReturn: ASTNodeFunction<IS_EXPAND> = {
+      id: handleIdentifier(ctx.Identifier),
+      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
+      start: 0,
+      end: 0,
+    }
+
+    return objectAssign(toReturn, { paramList, returnType: fType })
   }
 }

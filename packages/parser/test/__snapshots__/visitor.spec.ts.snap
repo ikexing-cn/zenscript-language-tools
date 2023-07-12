@@ -1,0 +1,284 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Visitor 1`] = `
+{
+  "body": [
+    {
+      "end": 17,
+      "name": {
+        "end": 16,
+        "start": 12,
+        "type": "qualified-name",
+        "value": [
+          "a",
+          "b",
+          "C",
+        ],
+      },
+      "start": 5,
+      "type": "import",
+    },
+    {
+      "end": 226,
+      "id": "fun",
+      "returnType": {
+        "end": 223,
+        "name": "string",
+        "start": 218,
+        "type": "type-literal",
+      },
+      "start": 200,
+      "type": "function",
+    },
+    {
+      "end": 272,
+      "expandType": {
+        "end": 246,
+        "name": "string",
+        "start": 241,
+        "type": "type-literal",
+      },
+      "id": "createArray",
+      "returnType": {
+        "end": 269,
+        "name": "void",
+        "start": 266,
+        "type": "type-literal",
+      },
+      "start": 233,
+      "type": "expand-function",
+    },
+    {
+      "body": {
+        "body": [],
+        "end": 192,
+        "start": 193,
+        "type": "class-body",
+      },
+      "end": 193,
+      "id": "To",
+      "start": 180,
+      "type": "zen-class",
+    },
+    {
+      "body": {
+        "body": [
+          {
+            "end": 349,
+            "parameterList": {
+              "end": 345,
+              "params": [
+                {
+                  "end": 345,
+                  "id": "a",
+                  "pType": {
+                    "end": 345,
+                    "name": "array-type",
+                    "start": 325,
+                    "type": "type-literal",
+                    "value": {
+                      "end": 343,
+                      "key": {
+                        "end": 334,
+                        "name": "int",
+                        "start": 332,
+                        "type": "type-literal",
+                      },
+                      "name": "map-type",
+                      "start": 325,
+                      "type": "type-literal",
+                      "value": {
+                        "end": 335,
+                        "key": {
+                          "end": 334,
+                          "name": "int",
+                          "start": 332,
+                          "type": "type-literal",
+                        },
+                        "name": "map-type",
+                        "start": 325,
+                        "type": "type-literal",
+                        "value": {
+                          "end": 330,
+                          "name": "string",
+                          "start": 325,
+                          "type": "type-literal",
+                        },
+                      },
+                    },
+                  },
+                  "start": 320,
+                  "type": "parameter",
+                },
+              ],
+              "start": 320,
+              "type": "parameter-list",
+            },
+            "start": 305,
+            "type": "zen-constructor",
+          },
+          {
+            "end": 372,
+            "id": "b",
+            "start": 357,
+            "type": "var",
+            "vType": {
+              "end": 371,
+              "name": "string",
+              "start": 366,
+              "type": "type-literal",
+            },
+          },
+          {
+            "end": 423,
+            "id": "funTypeCase",
+            "start": 380,
+            "type": "var",
+            "vType": {
+              "end": 422,
+              "name": "list-type",
+              "start": 399,
+              "type": "type-literal",
+              "value": {
+                "end": 421,
+                "name": "function-type",
+                "paramTypes": [
+                  {
+                    "end": 414,
+                    "name": "string",
+                    "start": 409,
+                    "type": "type-literal",
+                  },
+                ],
+                "returnType": {
+                  "end": 421,
+                  "name": "array-type",
+                  "start": 416,
+                  "type": "type-literal",
+                  "value": {
+                    "end": 419,
+                    "name": "void",
+                    "start": 416,
+                    "type": "type-literal",
+                  },
+                },
+                "start": 400,
+                "type": "type-literal",
+              },
+            },
+          },
+          {
+            "end": 460,
+            "id": "classTypeCase",
+            "start": 432,
+            "type": "var",
+            "vType": {
+              "end": 459,
+              "name": "array-type",
+              "start": 453,
+              "type": "type-literal",
+              "value": {
+                "end": 457,
+                "name": "class-type",
+                "start": 453,
+                "type": "type-literal",
+                "value": [
+                  "a",
+                  "b",
+                  "C",
+                ],
+              },
+            },
+          },
+          {
+            "end": 493,
+            "id": "classTypeCase2",
+            "start": 468,
+            "type": "var",
+            "vType": {
+              "end": 492,
+              "name": "array-type",
+              "start": 490,
+              "type": "type-literal",
+              "value": {
+                "end": 490,
+                "name": "class-type",
+                "start": 490,
+                "type": "type-literal",
+                "value": [
+                  "C",
+                ],
+              },
+            },
+          },
+          {
+            "end": 533,
+            "id": "listTypeCase",
+            "start": 501,
+            "type": "var",
+            "vType": {
+              "end": 532,
+              "name": "array-type",
+              "start": 521,
+              "type": "type-literal",
+              "value": {
+                "end": 530,
+                "name": "list-type",
+                "start": 521,
+                "type": "type-literal",
+                "value": {
+                  "end": 529,
+                  "name": "list-type",
+                  "start": 522,
+                  "type": "type-literal",
+                  "value": {
+                    "end": 528,
+                    "name": "string",
+                    "start": 523,
+                    "type": "type-literal",
+                  },
+                },
+              },
+            },
+          },
+          {
+            "end": 566,
+            "id": "c",
+            "paramList": {
+              "end": 562,
+              "params": [
+                {
+                  "end": 562,
+                  "id": "c",
+                  "pType": {
+                    "end": 562,
+                    "name": "string",
+                    "start": 557,
+                    "type": "type-literal",
+                  },
+                  "start": 552,
+                  "type": "parameter",
+                },
+              ],
+              "start": 552,
+              "type": "parameter-list",
+            },
+            "start": 541,
+            "type": "function",
+          },
+        ],
+        "end": 571,
+        "start": 298,
+        "type": "class-body",
+      },
+      "end": 572,
+      "id": "TheClass",
+      "start": 279,
+      "type": "zen-class",
+    },
+  ],
+  "end": 572,
+  "start": 0,
+  "type": "program",
+}
+`;
