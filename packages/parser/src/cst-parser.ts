@@ -440,15 +440,9 @@ export class ZenScriptParser extends CstParser {
           },
         },
         {
-          GATE: () =>
-            this.LA(1).tokenType === IDENTIFIER && this.LA(1).image === 'to',
+          GATE: () => this.LA(1).tokenType === DOT_DOT || (this.LA(1).tokenType === IDENTIFIER && this.LA(1).image === 'to'),
           ALT: () => {
-            this.SUBRULE(this.PostfixExpressionTo)
-          },
-        },
-        {
-          ALT: () => {
-            this.SUBRULE(this.PostfixExpressionDotDot)
+            this.SUBRULE(this.PostfixExpressionRange)
           },
         },
         {
@@ -489,18 +483,13 @@ export class ZenScriptParser extends CstParser {
     },
   )
 
-  private PostfixExpressionTo = this.RULE('PostfixExpressionTo', () => {
-    this.CONSUME(IDENTIFIER)
-    this.SUBRULE(this.AssignExpression, { LABEL: 'to' })
+  private PostfixExpressionRange = this.RULE('PostfixExpressionRange', () => {
+    this.OR([
+      { ALT: () => this.CONSUME(DOT_DOT, { LABEL: 'rangeOperator' }) },
+      { ALT: () => this.CONSUME(IDENTIFIER, { LABEL: 'rangeOperator' }) },
+    ])
+    this.SUBRULE(this.AssignExpression)
   })
-
-  private PostfixExpressionDotDot = this.RULE(
-    'PostfixExpressionDotDot',
-    () => {
-      this.CONSUME(DOT_DOT)
-      this.SUBRULE(this.AssignExpression, { LABEL: 'dotdot' })
-    },
-  )
 
   private PostfixExpressionArray = this.RULE('PostfixExpressionArray', () => {
     this.CONSUME(L_BRACKET)

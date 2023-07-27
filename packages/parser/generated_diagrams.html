@@ -2088,17 +2088,7 @@
                 "definition": [
                   {
                     "type": "NonTerminal",
-                    "name": "PostfixExpressionTo",
-                    "idx": 0
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
-                  {
-                    "type": "NonTerminal",
-                    "name": "PostfixExpressionDotDot",
+                    "name": "PostfixExpressionRange",
                     "idx": 0
                   }
                 ]
@@ -2212,41 +2202,45 @@
   },
   {
     "type": "Rule",
-    "name": "PostfixExpressionTo",
+    "name": "PostfixExpressionRange",
     "orgText": "",
     "definition": [
       {
-        "type": "Terminal",
-        "name": "IDENTIFIER",
-        "label": "IDENTIFIER",
+        "type": "Alternation",
         "idx": 0,
-        "pattern": "[a-zA-Z_][a-zA-Z_0-9]*"
+        "definition": [
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "TO",
+                "label": "TO",
+                "idx": 0,
+                "terminalLabel": "rangeoperator",
+                "pattern": "to"
+              }
+            ]
+          },
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "DOT_DOT",
+                "label": "DOT_DOT",
+                "idx": 0,
+                "terminalLabel": "rangeoperator",
+                "pattern": "\\.\\."
+              }
+            ]
+          }
+        ]
       },
       {
         "type": "NonTerminal",
         "name": "AssignExpression",
-        "idx": 0,
-        "label": "to"
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "PostfixExpressionDotDot",
-    "orgText": "",
-    "definition": [
-      {
-        "type": "Terminal",
-        "name": "DOT_DOT",
-        "label": "DOT_DOT",
-        "idx": 0,
-        "pattern": "\\.\\."
-      },
-      {
-        "type": "NonTerminal",
-        "name": "AssignExpression",
-        "idx": 0,
-        "label": "dotdot"
+        "idx": 0
       }
     ]
   },
@@ -2588,10 +2582,12 @@
                     "type": "Alternative",
                     "definition": [
                       {
-                        "type": "NonTerminal",
-                        "name": "Identifier",
+                        "type": "Terminal",
+                        "name": "MUL",
+                        "label": "MUL",
                         "idx": 0,
-                        "label": "part"
+                        "terminalLabel": "part",
+                        "pattern": "\\*"
                       }
                     ]
                   },
@@ -2605,6 +2601,17 @@
                         "idx": 0,
                         "terminalLabel": "part",
                         "pattern": "(?:0x[A-Fa-f0-9]*)|(?:\\-?(0|[1-9][0-9]*))"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "Identifier",
+                        "idx": 0,
+                        "label": "part"
                       }
                     ]
                   },

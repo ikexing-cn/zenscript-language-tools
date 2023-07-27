@@ -72,6 +72,16 @@ it('BracketHandlerExpression', () => {
   expect(ZSCstParser.errors.length).toBe(0)
 })
 
+it('PostfixExpressionRange', () => {
+  const lexResult = ZSLexer.tokenize(`
+    0 to 10;
+    0 .. 10;
+  `)
+  ZSCstParser.parse(lexResult.tokens)
+
+  expect(ZSCstParser.errors.length).toBe(0)
+})
+
 it('ComplexType', () => {
   const lexResult = ZSLexer.tokenize('val typeCase as int[[list]][int][];')
   ZSCstParser.parse(lexResult.tokens)
