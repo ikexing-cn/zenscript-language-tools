@@ -9,12 +9,12 @@
 </style>
 
 
-<link rel='stylesheet' href='https://unpkg.com/chevrotain@11.0.0/diagrams/diagrams.css'>
+<link rel='stylesheet' href='https://unpkg.com/chevrotain@11.0.1/diagrams/diagrams.css'>
 
-<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/vendor/railroad-diagrams.js'></script>
-<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/diagrams_builder.js'></script>
-<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/diagrams_behavior.js'></script>
-<script src='https://unpkg.com/chevrotain@11.0.0/diagrams/src/main.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.1/diagrams/vendor/railroad-diagrams.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.1/diagrams/src/diagrams_builder.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.1/diagrams/src/diagrams_behavior.js'></script>
+<script src='https://unpkg.com/chevrotain@11.0.1/diagrams/src/main.js'></script>
 
 <div id="diagrams" align="center"></div>    
 
@@ -2416,8 +2416,7 @@
               {
                 "type": "NonTerminal",
                 "name": "Identifier",
-                "idx": 0,
-                "label": "identifier"
+                "idx": 0
               }
             ]
           },
@@ -2541,165 +2540,190 @@
         "pattern": "<"
       },
       {
-        "type": "Repetition",
+        "type": "RepetitionMandatoryWithSeparator",
         "idx": 0,
+        "separator": {
+          "type": "Terminal",
+          "name": "COLON",
+          "label": "COLON",
+          "idx": 1,
+          "pattern": ":"
+        },
         "definition": [
           {
-            "type": "Alternation",
+            "type": "RepetitionMandatory",
             "idx": 0,
             "definition": [
               {
-                "type": "Alternative",
+                "type": "Alternation",
+                "idx": 0,
                 "definition": [
                   {
-                    "type": "Terminal",
-                    "name": "DOT",
-                    "label": "DOT",
-                    "idx": 0,
-                    "pattern": "\\."
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "DOT",
+                        "label": "DOT",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "\\."
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "COLON",
-                    "label": "COLON",
-                    "idx": 0,
-                    "pattern": ":"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "COLON",
+                        "label": "COLON",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": ":"
+                      }
+                    ]
+                  },
                   {
-                    "type": "NonTerminal",
-                    "name": "Identifier",
-                    "idx": 0
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "NonTerminal",
+                        "name": "Identifier",
+                        "idx": 0,
+                        "label": "part"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "INT_LITERAL",
-                    "label": "INT_LITERAL",
-                    "idx": 0,
-                    "terminalLabel": "literal",
-                    "pattern": "(?:0x[A-Fa-f0-9]*)|(?:\\-?(0|[1-9][0-9]*))"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "INT_LITERAL",
+                        "label": "INT_LITERAL",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "(?:0x[A-Fa-f0-9]*)|(?:\\-?(0|[1-9][0-9]*))"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "ANY",
-                    "label": "ANY",
-                    "idx": 0,
-                    "pattern": "any"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "ANY",
+                        "label": "ANY",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "any"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "BYTE",
-                    "label": "BYTE",
-                    "idx": 0,
-                    "pattern": "byte"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "BYTE",
+                        "label": "BYTE",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "byte"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "SHORT",
-                    "label": "SHORT",
-                    "idx": 0,
-                    "pattern": "short"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "SHORT",
+                        "label": "SHORT",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "short"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "INT",
-                    "label": "INT",
-                    "idx": 0,
-                    "pattern": "int"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "INT",
+                        "label": "INT",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "int"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "LONG",
-                    "label": "LONG",
-                    "idx": 0,
-                    "pattern": "long"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "LONG",
+                        "label": "LONG",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "long"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "DOUBLE",
-                    "label": "DOUBLE",
-                    "idx": 0,
-                    "pattern": "double"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "DOUBLE",
+                        "label": "DOUBLE",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "double"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "BOOL",
-                    "label": "BOOL",
-                    "idx": 0,
-                    "pattern": "bool"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "BOOL",
+                        "label": "BOOL",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "bool"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "VOID",
-                    "label": "VOID",
-                    "idx": 0,
-                    "pattern": "void"
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "VOID",
+                        "label": "VOID",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "void"
+                      }
+                    ]
+                  },
                   {
-                    "type": "Terminal",
-                    "name": "STRING",
-                    "label": "STRING",
-                    "idx": 0,
-                    "pattern": "string"
+                    "type": "Alternative",
+                    "definition": [
+                      {
+                        "type": "Terminal",
+                        "name": "STRING",
+                        "label": "STRING",
+                        "idx": 0,
+                        "terminalLabel": "part",
+                        "pattern": "string"
+                      }
+                    ]
                   }
                 ]
               }

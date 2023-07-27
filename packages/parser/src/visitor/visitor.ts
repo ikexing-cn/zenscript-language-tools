@@ -1,25 +1,30 @@
 import type { CstNode, CstNodeLocation, IToken } from 'chevrotain'
-import { objectAssign } from '@zenscript-language-tools/shared'
+import { objectAssign, objectOmit } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
 import type {
-  ASTError, ASTNode, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare,
+  ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare,
   ASTNodeImport,
+  ASTNodeLambdaFunctionDeclaration,
   ASTNodeListType,
+  ASTNodeMapEntry,
+  ASTNodeMapInitializerExpression,
   ASTNodeMapType,
-  ASTNodeParameter, ASTNodeParameterList, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeVariableDeclare,
+  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare,
   ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType,
 } from '../types/zs-ast'
 import type {
   AddExpressionCstChildren,
-  AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren,
+  AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren,
   ConstructorDeclarationCstChildren,
   DExpandFunctionDeclarationCstChildren,
   ExpressionCstChildren,
-  ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, ImportDeclarationCstChildren, ListTypeCstChildren,
+  ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren,
+  MapEntryCstChildren,
+  MapInitializerExpressionCstChildren,
   MapTypeCstChildren,
   MultiplyExpressionCstChildren,
   OrExpressionCstChildren,
-  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, ProgramCstChildren,
+  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
   QualifiedNameCstChildren,
   StatementCstChildren,
   TypeLiteralCstChildren,
@@ -27,7 +32,7 @@ import type {
   VariableDeclarationCstChildren,
   XorExpressionCstChildren,
 } from '../types/zs-cst'
-import { getLastBody as getLastValue, getTypeLiteral, handleIdentifier, isPrimitiveType } from './visitor-helper'
+import { getLastBody as getLastValue, getTypeLiteral, getTypeLiteralValue, handleIdentifier, isPrimitiveType } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructor()
 
@@ -50,7 +55,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   ): T {
     const node: T = this.visit(element)
 
-    if (element.location) {
+    if (element.location && node) {
       node.start = element.location.startOffset
       node.end = element.location.endOffset
     }
@@ -130,7 +135,6 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       }
     })
 
-    console.log({ root })
     return root
   }
 
@@ -172,12 +176,10 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       const nodes = this.$zsVisitArray(ctx.ClassDeclaration)
       program.body.push(...nodes)
     }
-    if (ctx.Statement) {
-      const node = this.$zsVisit(ctx.Statement[0])
-      program.body.push(node)
+    if (ctx.Statement)
+      ctx.Statement.forEach(item => program.body.push(this.$zsVisit(item)))
       // const nodes = this.zsVisitArray(ctx.Statement)
       // program.body.push(...nodes)
-    }
 
     return objectAssign(program, { end: program.body[program.body.length - 1].end })
   }
@@ -492,11 +494,16 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   // ===============Statement================
   // ========================================
   Statement(ctx: StatementCstChildren) {
-    return ctx.statement && this.$zsVisitArray(ctx.statement)
+    return ctx.statement && this.$zsVisit(ctx.statement[0])
   }
 
-  ExpressionStatement(ctx: ExpressionStatementCstChildren) {
-    this.$zsVisitArray(ctx.Expression)
+  ExpressionStatement(ctx: ExpressionStatementCstChildren): ASTNodeExpressionStatement {
+    return {
+      start: 0,
+      end: 0,
+      type: 'expression-statement',
+      expression: this.$zsVisit(ctx.Expression[0]),
+    }
   }
 
   // ========================================
@@ -504,7 +511,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   // ========================================
 
   Expression(ctx: ExpressionCstChildren) {
-    return ctx.expression && this.$zsVisitArray(ctx.expression)
+    return ctx.expression && this.$zsVisit(ctx.expression[0])
   }
 
   AssignExpression(ctx: AssignExpressionCstChildren): ASTNodeAssignExpression | ASTNodeConditionalExpression {
@@ -579,6 +586,109 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   }
 
   UnaryExpression(ctx: UnaryExpressionCstChildren) {
+    const expression = this.$zsVisit<ASTNodeUnaryExpression | ASTNodePostfixExpression>(ctx.expression![0])
 
+    if (ctx.operator) {
+      return {
+        start: 0,
+        end: 0,
+        expression,
+        operator: ctx.operator[0].image,
+        type: 'unary-expression',
+      }
+    }
+    else {
+      return expression
+    }
+  }
+
+  PostfixExpression(ctx: PostfixExpressionCstChildren) {
+    const primaryExpression = this.$zsVisit(ctx.PrimaryExpression[0])
+    return primaryExpression
+  }
+
+  PrimaryExpression(ctx: PrimaryExpressionCstChildren): ASTNodePrimaryExpression {
+    if (ctx.literal) {
+      const raw = ctx.literal[0].image
+      return {
+        raw,
+        end: 0,
+        start: 0,
+        type: 'literal',
+        value: getTypeLiteralValue(raw),
+      }
+    }
+    else if (ctx.Identifier) {
+      return {
+        end: 0,
+        start: 0,
+        type: 'identifier',
+        name: handleIdentifier(ctx.Identifier),
+      }
+    }
+    else if (ctx.BracketHandlerExpression) {
+      return this.$zsVisit(ctx.BracketHandlerExpression[0])
+    }
+    else if (ctx.AssignExpression) {
+      return this.$zsVisit(ctx.AssignExpression[0])
+    }
+    else if (ctx.LambdaFunctionDeclaration) {
+      return this.$zsVisit(ctx.LambdaFunctionDeclaration[0])
+    }
+    else if (ctx.ArrayInitializerExpression) {
+      return this.$zsVisit(ctx.ArrayInitializerExpression[0])
+    }
+    else {
+      return this.$zsVisit(ctx.MapInitializerExpression![0])
+    }
+  }
+
+  BracketHandlerExpression(ctx: BracketHandlerExpressionCstChildren): ASTNodeBracketHandlerExpression {
+    return {
+      start: 0,
+      end: 0,
+      type: 'bracket-handler-expression',
+      parts: ctx.part!.map((item) => {
+        if ((item as IdentifierCstNode)?.name === 'Identifier')
+          return handleIdentifier([item as IdentifierCstNode])
+        return (item as IToken).image
+      }),
+    }
+  }
+
+  LambdaFunctionDeclaration(ctx: LambdaFunctionDeclarationCstChildren): ASTNodeLambdaFunctionDeclaration {
+    const baseFunctionAst = objectOmit(this.$generateFunctionAst({ ...ctx, Identifier: [] }), ['id'])
+    return {
+      ...baseFunctionAst,
+      type: 'lambda-function',
+    }
+  }
+
+  ArrayInitializerExpression(ctx: ArrayInitializerExpressionCstChildren): ASTNodeArrayInitializerExpression {
+    return {
+      end: 0,
+      start: 0,
+      type: 'array-initializer-expression',
+      elements: ctx.AssignExpression ? this.$zsVisitArray(ctx.AssignExpression) : [],
+    }
+  }
+
+  MapInitializerExpression(ctx: MapInitializerExpressionCstChildren): ASTNodeMapInitializerExpression {
+    return {
+      start: 0,
+      end: 0,
+      type: 'map-initializer-expression',
+      entries: ctx.MapEntry ? this.$zsVisitArray(ctx.MapEntry) : [],
+    }
+  }
+
+  MapEntry(ctx: MapEntryCstChildren): ASTNodeMapEntry {
+    return {
+      end: 0,
+      start: 0,
+      type: 'map-entry',
+      key: this.$zsVisit(ctx.key[0]),
+      value: this.$zsVisit(ctx.value[0]),
+    }
   }
 }

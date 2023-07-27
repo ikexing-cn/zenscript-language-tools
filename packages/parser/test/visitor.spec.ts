@@ -3,7 +3,7 @@ import { ZSLexer } from '../src/lexer'
 import { ZSCstParser } from '../src/cst-parser'
 import { ZenScriptVisitor } from '../src/visitor/visitor'
 
-it('Visitor', () => {
+it('Visitor Program without Expression', () => {
   const lexResult = ZSLexer.tokenize(`
     import a.b.C;
     
@@ -27,10 +27,31 @@ it('Visitor', () => {
       var listTypeCase as [[string]][];
       function c(c as string) {}
     }
+  `)
+  const cst = ZSCstParser.parse(lexResult.tokens)
+  expect(ZSCstParser.errors.length).toBe(0)
+  const res = new ZenScriptVisitor().visit(cst)
 
+  expect(res).toMatchSnapshot()
+})
+
+it('Visitor Expression', () => {
+  const lexResult = ZSLexer.tokenize(`
     // expression
-    // AssignExpression
     1 + 1;
+    abc;
+
+    // breaket handler
+    <minecraft:apple:*>;
+    1 + (1 + 1);
+
+    {a : 1, b : 2};
+    {};
+
+    [1,3,4,5];
+    [];
+
+    function(a,b,c){}
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
   expect(ZSCstParser.errors.length).toBe(0)

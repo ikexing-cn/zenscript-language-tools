@@ -512,7 +512,7 @@ export interface PrimaryExpressionCstNode extends CstNode {
 
 export type PrimaryExpressionCstChildren = {
   literal?: (IToken)[];
-  identifier?: IdentifierCstNode[];
+  Identifier?: IdentifierCstNode[];
   BracketHandlerExpression?: BracketHandlerExpressionCstNode[];
   LambdaFunctionDeclaration?: LambdaFunctionDeclarationCstNode[];
   ArrayInitializerExpression?: ArrayInitializerExpressionCstNode[];
@@ -529,19 +529,8 @@ export interface BracketHandlerExpressionCstNode extends CstNode {
 
 export type BracketHandlerExpressionCstChildren = {
   LT: IToken[];
-  DOT?: IToken[];
+  part?: (IToken | IdentifierCstNode)[];
   COLON?: IToken[];
-  Identifier?: IdentifierCstNode[];
-  literal?: IToken[];
-  ANY?: IToken[];
-  BYTE?: IToken[];
-  SHORT?: IToken[];
-  INT?: IToken[];
-  LONG?: IToken[];
-  DOUBLE?: IToken[];
-  BOOL?: IToken[];
-  VOID?: IToken[];
-  STRING?: IToken[];
   GT: IToken[];
 };
 

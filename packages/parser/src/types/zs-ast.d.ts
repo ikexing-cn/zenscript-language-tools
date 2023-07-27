@@ -59,15 +59,11 @@ export interface ASTNodeImport extends ASTNode<'import'> {
   name: ASTNodeQualifiedName
 }
 
-export type FunctionId = 'function' | 'expand-function'
+export type FunctionId = 'function' | 'expand-function' | 'lambda-function'
 export interface ASTNodeFunction<T extends FunctionId = 'function'> extends ASTNodeHasId<T> {
   returnType?: ASTNodeTypeLiteral
   paramList?: ASTNodeParameterList
   body?: ASTNodeBody<'function-body'>
-}
-
-export interface ASTNodeDExpandFunction extends ASTNodeFunction<'expand-function'> {
-  expandType: ASTNodeTypeLiteral
 }
 
 export interface ASTNodeDExpandFunction extends ASTNodeFunction<'expand-function'> {
@@ -80,6 +76,10 @@ export interface ASTNodeZenClass extends ASTNodeHasId<'zen-class'> {
 
 export interface ASTNodeZenConstructor extends ASTNode<'zen-constructor'> {
   parameterList?: ASTNodeParameterList
+}
+
+export interface ASTNodeExpressionStatement extends ASTNode<'expression-statement'> {
+  expression: ASTNodeAssignExpression | ASTNodePostfixExpression
 }
 
 export type PrimitiveType = 'any' | 'byte' | 'short' | 'int' | 'long' | 'double' | 'bool' | 'void' | 'string'
@@ -136,7 +136,40 @@ export interface ASTNodeUnaryExpression extends ASTNode<'unary-expression'> {
   expression: ASTNodeUnaryExpression | ASTNodePostfixExpression
 }
 
-export interface ASTNodePostfixExpression extends ASTNode {
-  type: 'PostfixExpression'
+export interface ASTNodePostfixExpression extends ASTNode<'postfix-expression'> {
   primary: ASTNode
+}
+
+export type ASTNodePrimaryExpression =
+  | ASTNodeLiteral
+  | ASTNodeIdentifier
+  | ASTNodeBracketHandlerExpression
+  | ASTNodeAssignExpression
+
+export interface ASTNodeLiteral extends ASTNode<'literal'> {
+  raw: string
+  value: number | string | boolean | null
+}
+
+export interface ASTNodeIdentifier extends ASTNode<'identifier'> {
+  name: string
+}
+
+export interface ASTNodeBracketHandlerExpression extends ASTNode<'bracket-handler-expression'> {
+  parts: string[]
+}
+
+export interface ASTNodeArrayInitializerExpression extends ASTNode<'array-initializer-expression'> {
+  elements: ASTNodeAssignExpression[]
+}
+
+export interface ASTNodeMapInitializerExpression extends ASTNode<'map-initializer-expression'> {
+  entries: ASTNodeMapEntry[]
+}
+
+export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunction<'lambda-function'>, 'id'>
+
+export interface ASTNodeMapEntry extends ASTNode<'map-entry'> {
+  key: ASTNodeAssignExpression
+  value: ASTNodeAssignExpression
 }

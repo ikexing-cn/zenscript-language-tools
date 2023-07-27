@@ -1,9 +1,9 @@
-import type { ASTNodeTypeLiteral, PrimitiveType } from '../types/zs-ast'
+import type { ASTNodeLiteral, ASTNodeTypeLiteral, PrimitiveType } from '../types/zs-ast'
 import type { IdentifierCstNode, TypeLiteralCstChildren } from '../types/zs-cst'
 
 export function handleIdentifier(identifier: IdentifierCstNode[]) {
-  return identifier?.[0].children?.IDENTIFIER?.[0].image
-      ?? identifier?.[0].children?.TO?.[0].image
+  return identifier?.[0]?.children?.IDENTIFIER?.[0].image
+      ?? identifier?.[0]?.children?.TO?.[0].image
       ?? 'unknown'
 }
 
@@ -38,4 +38,14 @@ export function getTypeLiteral(ctx: TypeLiteralCstChildren): ASTNodeTypeLiteral[
     types.push(...ctx.arrayType.map(() => 'array-type') as 'array-type'[])
 
   return types.reverse()
+}
+
+export function getTypeLiteralValue(raw: string): ASTNodeLiteral['value'] {
+  if (raw === 'null')
+    return null
+  else if (!Number.isNaN(Number(raw)))
+    return Number.parseInt(raw)
+  else if (/true|false/.test(raw))
+    return raw === 'true'
+  else return raw
 }

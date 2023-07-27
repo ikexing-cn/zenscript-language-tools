@@ -535,7 +535,7 @@ export class ZenScriptParser extends CstParser {
       { ALT: () => this.CONSUME(FLOAT_LITERAL, { LABEL: 'literal' }) },
       { ALT: () => this.CONSUME(DOUBLE_LITERAL, { LABEL: 'literal' }) },
       { ALT: () => this.CONSUME(STRING_LITERAL, { LABEL: 'literal' }) },
-      { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'identifier' }) },
+      { ALT: () => this.SUBRULE(this.Identifier) },
 
       { ALT: () => this.SUBRULE(this.BracketHandlerExpression) },
       { ALT: () => this.SUBRULE(this.LambdaFunctionDeclaration) },
@@ -557,16 +557,20 @@ export class ZenScriptParser extends CstParser {
 
   private BracketHandlerExpression = this.RULE('BracketHandlerExpression', () => {
     this.CONSUME(LT)
-    this.MANY(() => {
-      this.OR([
-        { ALT: () => this.CONSUME(DOT) },
-        { ALT: () => this.CONSUME(COLON) },
-        { ALT: () => this.SUBRULE(this.Identifier) },
-        { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'literal' }) },
-        ...ZS_PRIMITIVE_TYPE_TOKENS.map((type) => {
-          return { ALT: () => this.CONSUME(type) }
-        }),
-      ])
+    this.AT_LEAST_ONE_SEP({
+      SEP: COLON,
+      DEF: () => this.AT_LEAST_ONE(() => {
+        this.OR([
+          { ALT: () => this.CONSUME(DOT, { LABEL: 'part' }) },
+          { ALT: () => this.CONSUME(COLON, { LABEL: 'part' }) },
+          { ALT: () => this.CONSUME(MUL, { LABEL: 'part' }) },
+          { ALT: () => this.CONSUME(INT_LITERAL, { LABEL: 'part' }) },
+          { ALT: () => this.SUBRULE(this.Identifier, { LABEL: 'part' }) },
+          ...ZS_PRIMITIVE_TYPE_TOKENS.map((type) => {
+            return { ALT: () => this.CONSUME(type, { LABEL: 'part' }) }
+          }),
+        ])
+      }),
     })
     this.CONSUME(GT)
   })
