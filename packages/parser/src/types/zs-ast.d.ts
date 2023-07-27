@@ -1,5 +1,5 @@
-import { ASTProgram } from './zs-ast';
-import { IDENTIFIER } from '../lexer';
+import { ASTProgram } from './zs-ast'
+import { IDENTIFIER } from '../lexer'
 export interface Offset {
   start: number
   end?: number
@@ -31,15 +31,14 @@ export interface ASTProgram extends ASTNode<'program'> {
   body: ASTNodeBody<'program'>['body']
 }
 
-export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<T> { 
+export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<T> {
   value?: ASTNode
   vType?: ASTNodeTypeLiteral
 }
 
 export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare<'global' | 'static'> {}
 
-
-export interface ASTNodeVariableDeclare extends ASTNodeDeclare<'var' | 'val'> { }
+export interface ASTNodeVariableDeclare extends ASTNodeDeclare<'var' | 'val'> {}
 
 export interface ASTNodeQualifiedName extends ASTNode<'qualified-name'> {
   value: string[]
@@ -49,7 +48,6 @@ export interface ASTNodeParameter extends ASTNodeHasId<'parameter'> {
   pType?: ASTNodeTypeLiteral
   defaultValue?: ASTNode
 }
-
 
 export interface ASTNodeParameterList extends ASTNode<'parameter-list'> {
   params: ASTNodeParameter[]
@@ -79,7 +77,13 @@ export interface ASTNodeZenConstructor extends ASTNode<'zen-constructor'> {
 }
 
 export interface ASTNodeExpressionStatement extends ASTNode<'expression-statement'> {
-  expression: ASTNodeAssignExpression | ASTNodePostfixExpression
+  expression:
+    | ASTNodeAssignExpression
+    | ASTNodeConditionalExpression
+    | ASTNodeBinaryExpression
+    | ASTNodeUnaryExpression
+    | ASTNodePostfixExpression
+    | ASTNodePrimaryExpression
 }
 
 export type PrimitiveType = 'any' | 'byte' | 'short' | 'int' | 'long' | 'double' | 'bool' | 'void' | 'string'
@@ -89,21 +93,23 @@ export interface ASTNodeTypeLiteral extends ASTNode<'type-literal'> {
   value?: ASTNodeTypeLiteral
 }
 
-export interface ASTNodeArrayType extends ASTNodeTypeLiteral { name: 'array-type' }
+export interface ASTNodeArrayType extends ASTNodeTypeLiteral {
+  name: 'array-type'
+}
 
-export interface ASTNodeMapType extends ASTNodeTypeLiteral { 
+export interface ASTNodeMapType extends ASTNodeTypeLiteral {
   name: 'map-type'
   key: ASTNodeTypeLiteral
   value: ASTNodeTypeLiteral
 }
 
-export interface ASTNodeFunctionType extends ASTNodeTypeLiteral { 
+export interface ASTNodeFunctionType extends ASTNodeTypeLiteral {
   name: 'function-type'
   returnType: ASTNodeTypeLiteral<'return-type'>
   paramTypes: ASTNodeTypeLiteral<'params-type'>[]
 }
 
-export interface ASTNodeClassType extends ASTNodeTypeLiteral { 
+export interface ASTNodeClassType extends ASTNodeTypeLiteral {
   name: 'class-type'
   value: IDENTIFIER
 }
@@ -136,8 +142,24 @@ export interface ASTNodeUnaryExpression extends ASTNode<'unary-expression'> {
   expression: ASTNodeUnaryExpression | ASTNodePostfixExpression
 }
 
-export interface ASTNodePostfixExpression extends ASTNode<'postfix-expression'> {
-  primary: ASTNode
+export type ASTNodePostfixExpression =
+  | ASTNodePrimaryExpression
+  | ASTNodePostfixExpressionMemberAccess
+  | ASTNodePostfixExpressionFunctionCall
+
+export interface ASTNodePostfixExpressionMemberAccess extends ASTNode<'postfix-expression-member-access'> {
+  object: ASTNodePostfixExpression
+  property: ASTNodeIdentifier
+}
+
+export interface ASTNodePostfixExpressionFunctionCall extends ASTNode<'postfix-expression-function-call'> {
+  args?: ASTNodeLiteral[]
+  callee: ASTNodePostfixExpression
+}
+
+export interface ASTNodePostfixExpressionRange extends ASTNode<'postfix-expression-range'> {
+  left: ASTNodePostfixExpression
+  right: ASTNodePostfixExpression
 }
 
 export type ASTNodePrimaryExpression =
@@ -160,11 +182,11 @@ export interface ASTNodeBracketHandlerExpression extends ASTNode<'bracket-handle
 }
 
 export interface ASTNodeArrayInitializerExpression extends ASTNode<'array-initializer-expression'> {
-  elements: ASTNodeAssignExpression[]
+  elements?: ASTNodeAssignExpression[]
 }
 
 export interface ASTNodeMapInitializerExpression extends ASTNode<'map-initializer-expression'> {
-  entries: ASTNodeMapEntry[]
+  entries?: ASTNodeMapEntry[]
 }
 
 export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunction<'lambda-function'>, 'id'>

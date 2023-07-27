@@ -7,7 +7,7 @@ import {
   INSTANCEOF, INT_LITERAL, LESS_EQUAL, LONG_LITERAL, LT, L_BRACKET, L_CURLY, L_PAREN,
   MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, MUL, MUL_ASSIGN, NOT, NOT_EQUAL,
   NULL_LITERAL, OR, OR_ASSIGN, PLUS, PLUS_ASSIGN, QUESTION, RETURN, R_BRACKET, R_CURLY, R_PAREN, SEMICOLON,
-  STATIC, STRING, STRING_LITERAL, TO, TRUE_LITERAL, VAL, VAR, WHILE, XOR, XOR_ASSIGN, ZEN_CLASS,
+  STATIC, STRING_LITERAL, TO, TRUE_LITERAL, VAL, VAR, WHILE, XOR, XOR_ASSIGN, ZEN_CLASS,
   ZEN_CONSTRUCTOR, ZEN_D_Expand, ZS_ALL_TOKENS, ZS_PRIMITIVE_TYPE_TOKENS,
 } from './lexer'
 
@@ -436,11 +436,10 @@ export class ZenScriptParser extends CstParser {
       this.OR([
         {
           ALT: () => {
-            this.SUBRULE(this.PostfixExpressionMemberCall)
+            this.SUBRULE(this.PostfixExpressionMemberAccess)
           },
         },
         {
-          GATE: () => this.LA(1).tokenType === DOT_DOT || (this.LA(1).tokenType === IDENTIFIER && this.LA(1).image === 'to'),
           ALT: () => {
             this.SUBRULE(this.PostfixExpressionRange)
           },
@@ -471,22 +470,18 @@ export class ZenScriptParser extends CstParser {
     })
   })
 
-  private PostfixExpressionMemberCall = this.RULE(
-    'PostfixExpressionMemberCall',
+  private PostfixExpressionMemberAccess = this.RULE(
+    'PostfixExpressionMemberAccess',
     () => {
       this.CONSUME(DOT)
-      this.OR([
-        { ALT: () => this.CONSUME(IDENTIFIER, { LABEL: 'property' }) },
-        // { ALT: () => this.CONSUME(VERSION, { LABEL: 'property' }) },
-        { ALT: () => this.CONSUME(STRING, { LABEL: 'property' }) },
-      ])
+      this.SUBRULE(this.Identifier)
     },
   )
 
   private PostfixExpressionRange = this.RULE('PostfixExpressionRange', () => {
     this.OR([
+      { ALT: () => this.CONSUME(TO, { LABEL: 'rangeOperator' }) },
       { ALT: () => this.CONSUME(DOT_DOT, { LABEL: 'rangeOperator' }) },
-      { ALT: () => this.CONSUME(IDENTIFIER, { LABEL: 'rangeOperator' }) },
     ])
     this.SUBRULE(this.AssignExpression)
   })

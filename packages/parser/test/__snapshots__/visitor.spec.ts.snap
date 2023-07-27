@@ -146,7 +146,6 @@ exports[`Visitor Expression 1`] = `
       "end": 132,
       "expression": {
         "end": 131,
-        "entries": [],
         "start": 130,
         "type": "map-initializer-expression",
       },
@@ -196,7 +195,6 @@ exports[`Visitor Expression 1`] = `
     {
       "end": 156,
       "expression": {
-        "elements": [],
         "end": 155,
         "start": 154,
         "type": "array-initializer-expression",
@@ -205,7 +203,7 @@ exports[`Visitor Expression 1`] = `
       "type": "expression-statement",
     },
     {
-      "end": 179,
+      "end": 180,
       "expression": {
         "end": 179,
         "paramList": {
@@ -239,8 +237,156 @@ exports[`Visitor Expression 1`] = `
       "start": 163,
       "type": "expression-statement",
     },
+    {
+      "end": 204,
+      "expression": {
+        "args": [
+          {
+            "end": 202,
+            "raw": "1",
+            "start": 202,
+            "type": "literal",
+            "value": 1,
+          },
+        ],
+        "callee": [
+          {
+            "args": [
+              {
+                "end": 197,
+                "raw": "2",
+                "start": 197,
+                "type": "literal",
+                "value": 2,
+              },
+              {
+                "end": 199,
+                "raw": "3",
+                "start": 199,
+                "type": "literal",
+                "value": 3,
+              },
+            ],
+            "callee": [
+              {
+                "callee": [
+                  {
+                    "end": 193,
+                    "object": [
+                      {
+                        "end": 191,
+                        "object": [
+                          {
+                            "end": 189,
+                            "object": [
+                              {
+                                "end": 187,
+                                "name": "a",
+                                "start": 187,
+                                "type": "identifier",
+                              },
+                            ],
+                            "property": {
+                              "end": 0,
+                              "name": "b",
+                              "start": 0,
+                              "type": "identifier",
+                            },
+                            "start": 188,
+                            "type": "postfix-expression-member-access",
+                          },
+                        ],
+                        "property": {
+                          "end": 0,
+                          "name": "c",
+                          "start": 0,
+                          "type": "identifier",
+                        },
+                        "start": 190,
+                        "type": "postfix-expression-member-access",
+                      },
+                    ],
+                    "property": {
+                      "end": 0,
+                      "name": "d",
+                      "start": 0,
+                      "type": "identifier",
+                    },
+                    "start": 192,
+                    "type": "postfix-expression-member-access",
+                  },
+                ],
+                "end": 195,
+                "start": 194,
+                "type": "postfix-expression-function-call",
+              },
+            ],
+            "end": 200,
+            "start": 196,
+            "type": "postfix-expression-function-call",
+          },
+        ],
+        "end": 203,
+        "start": 187,
+        "type": "postfix-expression-function-call",
+      },
+      "start": 187,
+      "type": "expression-statement",
+    },
+    {
+      "end": 218,
+      "expression": {
+        "end": 217,
+        "left": [
+          {
+            "end": 211,
+            "raw": "0",
+            "start": 211,
+            "type": "literal",
+            "value": 0,
+          },
+        ],
+        "right": {
+          "end": 217,
+          "raw": "10",
+          "start": 216,
+          "type": "literal",
+          "value": 10,
+        },
+        "start": 211,
+        "type": "postfix-expression-range",
+      },
+      "start": 211,
+      "type": "expression-statement",
+    },
+    {
+      "end": 232,
+      "expression": {
+        "end": 231,
+        "left": [
+          {
+            "end": 225,
+            "raw": "10",
+            "start": 224,
+            "type": "literal",
+            "value": 10,
+          },
+        ],
+        "right": {
+          "end": 231,
+          "raw": "20",
+          "start": 230,
+          "type": "literal",
+          "value": 20,
+        },
+        "start": 224,
+        "type": "postfix-expression-range",
+      },
+      "start": 224,
+      "type": "expression-statement",
+    },
   ],
-  "end": 179,
+  "end": 232,
   "start": 0,
   "type": "program",
 }

@@ -439,7 +439,7 @@ export interface PostfixExpressionCstNode extends CstNode {
 
 export type PostfixExpressionCstChildren = {
   PrimaryExpression: PrimaryExpressionCstNode[];
-  PostfixExpressionMemberCall?: PostfixExpressionMemberCallCstNode[];
+  PostfixExpressionMemberAccess?: PostfixExpressionMemberAccessCstNode[];
   PostfixExpressionRange?: PostfixExpressionRangeCstNode[];
   PostfixExpressionArray?: PostfixExpressionArrayCstNode[];
   PostfixExpressionFunctionCall?: PostfixExpressionFunctionCallCstNode[];
@@ -449,14 +449,14 @@ export type PostfixExpressionCstChildren = {
   instanceof?: TypeLiteralCstNode[];
 };
 
-export interface PostfixExpressionMemberCallCstNode extends CstNode {
-  name: "PostfixExpressionMemberCall";
-  children: PostfixExpressionMemberCallCstChildren;
+export interface PostfixExpressionMemberAccessCstNode extends CstNode {
+  name: "PostfixExpressionMemberAccess";
+  children: PostfixExpressionMemberAccessCstChildren;
 }
 
-export type PostfixExpressionMemberCallCstChildren = {
+export type PostfixExpressionMemberAccessCstChildren = {
   DOT: IToken[];
-  property?: (IToken)[];
+  Identifier: IdentifierCstNode[];
 };
 
 export interface PostfixExpressionRangeCstNode extends CstNode {
@@ -465,7 +465,7 @@ export interface PostfixExpressionRangeCstNode extends CstNode {
 }
 
 export type PostfixExpressionRangeCstChildren = {
-  rangeoperator?: (IToken)[];
+  rangeOperator?: (IToken | IdentifierCstNode)[];
   AssignExpression: AssignExpressionCstNode[];
 };
 
@@ -638,7 +638,7 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   MultiplyExpression(children: MultiplyExpressionCstChildren, param?: IN): OUT;
   UnaryExpression(children: UnaryExpressionCstChildren, param?: IN): OUT;
   PostfixExpression(children: PostfixExpressionCstChildren, param?: IN): OUT;
-  PostfixExpressionMemberCall(children: PostfixExpressionMemberCallCstChildren, param?: IN): OUT;
+  PostfixExpressionMemberAccess(children: PostfixExpressionMemberAccessCstChildren, param?: IN): OUT;
   PostfixExpressionRange(children: PostfixExpressionRangeCstChildren, param?: IN): OUT;
   PostfixExpressionArray(children: PostfixExpressionArrayCstChildren, param?: IN): OUT;
   PostfixExpressionFunctionCall(children: PostfixExpressionFunctionCallCstChildren, param?: IN): OUT;

@@ -51,7 +51,12 @@ it('Visitor Expression', () => {
     [1,3,4,5];
     [];
 
-    function(a,b,c){}
+    function(a,b,c){};
+
+    a.b.c.d()(2,3)(1);
+
+    0 to 10;
+    10 .. 20;
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
   expect(ZSCstParser.errors.length).toBe(0)

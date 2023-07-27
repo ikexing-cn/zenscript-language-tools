@@ -9,7 +9,7 @@ import type {
   ASTNodeMapEntry,
   ASTNodeMapInitializerExpression,
   ASTNodeMapType,
-  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare,
+  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare,
   ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType,
 } from '../types/zs-ast'
 import type {
@@ -24,7 +24,7 @@ import type {
   MapTypeCstChildren,
   MultiplyExpressionCstChildren,
   OrExpressionCstChildren,
-  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
+  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
   QualifiedNameCstChildren,
   StatementCstChildren,
   TypeLiteralCstChildren,
@@ -603,8 +603,65 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   }
 
   PostfixExpression(ctx: PostfixExpressionCstChildren) {
-    const primaryExpression = this.$zsVisit(ctx.PrimaryExpression[0])
+    let primaryExpression = this.$zsVisit<ASTNodePostfixExpression>(ctx.PrimaryExpression[0])
+
+    if (ctx.PostfixExpressionMemberAccess) {
+      primaryExpression = ctx.PostfixExpressionMemberAccess.reduce((baseMember, node) =>
+        this.$zsVisitWithArgs(node, [baseMember]), primaryExpression)
+    }
+    if (ctx.PostfixExpressionRange)
+      primaryExpression = this.$zsVisitWithArgs(ctx.PostfixExpressionRange[0], [primaryExpression])
+    if (ctx.PostfixExpressionFunctionCall) {
+      primaryExpression = ctx.PostfixExpressionFunctionCall.reduce((baseMember, node) =>
+        this.$zsVisitWithArgs(node, [baseMember]), primaryExpression)
+    }
+
     return primaryExpression
+  }
+
+  PostfixExpressionMemberAccess(
+    ctx: PostfixExpressionMemberAccessCstChildren,
+    args: [ASTNodePostfixExpression],
+  ): ASTNodePostfixExpressionMemberAccess {
+    return {
+      start: 0,
+      end: 0,
+      type: 'postfix-expression-member-access',
+      object: args[0],
+      property: {
+        end: 0,
+        start: 0,
+        type: 'identifier',
+        name: handleIdentifier(ctx.Identifier),
+      },
+    }
+  }
+
+  PostfixExpressionFunctionCall(
+    ctx: PostfixExpressionFunctionCallCstChildren,
+    args: [ASTNodePostfixExpression],
+  ): ASTNodePostfixExpressionFunctionCall {
+    const toReturn: ASTNodePostfixExpressionFunctionCall = {
+      end: 0,
+      start: 0,
+      callee: args[0],
+      type: 'postfix-expression-function-call',
+    }
+
+    return objectAssign(toReturn, { args: ctx.argument && this.$zsVisitArray(ctx.argument) })
+  }
+
+  PostfixExpressionRange(
+    ctx: PostfixExpressionRangeCstChildren,
+    args: [ASTNodePostfixExpression],
+  ): ASTNodePostfixExpressionRange {
+    return {
+      start: 0,
+      end: 0,
+      left: args[0],
+      type: 'postfix-expression-range',
+      right: this.$zsVisit(ctx.AssignExpression[0]),
+    }
   }
 
   PrimaryExpression(ctx: PrimaryExpressionCstChildren): ASTNodePrimaryExpression {
@@ -665,21 +722,22 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   }
 
   ArrayInitializerExpression(ctx: ArrayInitializerExpressionCstChildren): ASTNodeArrayInitializerExpression {
-    return {
+    const toReturn: ASTNodeArrayInitializerExpression = {
       end: 0,
       start: 0,
       type: 'array-initializer-expression',
-      elements: ctx.AssignExpression ? this.$zsVisitArray(ctx.AssignExpression) : [],
     }
+    return objectAssign(toReturn, { elements: ctx.AssignExpression && this.$zsVisitArray(ctx.AssignExpression) })
   }
 
   MapInitializerExpression(ctx: MapInitializerExpressionCstChildren): ASTNodeMapInitializerExpression {
-    return {
+    const toReturn: ASTNodeMapInitializerExpression = {
       start: 0,
       end: 0,
       type: 'map-initializer-expression',
-      entries: ctx.MapEntry ? this.$zsVisitArray(ctx.MapEntry) : [],
     }
+
+    return objectAssign(toReturn, { entries: ctx.MapEntry && this.$zsVisitArray(ctx.MapEntry) })
   }
 
   MapEntry(ctx: MapEntryCstChildren): ASTNodeMapEntry {
