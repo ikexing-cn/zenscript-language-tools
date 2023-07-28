@@ -37,6 +37,8 @@ it('Visitor Program without Expression', () => {
 
 it('Visitor Expression', () => {
   const lexResult = ZSLexer.tokenize(`
+    a ? true : false;
+
     // expression
     1 + 1;
     abc;
@@ -57,6 +59,8 @@ it('Visitor Expression', () => {
 
     0 to 10;
     10 .. 20;
+
+    a[1][2][3] = 233;
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
   expect(ZSCstParser.errors.length).toBe(0)

@@ -9,8 +9,9 @@ import type {
   ASTNodeMapEntry,
   ASTNodeMapInitializerExpression,
   ASTNodeMapType,
-  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare,
-  ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType,
+  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression,
+  ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId,
+  PrimitiveType,
 } from '../types/zs-ast'
 import type {
   AddExpressionCstChildren,
@@ -24,7 +25,7 @@ import type {
   MapTypeCstChildren,
   MultiplyExpressionCstChildren,
   OrExpressionCstChildren,
-  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
+  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
   QualifiedNameCstChildren,
   StatementCstChildren,
   TypeLiteralCstChildren,
@@ -55,7 +56,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   ): T {
     const node: T = this.visit(element)
 
-    if (element.location && node) {
+    if (element?.location && node) {
       node.start = element.location.startOffset
       node.end = element.location.endOffset
     }
@@ -99,8 +100,11 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return objectAssign(toReturn, { paramList, returnType: fType })
   }
 
-  private $parseBinaryExpression(rules: CstNode[], operators?: IToken[]): ASTNodeBinaryExpression | ASTNode<string> {
-    const first = this.$zsVisit(rules[0])
+  private $parseBinaryExpression(
+    rules: CstNode[],
+    operators?: IToken[],
+  ): ASTNodeBinaryExpression | ASTNodePrimaryExpression {
+    const first = this.$zsVisit<ASTNodePrimaryExpression>(rules[0])
     if (!operators) {
       // operators undefined
       return first
@@ -111,7 +115,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       start: first.start,
       end: -1,
       left: first,
-      right: undefined,
+      right: undefined!,
       operator: '',
     }
 
@@ -129,7 +133,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
           start: root.left.start,
           end: -1,
           left: root,
-          right: undefined,
+          right: undefined!,
           operator: '',
         }
       }
@@ -532,20 +536,21 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
   }
 
-  ConditionalExpression(ctx: ConditionalExpressionCstChildren): ASTNodeConditionalExpression {
+  ConditionalExpression(
+    ctx: ConditionalExpressionCstChildren,
+  ): ASTNodeConditionalExpression | ASTNodeBinaryExpression {
     // TODO: calculate start and end
     const node: ASTNodeConditionalExpression = {
       end: 0,
       start: 0,
       type: 'conditional-expression',
-      condition: this.$zsVisit(ctx.OrOrExpression[0]),
+      condition: this.$zsVisit<ASTNodeBinaryExpression>(ctx.conditionExpression[0]),
     }
 
     // condition ? valid : invalid
-    if (ctx.ConditionalExpression) {
-      node.valid = this.$zsVisit(ctx.OrOrExpression[1])
-      // TODO node.invalid =
-
+    if (ctx.invalidExpression) {
+      node.valid = this.$zsVisit<ASTNodeBinaryExpression>(ctx.validExpression![0])
+      node.invalid = this.$zsVisit<ASTNodeConditionalExpression>(ctx.invalidExpression[0])
       return node
     }
     else {
@@ -611,6 +616,10 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
     if (ctx.PostfixExpressionRange)
       primaryExpression = this.$zsVisitWithArgs(ctx.PostfixExpressionRange[0], [primaryExpression])
+    if (ctx.PostfixExpressionArray) {
+      primaryExpression = ctx.PostfixExpressionArray.reduce((baseMember, node) =>
+        this.$zsVisitWithArgs(node, [baseMember]), primaryExpression)
+    }
     if (ctx.PostfixExpressionFunctionCall) {
       primaryExpression = ctx.PostfixExpressionFunctionCall.reduce((baseMember, node) =>
         this.$zsVisitWithArgs(node, [baseMember]), primaryExpression)
@@ -621,7 +630,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
 
   PostfixExpressionMemberAccess(
     ctx: PostfixExpressionMemberAccessCstChildren,
-    args: [ASTNodePostfixExpression],
+    args: [ASTNodeAssignExpression],
   ): ASTNodePostfixExpressionMemberAccess {
     return {
       start: 0,
@@ -639,7 +648,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
 
   PostfixExpressionFunctionCall(
     ctx: PostfixExpressionFunctionCallCstChildren,
-    args: [ASTNodePostfixExpression],
+    args: [ASTNodeAssignExpression],
   ): ASTNodePostfixExpressionFunctionCall {
     const toReturn: ASTNodePostfixExpressionFunctionCall = {
       end: 0,
@@ -661,6 +670,37 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       left: args[0],
       type: 'postfix-expression-range',
       right: this.$zsVisit(ctx.AssignExpression[0]),
+    }
+  }
+
+  PostfixExpressionArray(
+    ctx: PostfixExpressionArrayCstChildren,
+    args: [ASTNodeAssignExpression],
+  ): ASTNodeAssignExpression | ASTNodePostfixExpressionMemberAccess {
+    if (ctx.value) {
+      return {
+        end: 0,
+        start: 0,
+        operator: '=',
+        left: {
+          type: 'postfix-expression-member-access',
+          start: 0,
+          end: 0,
+          object: args[0],
+          property: this.$zsVisit(ctx.index[0]),
+        },
+        type: 'assign-expression',
+        right: this.$zsVisit(ctx.value[0]),
+      }
+    }
+    else {
+      return {
+        end: 0,
+        start: 0,
+        object: args[0],
+        property: this.$zsVisit(ctx.index[0]),
+        type: 'postfix-expression-member-access',
+      }
     }
   }
 

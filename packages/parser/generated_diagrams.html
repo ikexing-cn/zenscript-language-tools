@@ -1543,7 +1543,8 @@
       {
         "type": "NonTerminal",
         "name": "OrOrExpression",
-        "idx": 0
+        "idx": 0,
+        "label": "conditionExpression"
       },
       {
         "type": "Option",
@@ -1559,7 +1560,8 @@
           {
             "type": "NonTerminal",
             "name": "OrOrExpression",
-            "idx": 2
+            "idx": 2,
+            "label": "validExpression"
           },
           {
             "type": "Terminal",
@@ -1571,7 +1573,8 @@
           {
             "type": "NonTerminal",
             "name": "ConditionalExpression",
-            "idx": 0
+            "idx": 0,
+            "label": "invalidExpression"
           }
         ]
       }
@@ -2187,11 +2190,11 @@
             "definition": [
               {
                 "type": "Terminal",
-                "name": "DOT_DOT",
-                "label": "DOT_DOT",
+                "name": "TO",
+                "label": "TO",
                 "idx": 0,
                 "terminalLabel": "rangeOperator",
-                "pattern": "\\.\\."
+                "pattern": "to"
               }
             ]
           },
@@ -2199,10 +2202,12 @@
             "type": "Alternative",
             "definition": [
               {
-                "type": "NonTerminal",
-                "name": "Identifier",
+                "type": "Terminal",
+                "name": "DOT_DOT",
+                "label": "DOT_DOT",
                 "idx": 0,
-                "label": "rangeOperator"
+                "terminalLabel": "rangeOperator",
+                "pattern": "\\.\\."
               }
             ]
           }

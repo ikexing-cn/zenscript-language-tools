@@ -1,5 +1,3 @@
-import { ASTProgram } from './zs-ast'
-import { IDENTIFIER } from '../lexer'
 export interface Offset {
   start: number
   end?: number
@@ -111,7 +109,7 @@ export interface ASTNodeFunctionType extends ASTNodeTypeLiteral {
 
 export interface ASTNodeClassType extends ASTNodeTypeLiteral {
   name: 'class-type'
-  value: IDENTIFIER
+  value: string[]
 }
 
 export interface ASTNodeListType extends ASTNodeTypeLiteral {
@@ -119,22 +117,29 @@ export interface ASTNodeListType extends ASTNodeTypeLiteral {
   value: ASTNodeTypeLiteral
 }
 
+export type ASTNodeExpression =
+  | ASTNodeAssignExpression
+  | ASTNodeBinaryExpression
+  | ASTNodePostfixExpression
+  | ASTNodePrimaryExpression
+  | ASTNodeConditionalExpression
+
 export interface ASTNodeAssignExpression extends ASTNode<'assign-expression'> {
-  left: ASTNodeConditionalExpression
+  left: ASTNodeExpression
   operator: string
-  right: ASTNodeAssignExpression
+  right: ASTNodeExpression
 }
 
 export interface ASTNodeConditionalExpression extends ASTNode<'conditional-expression'> {
-  condition: ASTNodeOrOrExpression
-  valid?: ASTNodeOrOrExpression
+  condition: ASTNodeBinaryExpression
+  valid?: ASTNodeBinaryExpression
   invalid?: ASTNodeConditionalExpression
 }
 
 export interface ASTNodeBinaryExpression extends ASTNode<'binary-expression'> {
-  left: ASTNode
+  left: ASTNodeExpression
   operator: string
-  right: ASTNode
+  right: ASTNodeExpression
 }
 
 export interface ASTNodeUnaryExpression extends ASTNode<'unary-expression'> {
@@ -142,31 +147,30 @@ export interface ASTNodeUnaryExpression extends ASTNode<'unary-expression'> {
   expression: ASTNodeUnaryExpression | ASTNodePostfixExpression
 }
 
-export type ASTNodePostfixExpression =
-  | ASTNodePrimaryExpression
-  | ASTNodePostfixExpressionMemberAccess
-  | ASTNodePostfixExpressionFunctionCall
+export type ASTNodePostfixExpression = ASTNodePostfixExpressionMemberAccess | ASTNodePostfixExpressionFunctionCall
 
 export interface ASTNodePostfixExpressionMemberAccess extends ASTNode<'postfix-expression-member-access'> {
-  object: ASTNodePostfixExpression
+  object: ASTNodeAssignExpression
   property: ASTNodeIdentifier
+}
+
+export interface ASTNodePosrfixExpressionArray extends ASTNode<'postfix-expression-array'> {
+  object: ASTNodeExpression
+  index: ASTNodeExpression
+  value?: ASTNodeExpression
 }
 
 export interface ASTNodePostfixExpressionFunctionCall extends ASTNode<'postfix-expression-function-call'> {
   args?: ASTNodeLiteral[]
-  callee: ASTNodePostfixExpression
+  callee: ASTNodeExpression
 }
 
 export interface ASTNodePostfixExpressionRange extends ASTNode<'postfix-expression-range'> {
-  left: ASTNodePostfixExpression
-  right: ASTNodePostfixExpression
+  left: ASTNodeExpression
+  right: ASTNodeExpression
 }
 
-export type ASTNodePrimaryExpression =
-  | ASTNodeLiteral
-  | ASTNodeIdentifier
-  | ASTNodeBracketHandlerExpression
-  | ASTNodeAssignExpression
+export type ASTNodePrimaryExpression = ASTNodeLiteral | ASTNodeIdentifier | ASTNodeBracketHandlerExpression
 
 export interface ASTNodeLiteral extends ASTNode<'literal'> {
   raw: string

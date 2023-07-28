@@ -322,12 +322,12 @@ export class ZenScriptParser extends CstParser {
   })
 
   private ConditionalExpression = this.RULE('ConditionalExpression', () => {
-    this.SUBRULE(this.OrOrExpression)
+    this.SUBRULE(this.OrOrExpression, { LABEL: 'conditionExpression' })
     this.OPTION(() => {
       this.CONSUME(QUESTION)
-      this.SUBRULE2(this.OrOrExpression)
+      this.SUBRULE2(this.OrOrExpression, { LABEL: 'validExpression' })
       this.CONSUME(COLON)
-      this.SUBRULE(this.ConditionalExpression)
+      this.SUBRULE(this.ConditionalExpression, { LABEL: 'invalidExpression' })
     })
   })
 

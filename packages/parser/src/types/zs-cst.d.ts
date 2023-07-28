@@ -336,10 +336,11 @@ export interface ConditionalExpressionCstNode extends CstNode {
 }
 
 export type ConditionalExpressionCstChildren = {
-  OrOrExpression: (OrOrExpressionCstNode)[];
+  conditionExpression: OrOrExpressionCstNode[];
   QUESTION?: IToken[];
+  validExpression?: OrOrExpressionCstNode[];
   COLON?: IToken[];
-  ConditionalExpression?: ConditionalExpressionCstNode[];
+  invalidExpression?: ConditionalExpressionCstNode[];
 };
 
 export interface OrOrExpressionCstNode extends CstNode {
@@ -465,7 +466,7 @@ export interface PostfixExpressionRangeCstNode extends CstNode {
 }
 
 export type PostfixExpressionRangeCstChildren = {
-  rangeOperator?: (IToken | IdentifierCstNode)[];
+  rangeOperator?: (IToken)[];
   AssignExpression: AssignExpressionCstNode[];
 };
 
