@@ -39,7 +39,7 @@ export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare<'global' | 's
 export interface ASTNodeVariableDeclare extends ASTNodeDeclare<'var' | 'val'> {}
 
 export interface ASTNodeQualifiedName extends ASTNode<'qualified-name'> {
-  value: string[]
+  ids: string[]
 }
 
 export interface ASTNodeParameter extends ASTNodeHasId<'parameter'> {
@@ -109,7 +109,6 @@ export interface ASTNodeFunctionType extends ASTNodeTypeLiteral {
 
 export interface ASTNodeClassType extends ASTNodeTypeLiteral {
   name: 'class-type'
-  value: string[]
 }
 
 export interface ASTNodeListType extends ASTNodeTypeLiteral {

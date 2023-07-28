@@ -495,13 +495,13 @@ exports[`Visitor Program without Expression 1`] = `
       "end": 17,
       "name": {
         "end": 16,
-        "start": 12,
-        "type": "qualified-name",
-        "value": [
+        "ids": [
           "a",
           "b",
           "C",
         ],
+        "start": 12,
+        "type": "qualified-name",
       },
       "start": 5,
       "type": "import",
@@ -667,14 +667,14 @@ exports[`Visitor Program without Expression 1`] = `
               "type": "type-literal",
               "value": {
                 "end": 469,
-                "name": "class-type",
-                "start": 465,
-                "type": "type-literal",
-                "value": [
+                "ids": [
                   "a",
                   "b",
                   "C",
                 ],
+                "name": "class-type",
+                "start": 465,
+                "type": "type-literal",
               },
             },
           },
@@ -690,12 +690,12 @@ exports[`Visitor Program without Expression 1`] = `
               "type": "type-literal",
               "value": {
                 "end": 502,
+                "ids": [
+                  "C",
+                ],
                 "name": "class-type",
                 "start": 502,
                 "type": "type-literal",
-                "value": [
-                  "C",
-                ],
               },
             },
           },

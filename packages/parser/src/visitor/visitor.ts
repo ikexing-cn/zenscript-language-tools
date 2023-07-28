@@ -192,8 +192,8 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return {
       end: 0,
       start: 0,
-      value: ctx.Identifier.map(item => handleIdentifier([item])),
       type: 'qualified-name',
+      ids: ctx.Identifier.map(item => handleIdentifier([item])),
     }
   }
 
