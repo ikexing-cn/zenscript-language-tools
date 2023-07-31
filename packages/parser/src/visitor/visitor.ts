@@ -164,10 +164,10 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       const nodes = this.$zsVisitArray(ctx.ImportDeclaration)
       program.body.push(...nodes)
     }
-    // if (ctx.GlobalStaticDeclaration) {
-    //   const nodes = this.zsVisitArray(ctx.GlobalStaticDeclaration)
-    //   program.body.push(...nodes)
-    // }
+    if (ctx.GlobalStaticDeclaration) {
+      const nodes = this.$zsVisitArray(ctx.GlobalStaticDeclaration)
+      program.body.push(...nodes)
+    }
     if (ctx.FunctionDeclaration) {
       const nodes = this.$zsVisitArray(ctx.FunctionDeclaration)
       program.body.push(...nodes)
@@ -623,6 +623,26 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     if (ctx.PostfixExpressionFunctionCall) {
       primaryExpression = ctx.PostfixExpressionFunctionCall.reduce((baseMember, node) =>
         this.$zsVisitWithArgs(node, [baseMember]), primaryExpression)
+    }
+    if (ctx.AS) {
+      return {
+        end: 0,
+        start: 0,
+        operator: 'as',
+        left: primaryExpression,
+        type: 'binary-expression',
+        right: this.$zsVisitWithArgs(ctx.asType![0], ctx.asType![0].location),
+      } as ASTNodeBinaryExpression
+    }
+    if (ctx.INSTANCEOF) {
+      return {
+        end: 0,
+        start: 0,
+        operator: 'instanceof',
+        left: primaryExpression,
+        type: 'binary-expression',
+        right: this.$zsVisitWithArgs(ctx.instanceofType![0], ctx.instanceofType![0].location),
+      } as ASTNodeBinaryExpression
     }
 
     return primaryExpression

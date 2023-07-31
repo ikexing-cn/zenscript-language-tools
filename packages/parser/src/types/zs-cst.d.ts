@@ -445,9 +445,9 @@ export type PostfixExpressionCstChildren = {
   PostfixExpressionArray?: PostfixExpressionArrayCstNode[];
   PostfixExpressionFunctionCall?: PostfixExpressionFunctionCallCstNode[];
   AS?: IToken[];
-  TypeLiteral?: TypeLiteralCstNode[];
+  asType?: TypeLiteralCstNode[];
   INSTANCEOF?: IToken[];
-  instanceof?: TypeLiteralCstNode[];
+  instanceofType?: TypeLiteralCstNode[];
 };
 
 export interface PostfixExpressionMemberAccessCstNode extends CstNode {

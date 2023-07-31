@@ -7,10 +7,8 @@ it('Visitor Program without Expression', () => {
   const lexResult = ZSLexer.tokenize(`
     import a.b.C;
     
-    // TODO: handle variable expression and type
-    // TODO: global or static variable must to be initialized
-    // global a as bool;
-    // static b as string;
+    global a as bool = false;
+    static b as string = '';
 
     zenClass To {}
 
@@ -61,6 +59,9 @@ it('Visitor Expression', () => {
     10 .. 20;
 
     a[1][2][3] = 233;
+
+    a as string;
+    a instanceof int;
   `)
   const cst = ZSCstParser.parse(lexResult.tokens)
   expect(ZSCstParser.errors.length).toBe(0)

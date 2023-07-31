@@ -253,7 +253,7 @@ export class ZenScriptParser extends CstParser {
 
   private ExpressionStatement = this.RULE('ExpressionStatement', () => {
     this.SUBRULE(this.Expression)
-    // TODO: this is a hack to make the parser work
+    // this is a hack to make the parser work
     this.OPTION(() => this.CONSUME(SEMICOLON))
   })
 
@@ -457,13 +457,13 @@ export class ZenScriptParser extends CstParser {
         {
           ALT: () => {
             this.CONSUME(AS)
-            this.SUBRULE2(this.TypeLiteral)
+            this.SUBRULE2(this.TypeLiteral, { LABEL: 'asType' })
           },
         },
         {
           ALT: () => {
             this.CONSUME(INSTANCEOF)
-            this.SUBRULE(this.TypeLiteral, { LABEL: 'instanceof' })
+            this.SUBRULE(this.TypeLiteral, { LABEL: 'instanceofType' })
           },
         },
       ])
