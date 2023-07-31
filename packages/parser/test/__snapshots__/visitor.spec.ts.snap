@@ -292,7 +292,7 @@ exports[`AST Parser > ClassDeclaration 2`] = `
           "raw": "''",
           "start": 83,
           "type": "literal",
-          "value": "''",
+          "value": "",
         },
       },
       {
@@ -440,7 +440,7 @@ exports[`AST Parser > GlobalStaticDeclaration 2`] = `
     "raw": "''",
     "start": 21,
     "type": "literal",
-    "value": "''",
+    "value": "",
   },
 }
 `;

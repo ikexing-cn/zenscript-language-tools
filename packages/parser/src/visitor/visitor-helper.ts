@@ -47,5 +47,7 @@ export function getTypeLiteralValue(raw: string): ASTNodeLiteral['value'] {
     return Number.parseInt(raw)
   else if (/true|false/.test(raw))
     return raw === 'true'
-  else return raw
+  else if (/''|""/.test(raw))
+    return ''
+  return raw
 }
