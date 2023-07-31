@@ -1,38 +1,8 @@
 import type { CstNode, CstNodeLocation, IToken } from 'chevrotain'
 import { objectAssign, objectOmit } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
-import type {
-  ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare,
-  ASTNodeImport,
-  ASTNodeLambdaFunctionDeclaration,
-  ASTNodeListType,
-  ASTNodeMapEntry,
-  ASTNodeMapInitializerExpression,
-  ASTNodeMapType,
-  ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression,
-  ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId,
-  PrimitiveType,
-} from '../types/zs-ast'
-import type {
-  AddExpressionCstChildren,
-  AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren,
-  ConstructorDeclarationCstChildren,
-  DExpandFunctionDeclarationCstChildren,
-  ExpressionCstChildren,
-  ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren,
-  MapEntryCstChildren,
-  MapInitializerExpressionCstChildren,
-  MapTypeCstChildren,
-  MultiplyExpressionCstChildren,
-  OrExpressionCstChildren,
-  OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren,
-  QualifiedNameCstChildren,
-  StatementCstChildren,
-  TypeLiteralCstChildren,
-  UnaryExpressionCstChildren,
-  VariableDeclarationCstChildren,
-  XorExpressionCstChildren,
-} from '../types/zs-cst'
+import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeImport, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
+import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
 import { getLastBody as getLastValue, getTypeLiteral, getTypeLiteralValue, handleIdentifier, isPrimitiveType } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructor()
