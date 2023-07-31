@@ -1,856 +1,1119 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Visitor Expression 1`] = `
+exports[`AST Parser > AssignExpression 1`] = `
 {
-  "body": [
-    {
-      "end": 21,
-      "expression": {
-        "condition": {
-          "end": 5,
-          "name": "a",
-          "start": 5,
-          "type": "identifier",
-        },
-        "end": 20,
-        "invalid": {
-          "end": 20,
-          "raw": "false",
-          "start": 16,
-          "type": "literal",
-          "value": false,
-        },
-        "start": 5,
-        "type": "conditional-expression",
-        "valid": {
-          "end": 12,
-          "raw": "true",
-          "start": 9,
-          "type": "literal",
-          "value": true,
-        },
-      },
-      "start": 5,
-      "type": "expression-statement",
+  "end": 5,
+  "expression": {
+    "end": 4,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
     },
-    {
-      "end": 51,
-      "expression": {
-        "end": 50,
-        "left": {
-          "end": 46,
-          "raw": "1",
-          "start": 46,
-          "type": "literal",
-          "value": 1,
-        },
-        "operator": "+",
-        "right": {
-          "end": 50,
-          "raw": "1",
-          "start": 50,
-          "type": "literal",
-          "value": 1,
-        },
-        "start": 46,
-        "type": "binary-expression",
-      },
-      "start": 46,
-      "type": "expression-statement",
+    "operator": "=",
+    "right": {
+      "end": 4,
+      "raw": "1",
+      "start": 4,
+      "type": "literal",
+      "value": 1,
     },
-    {
-      "end": 60,
-      "expression": {
-        "end": 59,
-        "name": "abc",
-        "start": 57,
+    "start": 0,
+    "type": "assign-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > BinaryExpression 1`] = `
+{
+  "end": 5,
+  "expression": {
+    "end": 4,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "+",
+    "right": {
+      "end": 4,
+      "raw": "1",
+      "start": 4,
+      "type": "literal",
+      "value": 1,
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > BinaryExpression 2`] = `
+{
+  "end": 9,
+  "expression": {
+    "end": 8,
+    "left": {
+      "end": -1,
+      "left": {
+        "end": 0,
+        "name": "a",
+        "start": 0,
         "type": "identifier",
       },
-      "start": 57,
-      "type": "expression-statement",
-    },
-    {
-      "end": 109,
-      "expression": {
-        "end": 108,
-        "parts": [
-          "minecraft",
-          ":",
-          "apple",
-          ":",
-          "*",
-        ],
-        "start": 90,
-        "type": "bracket-handler-expression",
+      "operator": "-",
+      "right": {
+        "end": 4,
+        "raw": "1",
+        "start": 4,
+        "type": "literal",
+        "value": 1,
       },
-      "start": 90,
-      "type": "expression-statement",
+      "start": 0,
+      "type": "binary-expression",
     },
-    {
-      "end": 126,
-      "expression": {
-        "end": 125,
-        "left": {
-          "end": 115,
-          "raw": "1",
-          "start": 115,
-          "type": "literal",
-          "value": 1,
-        },
-        "operator": "+",
-        "right": {
-          "end": 125,
-          "left": {
-            "end": 120,
-            "raw": "1",
-            "start": 120,
+    "operator": "+",
+    "right": {
+      "end": 8,
+      "raw": "1",
+      "start": 8,
+      "type": "literal",
+      "value": 1,
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > BinaryExpression 3`] = `
+{
+  "end": 11,
+  "expression": {
+    "end": 10,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "+",
+    "right": {
+      "end": 10,
+      "left": {
+        "end": 5,
+        "raw": "1",
+        "start": 5,
+        "type": "literal",
+        "value": 1,
+      },
+      "operator": "-",
+      "right": {
+        "end": 9,
+        "raw": "1",
+        "start": 9,
+        "type": "literal",
+        "value": 1,
+      },
+      "start": 4,
+      "type": "binary-expression",
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > CallExpression 1`] = `
+{
+  "end": 17,
+  "expression": {
+    "args": [
+      {
+        "end": 15,
+        "raw": "1",
+        "start": 15,
+        "type": "literal",
+        "value": 1,
+      },
+    ],
+    "callee": [
+      {
+        "args": [
+          {
+            "end": 10,
+            "raw": "2",
+            "start": 10,
             "type": "literal",
-            "value": 1,
-          },
-          "operator": "+",
-          "right": {
-            "end": 124,
-            "raw": "1",
-            "start": 124,
-            "type": "literal",
-            "value": 1,
-          },
-          "start": 119,
-          "type": "binary-expression",
-        },
-        "start": 115,
-        "type": "binary-expression",
-      },
-      "start": 115,
-      "type": "expression-statement",
-    },
-    {
-      "end": 147,
-      "expression": {
-        "end": 146,
-        "entries": [
-          {
-            "end": 138,
-            "key": {
-              "end": 134,
-              "name": "a",
-              "start": 134,
-              "type": "identifier",
-            },
-            "start": 134,
-            "type": "map-entry",
-            "value": {
-              "end": 138,
-              "raw": "1",
-              "start": 138,
-              "type": "literal",
-              "value": 1,
-            },
+            "value": 2,
           },
           {
-            "end": 145,
-            "key": {
-              "end": 141,
-              "name": "b",
-              "start": 141,
-              "type": "identifier",
-            },
-            "start": 141,
-            "type": "map-entry",
-            "value": {
-              "end": 145,
-              "raw": "2",
-              "start": 145,
-              "type": "literal",
-              "value": 2,
-            },
-          },
-        ],
-        "start": 133,
-        "type": "map-initializer-expression",
-      },
-      "start": 133,
-      "type": "expression-statement",
-    },
-    {
-      "end": 155,
-      "expression": {
-        "end": 154,
-        "start": 153,
-        "type": "map-initializer-expression",
-      },
-      "start": 153,
-      "type": "expression-statement",
-    },
-    {
-      "end": 171,
-      "expression": {
-        "elements": [
-          {
-            "end": 163,
-            "raw": "1",
-            "start": 163,
-            "type": "literal",
-            "value": 1,
-          },
-          {
-            "end": 165,
+            "end": 12,
             "raw": "3",
-            "start": 165,
+            "start": 12,
             "type": "literal",
             "value": 3,
           },
+        ],
+        "callee": [
           {
-            "end": 167,
-            "raw": "4",
-            "start": 167,
-            "type": "literal",
-            "value": 4,
-          },
-          {
-            "end": 169,
-            "raw": "5",
-            "start": 169,
-            "type": "literal",
-            "value": 5,
+            "callee": [
+              {
+                "end": 6,
+                "object": [
+                  {
+                    "end": 4,
+                    "object": [
+                      {
+                        "end": 2,
+                        "object": [
+                          {
+                            "end": 0,
+                            "name": "a",
+                            "start": 0,
+                            "type": "identifier",
+                          },
+                        ],
+                        "property": {
+                          "end": 0,
+                          "name": "b",
+                          "start": 0,
+                          "type": "identifier",
+                        },
+                        "start": 1,
+                        "type": "postfix-expression-member-access",
+                      },
+                    ],
+                    "property": {
+                      "end": 0,
+                      "name": "c",
+                      "start": 0,
+                      "type": "identifier",
+                    },
+                    "start": 3,
+                    "type": "postfix-expression-member-access",
+                  },
+                ],
+                "property": {
+                  "end": 0,
+                  "name": "d",
+                  "start": 0,
+                  "type": "identifier",
+                },
+                "start": 5,
+                "type": "postfix-expression-member-access",
+              },
+            ],
+            "end": 8,
+            "start": 7,
+            "type": "postfix-expression-function-call",
           },
         ],
-        "end": 170,
-        "start": 162,
-        "type": "array-initializer-expression",
+        "end": 13,
+        "start": 9,
+        "type": "postfix-expression-function-call",
       },
-      "start": 162,
-      "type": "expression-statement",
-    },
-    {
-      "end": 179,
-      "expression": {
-        "end": 178,
-        "start": 177,
-        "type": "array-initializer-expression",
-      },
-      "start": 177,
-      "type": "expression-statement",
-    },
-    {
-      "end": 203,
-      "expression": {
-        "end": 202,
-        "paramList": {
-          "end": 199,
+    ],
+    "end": 16,
+    "start": 0,
+    "type": "postfix-expression-function-call",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > ClassDeclaration 1`] = `
+{
+  "body": {
+    "body": [],
+    "end": 12,
+    "start": 13,
+    "type": "class-body",
+  },
+  "end": 13,
+  "id": "To",
+  "start": 0,
+  "type": "zen-class",
+}
+`;
+
+exports[`AST Parser > ClassDeclaration 2`] = `
+{
+  "body": {
+    "body": [
+      {
+        "end": 57,
+        "parameterList": {
+          "end": 53,
           "params": [
             {
-              "end": 195,
+              "end": 53,
               "id": "a",
-              "start": 195,
-              "type": "parameter",
-            },
-            {
-              "end": 197,
-              "id": "b",
-              "start": 197,
-              "type": "parameter",
-            },
-            {
-              "end": 199,
-              "id": "c",
-              "start": 199,
+              "pType": {
+                "end": 53,
+                "name": "int",
+                "start": 51,
+                "type": "type-literal",
+              },
+              "start": 46,
               "type": "parameter",
             },
           ],
-          "start": 195,
+          "start": 46,
           "type": "parameter-list",
         },
-        "start": 186,
-        "type": "lambda-function",
+        "start": 31,
+        "type": "zen-constructor",
       },
-      "start": 186,
-      "type": "expression-statement",
+      {
+        "end": 85,
+        "id": "b",
+        "start": 65,
+        "type": "val",
+        "vType": {
+          "end": 79,
+          "name": "string",
+          "start": 74,
+          "type": "type-literal",
+        },
+        "value": {
+          "end": 84,
+          "raw": "''",
+          "start": 83,
+          "type": "literal",
+          "value": "''",
+        },
+      },
+      {
+        "end": 116,
+        "id": "c",
+        "paramList": {
+          "end": 112,
+          "params": [
+            {
+              "end": 112,
+              "id": "c",
+              "pType": {
+                "end": 112,
+                "name": "bool",
+                "start": 109,
+                "type": "type-literal",
+              },
+              "start": 104,
+              "type": "parameter",
+            },
+          ],
+          "start": 104,
+          "type": "parameter-list",
+        },
+        "start": 93,
+        "type": "function",
+      },
+    ],
+    "end": 121,
+    "start": 24,
+    "type": "class-body",
+  },
+  "end": 122,
+  "id": "TheClass",
+  "start": 5,
+  "type": "zen-class",
+}
+`;
+
+exports[`AST Parser > ConditionalExpression 1`] = `
+{
+  "end": 16,
+  "expression": {
+    "condition": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
     },
-    {
-      "end": 227,
-      "expression": {
+    "end": 15,
+    "invalid": {
+      "end": 15,
+      "raw": "false",
+      "start": 11,
+      "type": "literal",
+      "value": false,
+    },
+    "start": 0,
+    "type": "conditional-expression",
+    "valid": {
+      "end": 7,
+      "raw": "true",
+      "start": 4,
+      "type": "literal",
+      "value": true,
+    },
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > FunctionDeclaration 1`] = `
+{
+  "end": 26,
+  "id": "fun",
+  "returnType": {
+    "end": 23,
+    "name": "string",
+    "start": 18,
+    "type": "type-literal",
+  },
+  "start": 0,
+  "type": "function",
+}
+`;
+
+exports[`AST Parser > FunctionDeclaration 2`] = `
+{
+  "end": 39,
+  "expandType": {
+    "end": 13,
+    "name": "string",
+    "start": 8,
+    "type": "type-literal",
+  },
+  "id": "createArray",
+  "returnType": {
+    "end": 36,
+    "name": "void",
+    "start": 33,
+    "type": "type-literal",
+  },
+  "start": 0,
+  "type": "expand-function",
+}
+`;
+
+exports[`AST Parser > GlobalStaticDeclaration 1`] = `
+{
+  "end": 24,
+  "id": "a",
+  "start": 0,
+  "type": "global",
+  "vType": {
+    "end": 15,
+    "name": "bool",
+    "start": 12,
+    "type": "type-literal",
+  },
+  "value": {
+    "end": 23,
+    "raw": "false",
+    "start": 19,
+    "type": "literal",
+    "value": false,
+  },
+}
+`;
+
+exports[`AST Parser > GlobalStaticDeclaration 2`] = `
+{
+  "end": 23,
+  "id": "b",
+  "start": 0,
+  "type": "static",
+  "vType": {
+    "end": 17,
+    "name": "string",
+    "start": 12,
+    "type": "type-literal",
+  },
+  "value": {
+    "end": 22,
+    "raw": "''",
+    "start": 21,
+    "type": "literal",
+    "value": "''",
+  },
+}
+`;
+
+exports[`AST Parser > ImportDeclaration 1`] = `
+{
+  "end": 18,
+  "name": {
+    "end": 17,
+    "ids": [
+      "xxx",
+      "xxx",
+      "xxx",
+    ],
+    "start": 7,
+    "type": "qualified-name",
+  },
+  "start": 0,
+  "type": "import",
+}
+`;
+
+exports[`AST Parser > PostFixExpression > PostfixExpressionArray 1`] = `
+{
+  "end": 10,
+  "expression": {
+    "end": 9,
+    "object": [
+      {
+        "end": 6,
+        "object": [
+          {
+            "end": 3,
+            "object": [
+              {
+                "end": 0,
+                "name": "a",
+                "start": 0,
+                "type": "identifier",
+              },
+            ],
+            "property": {
+              "end": 2,
+              "raw": "1",
+              "start": 2,
+              "type": "literal",
+              "value": 1,
+            },
+            "start": 1,
+            "type": "postfix-expression-member-access",
+          },
+        ],
+        "property": {
+          "end": 5,
+          "raw": "2",
+          "start": 5,
+          "type": "literal",
+          "value": 2,
+        },
+        "start": 4,
+        "type": "postfix-expression-member-access",
+      },
+    ],
+    "property": {
+      "end": 8,
+      "raw": "3",
+      "start": 8,
+      "type": "literal",
+      "value": 3,
+    },
+    "start": 0,
+    "type": "postfix-expression-member-access",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PostFixExpression > PostfixExpressionAsType 1`] = `
+{
+  "end": 11,
+  "expression": {
+    "end": 10,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 10,
+      "name": "string",
+      "start": 5,
+      "type": "type-literal",
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PostFixExpression > PostfixExpressionFunctionCall 1`] = `
+{
+  "end": 11,
+  "expression": {
+    "callee": [
+      {
         "args": [
           {
-            "end": 225,
-            "raw": "1",
-            "start": 225,
+            "end": 7,
+            "raw": "3",
+            "start": 7,
             "type": "literal",
-            "value": 1,
+            "value": 3,
           },
         ],
         "callee": [
           {
             "args": [
               {
-                "end": 220,
-                "raw": "2",
-                "start": 220,
+                "end": 2,
+                "raw": "1",
+                "start": 2,
                 "type": "literal",
-                "value": 2,
+                "value": 1,
               },
               {
-                "end": 222,
-                "raw": "3",
-                "start": 222,
+                "end": 4,
+                "raw": "2",
+                "start": 4,
                 "type": "literal",
-                "value": 3,
+                "value": 2,
               },
             ],
             "callee": [
               {
-                "callee": [
-                  {
-                    "end": 216,
-                    "object": [
-                      {
-                        "end": 214,
-                        "object": [
-                          {
-                            "end": 212,
-                            "object": [
-                              {
-                                "end": 210,
-                                "name": "a",
-                                "start": 210,
-                                "type": "identifier",
-                              },
-                            ],
-                            "property": {
-                              "end": 0,
-                              "name": "b",
-                              "start": 0,
-                              "type": "identifier",
-                            },
-                            "start": 211,
-                            "type": "postfix-expression-member-access",
-                          },
-                        ],
-                        "property": {
-                          "end": 0,
-                          "name": "c",
-                          "start": 0,
-                          "type": "identifier",
-                        },
-                        "start": 213,
-                        "type": "postfix-expression-member-access",
-                      },
-                    ],
-                    "property": {
-                      "end": 0,
-                      "name": "d",
-                      "start": 0,
-                      "type": "identifier",
-                    },
-                    "start": 215,
-                    "type": "postfix-expression-member-access",
-                  },
-                ],
-                "end": 218,
-                "start": 217,
-                "type": "postfix-expression-function-call",
+                "end": 0,
+                "name": "a",
+                "start": 0,
+                "type": "identifier",
               },
             ],
-            "end": 223,
-            "start": 219,
+            "end": 5,
+            "start": 1,
             "type": "postfix-expression-function-call",
           },
         ],
-        "end": 226,
-        "start": 210,
+        "end": 8,
+        "start": 6,
         "type": "postfix-expression-function-call",
       },
-      "start": 210,
-      "type": "expression-statement",
-    },
-    {
-      "end": 241,
-      "expression": {
-        "end": 240,
-        "left": [
-          {
-            "end": 234,
-            "raw": "0",
-            "start": 234,
-            "type": "literal",
-            "value": 0,
-          },
-        ],
-        "right": {
-          "end": 240,
-          "raw": "10",
-          "start": 239,
-          "type": "literal",
-          "value": 10,
-        },
-        "start": 234,
-        "type": "postfix-expression-range",
-      },
-      "start": 234,
-      "type": "expression-statement",
-    },
-    {
-      "end": 255,
-      "expression": {
-        "end": 254,
-        "left": [
-          {
-            "end": 248,
-            "raw": "10",
-            "start": 247,
-            "type": "literal",
-            "value": 10,
-          },
-        ],
-        "right": {
-          "end": 254,
-          "raw": "20",
-          "start": 253,
-          "type": "literal",
-          "value": 20,
-        },
-        "start": 247,
-        "type": "postfix-expression-range",
-      },
-      "start": 247,
-      "type": "expression-statement",
-    },
-    {
-      "end": 278,
-      "expression": {
-        "end": 277,
-        "left": {
-          "end": 0,
-          "object": [
-            {
-              "end": 268,
-              "object": [
-                {
-                  "end": 265,
-                  "object": [
-                    {
-                      "end": 262,
-                      "name": "a",
-                      "start": 262,
-                      "type": "identifier",
-                    },
-                  ],
-                  "property": {
-                    "end": 264,
-                    "raw": "1",
-                    "start": 264,
-                    "type": "literal",
-                    "value": 1,
-                  },
-                  "start": 263,
-                  "type": "postfix-expression-member-access",
-                },
-              ],
-              "property": {
-                "end": 267,
-                "raw": "2",
-                "start": 267,
-                "type": "literal",
-                "value": 2,
-              },
-              "start": 266,
-              "type": "postfix-expression-member-access",
-            },
-          ],
-          "property": {
-            "end": 270,
-            "raw": "3",
-            "start": 270,
-            "type": "literal",
-            "value": 3,
-          },
-          "start": 0,
-          "type": "postfix-expression-member-access",
-        },
-        "operator": "=",
-        "right": {
-          "end": 277,
-          "raw": "233",
-          "start": 275,
-          "type": "literal",
-          "value": 233,
-        },
-        "start": 262,
-        "type": "assign-expression",
-      },
-      "start": 262,
-      "type": "expression-statement",
-    },
-    {
-      "end": 296,
-      "expression": {
-        "end": 295,
-        "left": {
-          "end": 285,
-          "name": "a",
-          "start": 285,
-          "type": "identifier",
-        },
-        "operator": "as",
-        "right": {
-          "end": 295,
-          "name": "string",
-          "start": 290,
-          "type": "type-literal",
-        },
-        "start": 285,
-        "type": "binary-expression",
-      },
-      "start": 285,
-      "type": "expression-statement",
-    },
-    {
-      "end": 318,
-      "expression": {
-        "end": 317,
-        "left": {
-          "end": 302,
-          "name": "a",
-          "start": 302,
-          "type": "identifier",
-        },
-        "operator": "instanceof",
-        "right": {
-          "end": 317,
-          "name": "int",
-          "start": 315,
-          "type": "type-literal",
-        },
-        "start": 302,
-        "type": "binary-expression",
-      },
-      "start": 302,
-      "type": "expression-statement",
-    },
-  ],
-  "end": 318,
+    ],
+    "end": 10,
+    "start": 0,
+    "type": "postfix-expression-function-call",
+  },
   "start": 0,
-  "type": "program",
+  "type": "expression-statement",
 }
 `;
 
-exports[`Visitor Program without Expression 1`] = `
+exports[`AST Parser > PostFixExpression > PostfixExpressionInstanceofType 1`] = `
 {
-  "body": [
-    {
-      "end": 17,
-      "name": {
-        "end": 16,
+  "end": 19,
+  "expression": {
+    "end": 18,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "instanceof",
+    "right": {
+      "end": 18,
+      "name": "string",
+      "start": 13,
+      "type": "type-literal",
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PostFixExpression > PostfixExpressionMemberAccess 1`] = `
+{
+  "end": 7,
+  "expression": {
+    "end": 6,
+    "object": [
+      {
+        "end": 4,
+        "object": [
+          {
+            "end": 2,
+            "object": [
+              {
+                "end": 0,
+                "name": "a",
+                "start": 0,
+                "type": "identifier",
+              },
+            ],
+            "property": {
+              "end": 0,
+              "name": "b",
+              "start": 0,
+              "type": "identifier",
+            },
+            "start": 1,
+            "type": "postfix-expression-member-access",
+          },
+        ],
+        "property": {
+          "end": 0,
+          "name": "c",
+          "start": 0,
+          "type": "identifier",
+        },
+        "start": 3,
+        "type": "postfix-expression-member-access",
+      },
+    ],
+    "property": {
+      "end": 0,
+      "name": "d",
+      "start": 0,
+      "type": "identifier",
+    },
+    "start": 0,
+    "type": "postfix-expression-member-access",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PostFixExpression > PostfixExpressionRange 1`] = `
+{
+  "end": 7,
+  "expression": {
+    "end": 6,
+    "left": [
+      {
+        "end": 0,
+        "raw": "1",
+        "start": 0,
+        "type": "literal",
+        "value": 1,
+      },
+    ],
+    "right": {
+      "end": 6,
+      "raw": "10",
+      "start": 5,
+      "type": "literal",
+      "value": 10,
+    },
+    "start": 0,
+    "type": "postfix-expression-range",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > array init expr case 1`] = `
+{
+  "end": 9,
+  "expression": {
+    "elements": [
+      {
+        "end": 1,
+        "raw": "1",
+        "start": 1,
+        "type": "literal",
+        "value": 1,
+      },
+      {
+        "end": 3,
+        "raw": "3",
+        "start": 3,
+        "type": "literal",
+        "value": 3,
+      },
+      {
+        "end": 5,
+        "raw": "4",
+        "start": 5,
+        "type": "literal",
+        "value": 4,
+      },
+      {
+        "end": 7,
+        "raw": "5",
+        "start": 7,
+        "type": "literal",
+        "value": 5,
+      },
+    ],
+    "end": 8,
+    "start": 0,
+    "type": "array-initializer-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > bracket handler expr case 1`] = `
+{
+  "end": 19,
+  "expression": {
+    "end": 18,
+    "parts": [
+      "minecraft",
+      ":",
+      "apple",
+      ":",
+      "*",
+    ],
+    "start": 0,
+    "type": "bracket-handler-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > identifier case 1`] = `
+{
+  "end": 3,
+  "expression": {
+    "end": 2,
+    "name": "abc",
+    "start": 0,
+    "type": "identifier",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > lambda function expr case 1`] = `
+{
+  "end": 17,
+  "expression": {
+    "end": 16,
+    "paramList": {
+      "end": 13,
+      "params": [
+        {
+          "end": 9,
+          "id": "a",
+          "start": 9,
+          "type": "parameter",
+        },
+        {
+          "end": 11,
+          "id": "b",
+          "start": 11,
+          "type": "parameter",
+        },
+        {
+          "end": 13,
+          "id": "c",
+          "start": 13,
+          "type": "parameter",
+        },
+      ],
+      "start": 9,
+      "type": "parameter-list",
+    },
+    "start": 0,
+    "type": "lambda-function",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > literal case 1`] = `
+{
+  "end": 1,
+  "expression": {
+    "end": 0,
+    "raw": "1",
+    "start": 0,
+    "type": "literal",
+    "value": 1,
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > PrimaryExpression > map init expr case 1`] = `
+{
+  "end": 14,
+  "expression": {
+    "end": 13,
+    "entries": [
+      {
+        "end": 5,
+        "key": {
+          "end": 1,
+          "name": "a",
+          "start": 1,
+          "type": "identifier",
+        },
+        "start": 1,
+        "type": "map-entry",
+        "value": {
+          "end": 5,
+          "raw": "1",
+          "start": 5,
+          "type": "literal",
+          "value": 1,
+        },
+      },
+      {
+        "end": 12,
+        "key": {
+          "end": 8,
+          "name": "b",
+          "start": 8,
+          "type": "identifier",
+        },
+        "start": 8,
+        "type": "map-entry",
+        "value": {
+          "end": 12,
+          "raw": "2",
+          "start": 12,
+          "type": "literal",
+          "value": 2,
+        },
+      },
+    ],
+    "start": 0,
+    "type": "map-initializer-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > TypeLiteral 1`] = `
+{
+  "end": 25,
+  "expression": {
+    "end": 25,
+    "left": {
+      "end": 0,
+      "name": "a",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 25,
+      "name": "array-type",
+      "start": 5,
+      "type": "type-literal",
+      "value": {
+        "end": 23,
+        "key": {
+          "end": 14,
+          "name": "int",
+          "start": 12,
+          "type": "type-literal",
+        },
+        "name": "map-type",
+        "start": 5,
+        "type": "type-literal",
+        "value": {
+          "end": 15,
+          "key": {
+            "end": 14,
+            "name": "int",
+            "start": 12,
+            "type": "type-literal",
+          },
+          "name": "map-type",
+          "start": 5,
+          "type": "type-literal",
+          "value": {
+            "end": 10,
+            "name": "string",
+            "start": 5,
+            "type": "type-literal",
+          },
+        },
+      },
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > TypeLiteral 2`] = `
+{
+  "end": 29,
+  "expression": {
+    "end": 28,
+    "left": {
+      "end": 0,
+      "name": "b",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 28,
+      "name": "list-type",
+      "start": 5,
+      "type": "type-literal",
+      "value": {
+        "end": 27,
+        "name": "function-type",
+        "paramTypes": [
+          {
+            "end": 20,
+            "name": "string",
+            "start": 15,
+            "type": "type-literal",
+          },
+        ],
+        "returnType": {
+          "end": 27,
+          "name": "array-type",
+          "start": 22,
+          "type": "type-literal",
+          "value": {
+            "end": 25,
+            "name": "void",
+            "start": 22,
+            "type": "type-literal",
+          },
+        },
+        "start": 6,
+        "type": "type-literal",
+      },
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > TypeLiteral 3`] = `
+{
+  "end": 12,
+  "expression": {
+    "end": 11,
+    "left": {
+      "end": 0,
+      "name": "c",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 11,
+      "name": "array-type",
+      "start": 5,
+      "type": "type-literal",
+      "value": {
+        "end": 9,
         "ids": [
           "a",
           "b",
           "C",
         ],
-        "start": 12,
-        "type": "qualified-name",
-      },
-      "start": 5,
-      "type": "import",
-    },
-    {
-      "end": 52,
-      "id": "a",
-      "start": 28,
-      "type": "global",
-      "vType": {
-        "end": 43,
-        "name": "bool",
-        "start": 40,
+        "name": "class-type",
+        "start": 5,
         "type": "type-literal",
       },
-      "value": {
-        "end": 51,
-        "raw": "false",
-        "start": 47,
-        "type": "literal",
-        "value": false,
-      },
     },
-    {
-      "end": 81,
-      "id": "b",
-      "start": 58,
-      "type": "static",
-      "vType": {
-        "end": 75,
-        "name": "string",
-        "start": 70,
-        "type": "type-literal",
-      },
-      "value": {
-        "end": 80,
-        "raw": "''",
-        "start": 79,
-        "type": "literal",
-        "value": "''",
-      },
-    },
-    {
-      "end": 134,
-      "id": "fun",
-      "returnType": {
-        "end": 131,
-        "name": "string",
-        "start": 126,
-        "type": "type-literal",
-      },
-      "start": 108,
-      "type": "function",
-    },
-    {
-      "end": 180,
-      "expandType": {
-        "end": 154,
-        "name": "string",
-        "start": 149,
-        "type": "type-literal",
-      },
-      "id": "createArray",
-      "returnType": {
-        "end": 177,
-        "name": "void",
-        "start": 174,
-        "type": "type-literal",
-      },
-      "start": 141,
-      "type": "expand-function",
-    },
-    {
-      "body": {
-        "body": [],
-        "end": 100,
-        "start": 101,
-        "type": "class-body",
-      },
-      "end": 101,
-      "id": "To",
-      "start": 88,
-      "type": "zen-class",
-    },
-    {
-      "body": {
-        "body": [
-          {
-            "end": 257,
-            "parameterList": {
-              "end": 253,
-              "params": [
-                {
-                  "end": 253,
-                  "id": "a",
-                  "pType": {
-                    "end": 253,
-                    "name": "array-type",
-                    "start": 233,
-                    "type": "type-literal",
-                    "value": {
-                      "end": 251,
-                      "key": {
-                        "end": 242,
-                        "name": "int",
-                        "start": 240,
-                        "type": "type-literal",
-                      },
-                      "name": "map-type",
-                      "start": 233,
-                      "type": "type-literal",
-                      "value": {
-                        "end": 243,
-                        "key": {
-                          "end": 242,
-                          "name": "int",
-                          "start": 240,
-                          "type": "type-literal",
-                        },
-                        "name": "map-type",
-                        "start": 233,
-                        "type": "type-literal",
-                        "value": {
-                          "end": 238,
-                          "name": "string",
-                          "start": 233,
-                          "type": "type-literal",
-                        },
-                      },
-                    },
-                  },
-                  "start": 228,
-                  "type": "parameter",
-                },
-              ],
-              "start": 228,
-              "type": "parameter-list",
-            },
-            "start": 213,
-            "type": "zen-constructor",
-          },
-          {
-            "end": 280,
-            "id": "b",
-            "start": 265,
-            "type": "var",
-            "vType": {
-              "end": 279,
-              "name": "string",
-              "start": 274,
-              "type": "type-literal",
-            },
-          },
-          {
-            "end": 331,
-            "id": "funTypeCase",
-            "start": 288,
-            "type": "var",
-            "vType": {
-              "end": 330,
-              "name": "list-type",
-              "start": 307,
-              "type": "type-literal",
-              "value": {
-                "end": 329,
-                "name": "function-type",
-                "paramTypes": [
-                  {
-                    "end": 322,
-                    "name": "string",
-                    "start": 317,
-                    "type": "type-literal",
-                  },
-                ],
-                "returnType": {
-                  "end": 329,
-                  "name": "array-type",
-                  "start": 324,
-                  "type": "type-literal",
-                  "value": {
-                    "end": 327,
-                    "name": "void",
-                    "start": 324,
-                    "type": "type-literal",
-                  },
-                },
-                "start": 308,
-                "type": "type-literal",
-              },
-            },
-          },
-          {
-            "end": 368,
-            "id": "classTypeCase",
-            "start": 340,
-            "type": "var",
-            "vType": {
-              "end": 367,
-              "name": "array-type",
-              "start": 361,
-              "type": "type-literal",
-              "value": {
-                "end": 365,
-                "ids": [
-                  "a",
-                  "b",
-                  "C",
-                ],
-                "name": "class-type",
-                "start": 361,
-                "type": "type-literal",
-              },
-            },
-          },
-          {
-            "end": 401,
-            "id": "classTypeCase2",
-            "start": 376,
-            "type": "var",
-            "vType": {
-              "end": 400,
-              "name": "array-type",
-              "start": 398,
-              "type": "type-literal",
-              "value": {
-                "end": 398,
-                "ids": [
-                  "C",
-                ],
-                "name": "class-type",
-                "start": 398,
-                "type": "type-literal",
-              },
-            },
-          },
-          {
-            "end": 441,
-            "id": "listTypeCase",
-            "start": 409,
-            "type": "var",
-            "vType": {
-              "end": 440,
-              "name": "array-type",
-              "start": 429,
-              "type": "type-literal",
-              "value": {
-                "end": 438,
-                "name": "list-type",
-                "start": 429,
-                "type": "type-literal",
-                "value": {
-                  "end": 437,
-                  "name": "list-type",
-                  "start": 430,
-                  "type": "type-literal",
-                  "value": {
-                    "end": 436,
-                    "name": "string",
-                    "start": 431,
-                    "type": "type-literal",
-                  },
-                },
-              },
-            },
-          },
-          {
-            "end": 474,
-            "id": "c",
-            "paramList": {
-              "end": 470,
-              "params": [
-                {
-                  "end": 470,
-                  "id": "c",
-                  "pType": {
-                    "end": 470,
-                    "name": "string",
-                    "start": 465,
-                    "type": "type-literal",
-                  },
-                  "start": 460,
-                  "type": "parameter",
-                },
-              ],
-              "start": 460,
-              "type": "parameter-list",
-            },
-            "start": 449,
-            "type": "function",
-          },
-        ],
-        "end": 479,
-        "start": 206,
-        "type": "class-body",
-      },
-      "end": 480,
-      "id": "TheClass",
-      "start": 187,
-      "type": "zen-class",
-    },
-  ],
-  "end": 480,
+    "start": 0,
+    "type": "binary-expression",
+  },
   "start": 0,
-  "type": "program",
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > TypeLiteral 4`] = `
+{
+  "end": 8,
+  "expression": {
+    "end": 7,
+    "left": {
+      "end": 0,
+      "name": "c",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 7,
+      "name": "array-type",
+      "start": 5,
+      "type": "type-literal",
+      "value": {
+        "end": 5,
+        "ids": [
+          "C",
+        ],
+        "name": "class-type",
+        "start": 5,
+        "type": "type-literal",
+      },
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
+}
+`;
+
+exports[`AST Parser > TypeLiteral 5`] = `
+{
+  "end": 17,
+  "expression": {
+    "end": 16,
+    "left": {
+      "end": 0,
+      "name": "c",
+      "start": 0,
+      "type": "identifier",
+    },
+    "operator": "as",
+    "right": {
+      "end": 16,
+      "name": "array-type",
+      "start": 5,
+      "type": "type-literal",
+      "value": {
+        "end": 14,
+        "name": "list-type",
+        "start": 5,
+        "type": "type-literal",
+        "value": {
+          "end": 13,
+          "name": "list-type",
+          "start": 6,
+          "type": "type-literal",
+          "value": {
+            "end": 12,
+            "name": "string",
+            "start": 7,
+            "type": "type-literal",
+          },
+        },
+      },
+    },
+    "start": 0,
+    "type": "binary-expression",
+  },
+  "start": 0,
+  "type": "expression-statement",
 }
 `;
