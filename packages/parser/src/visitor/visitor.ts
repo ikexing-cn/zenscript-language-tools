@@ -1,9 +1,9 @@
 import type { CstNode, CstNodeLocation, IToken } from 'chevrotain'
 import { objectAssign, objectOmit } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
-import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeImport, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
-import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
-import { getLastBody as getLastValue, getTypeLiteral, getTypeLiteralValue, handleIdentifier, isPrimitiveType } from './visitor-helper'
+import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeIdentifier, ASTNodeImport, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
+import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
+import { getLastBody, getTypeLiteral, getTypeLiteralValue, isPrimitiveType } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructor()
 
@@ -61,7 +61,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const fType = ctx.returnType && this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
 
     const toReturn: ASTNodeFunction<IS_EXPAND> = {
-      id: handleIdentifier(ctx.Identifier),
+      id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
       type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
       start: 0,
       end: 0,
@@ -163,7 +163,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       start: 0,
       type: 'qualified-name',
-      ids: ctx.Identifier.map(item => handleIdentifier([item])),
+      ids: this.$zsVisitArray<ASTNodeIdentifier>(ctx.Identifier).map(item => item.name),
     }
   }
 
@@ -174,7 +174,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       start: 0,
       type: 'parameter',
-      id: handleIdentifier(ctx.Identifier),
+      id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
 
     return objectAssign(toReturn, { defaultValue, pType })
@@ -197,7 +197,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       start: 0,
       type: ctx.GLOBAL ? 'global' : 'static',
-      id: handleIdentifier(ctx.Identifier),
+      id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
 
     return objectAssign(toReturn, { value, vType })
@@ -211,7 +211,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       start: 0,
       type: ctx.VAL ? 'val' : 'var',
-      id: handleIdentifier(ctx.Identifier),
+      id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
 
     return objectAssign(toReturn, { value, vType })
@@ -245,7 +245,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
 
   ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeZenClass {
     return {
-      id: handleIdentifier(ctx.Identifier),
+      id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
       start: 0,
       end: 0,
       type: 'zen-class',
@@ -327,7 +327,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       }
 
       if (value !== undefined) {
-        getLastValue(value).value = toReturn
+        getLastBody(value).value = toReturn
         toReturn = value
       }
       return toReturn
@@ -627,12 +627,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       type: 'postfix-expression-member-access',
       object: args[0],
-      property: {
-        end: 0,
-        start: 0,
-        type: 'identifier',
-        name: handleIdentifier(ctx.Identifier),
-      },
+      property: this.$zsVisit(ctx.Identifier[0]),
     }
   }
 
@@ -706,12 +701,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       }
     }
     else if (ctx.Identifier) {
-      return {
-        end: 0,
-        start: 0,
-        type: 'identifier',
-        name: handleIdentifier(ctx.Identifier),
-      }
+      return this.$zsVisit(ctx.Identifier[0])
     }
     else if (ctx.BracketHandlerExpression) {
       return this.$zsVisit(ctx.BracketHandlerExpression[0])
@@ -737,7 +727,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       type: 'bracket-handler-expression',
       parts: ctx.part!.map((item) => {
         if ((item as IdentifierCstNode)?.name === 'Identifier')
-          return handleIdentifier([item as IdentifierCstNode])
+          return this.$zsVisit<ASTNodeIdentifier>(item as IdentifierCstNode).name
         return (item as IToken).image
       }),
     }
@@ -777,6 +767,17 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       type: 'map-entry',
       key: this.$zsVisit(ctx.key[0]),
       value: this.$zsVisit(ctx.value[0]),
+    }
+  }
+
+  Identifier(ctx: IdentifierCstChildren): ASTNodeIdentifier | string {
+    const name = ctx?.IDENTIFIER?.[0]?.image ?? ctx?.TO?.[0]?.image ?? 'unknow'
+
+    return {
+      name,
+      start: 0,
+      type: 'identifier',
+      end: 0,
     }
   }
 }
