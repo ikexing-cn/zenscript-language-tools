@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import type { Connection } from 'vscode-languageserver'
 import type { URI } from 'vscode-uri'
-import { ZSCstParser, ZSLexer, ZenScriptBasicVisitor } from '@zenscript-language-tools/parser'
+import { ZSCstParser, ZSLexer, ZenScriptVisitor } from '@zenscript-language-tools/parser'
 import type { IRecognitionException, IToken } from 'chevrotain'
-import type { ASTBasicProgram, ASTError } from '@zenscript-language-tools/parser/src/types/zs-ast'
+import type { ASTError, ASTProgram } from '@zenscript-language-tools/parser/src/types/zs-ast'
 import { zServer } from './server'
 
 type ParseStep = 'NotLoaded' | 'Loaded' | 'Preprocessed' | 'Parsed'
@@ -17,9 +17,12 @@ export class ZsFile {
   priority = 0
   content?: string
 
+  visitor = new ZenScriptVisitor()
+
   parseErrors: IRecognitionException[] = []
   basicVisitError: ASTError[] = []
   tokens: IToken[] = []
+  ast: ASTProgram = {} as any
 
   private step: ParseStep = 'NotLoaded'
 
@@ -51,21 +54,8 @@ export class ZsFile {
     const cst = ZSCstParser.parse(this.tokens)
     this.parseErrors = ZSCstParser.errors
 
-    if (this.parseErrors.length === 0) {
-      const basicVisitor = new ZenScriptBasicVisitor()
-      const basicAst = basicVisitor.visit(cst) as ASTBasicProgram
-      this.basicVisitError = basicAst.errors
-
-      if (this.basicVisitError.length === 0) {
-        for (const scopeNode in basicAst.scopes) {
-          const scopeType = basicAst.scopes[scopeNode]
-          if (!zServer.scopes.has(this.pkg))
-            zServer.scopes.set(this.pkg, [[scopeNode, scopeType]])
-          else
-            zServer.scopes.get(this.pkg)!.push([scopeNode, scopeType])
-        }
-      }
-    }
+    if (this.parseErrors.length === 0)
+      this.ast = this.visitor.visit(cst) as ASTProgram
 
     return this
   }

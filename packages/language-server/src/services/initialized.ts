@@ -56,7 +56,6 @@ function searchDefaultScripts(folderUri: URI) {
 
 function parseZenPackages(folderUri: URI, zenPackages: string) {
   const defaultPackage: Packages = {
-    dzs: true,
     scripts: searchDefaultScripts(folderUri),
   }
 
@@ -112,14 +111,6 @@ export default async function () {
   else {
     parseZenPackages(folderUri, zenPackages)
   }
-
-  // check if the folder is a project
-  const dzs = typeof zServer.packages?.dzs === 'boolean'
-    ? zServer.packages.dzs === true ? '.d.zs' : ''
-    : zServer.packages?.dzs ?? '.d.zs'
-
-  if (existsSync(join(zServer.folders[0].uri, dzs)))
-    zServer.hasDZS = true
 
   if (!zServer.scriptsFolderUri)
     return

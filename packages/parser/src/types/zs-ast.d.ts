@@ -13,11 +13,7 @@ export interface ASTNodeHasId<T extends string> extends ASTNode<T> {
 
 export interface ASTError extends Offset {
   message: string
-}
-
-export interface ASTBasicProgram {
-  scopes: Record<string, 'function' | 'zen-class' | 'global' | 'static'>
-  errors: ASTError[]
+  autoFix?: boolean
 }
 
 export interface ASTProgram extends ASTNode<'program'> {

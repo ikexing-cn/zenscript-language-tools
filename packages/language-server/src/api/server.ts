@@ -14,12 +14,10 @@ export interface Packages {
   version?: string
   description?: string
 
-  dzs?: string | boolean
   scripts?: URI | null
 }
 
 export class ZsServer {
-  hasDZS = false
   isProject = false
   packages: Packages | null = null
   scriptsFolderUri: URI | null = null
@@ -27,7 +25,7 @@ export class ZsServer {
   documents: TextDocuments<TextDocument> | null = null
 
   folders: Array<{ name?: string; uri: string }> = []
-  files: Map<String, ZsFile> = new Map()
+  files: Map<string, ZsFile> = new Map()
 
   bus = new StateEventBus()
   scopes: Map<string, [string, string][]> = new Map()
@@ -74,7 +72,6 @@ export class ZsServer {
 
   private reset() {
     this.folders = []
-    this.hasDZS = false
     this.isProject = false
     this.packages = null
     this.connection = null

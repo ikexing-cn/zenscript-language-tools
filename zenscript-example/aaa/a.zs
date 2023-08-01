@@ -1,3 +1,3 @@
 global ab = true;
 
-static b = false;
+static b  = false;

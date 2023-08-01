@@ -1,26 +1,30 @@
+/* eslint-disable no-console */
 import { describe, expect, it } from 'vitest'
 import { ZSLexer } from '../src/lexer'
 import { ZSCstParser } from '../src/cst-parser'
 import { ZenScriptVisitor } from '../src/visitor/visitor'
 import type { ASTProgram } from '../src/types/zs-ast'
 
-describe('AST Parser', () => {
-  function parser(code: string, debug?: boolean) {
-    const lexResult = ZSLexer.tokenize(code)
-    const cst = ZSCstParser.parse(lexResult.tokens)
-    /* eslint-disable no-console */
-    if (debug) {
-      console.log(lexResult.tokens)
-      console.log(ZSCstParser.errors)
-    }
-
-    expect(ZSCstParser.errors.length).toBe(0)
-
-    const ast = new ZenScriptVisitor().visit(cst) as ASTProgram
-
-    return ast.body[0]
+function parser(code: string, debug?: boolean) {
+  const lexResult = ZSLexer.tokenize(code)
+  const cst = ZSCstParser.parse(lexResult.tokens)
+  if (debug) {
+    console.log(lexResult.tokens)
+    console.log(ZSCstParser.errors)
   }
 
+  expect(ZSCstParser.errors.length).toBe(0)
+
+  const visitor = new ZenScriptVisitor()
+  const ast = visitor.visit(cst) as ASTProgram
+
+  if (debug)
+    console.log(visitor.err)
+
+  return ast.body[0]
+}
+
+describe('AST Parser', () => {
   it('ImportDeclaration', () => expect(parser('import xxx.xxx.xxx;')).toMatchSnapshot())
 
   it('GlobalStaticDeclaration', () => {
@@ -102,4 +106,8 @@ describe('AST Parser', () => {
       expect(parser('while(a > b) {}')).toMatchSnapshot()
     })
   })
+})
+
+describe('Ast Parser with errors', () => {
+
 })

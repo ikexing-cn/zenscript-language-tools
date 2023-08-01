@@ -16,10 +16,11 @@ export default async function (document: TextDocument) {
   // waiting for all zs files to be parsed
   await zServer.bus.wait('all-zs-parsed')
 
-  if (zServer.hasDZS) {
-    // TODO: waiting for `.d.zs` file to be parsed
-    // await zServer.bus.wait('dzs-parsed')
-  }
+  // TODO: parser dzs
+  // if (zServer.hasDZS) {
+  // waiting for `.d.zs` file to be parsed
+  // await zServer.bus.wait('dzs-parsed')
+  // }
 
   const diagnostics: Diagnostic[] = []
   const documentUri = URI.parse(document.uri)
