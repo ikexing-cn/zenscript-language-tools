@@ -279,8 +279,9 @@ exports[`AST Parser > ClassDeclaration 2`] = `
       {
         "end": 85,
         "id": "b",
+        "name": "val",
         "start": 65,
-        "type": "val",
+        "type": "VariableDeclaration",
         "vType": {
           "end": 79,
           "name": "string",
@@ -405,8 +406,9 @@ exports[`AST Parser > GlobalStaticDeclaration 1`] = `
 {
   "end": 24,
   "id": "a",
+  "name": "global",
   "start": 0,
-  "type": "global",
+  "type": "VariableDeclaration",
   "vType": {
     "end": 15,
     "name": "bool",
@@ -427,8 +429,9 @@ exports[`AST Parser > GlobalStaticDeclaration 2`] = `
 {
   "end": 23,
   "id": "b",
+  "name": "static",
   "start": 0,
-  "type": "static",
+  "type": "VariableDeclaration",
   "vType": {
     "end": 17,
     "name": "string",

@@ -196,7 +196,8 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const toReturn: ASTNodeGlobalStaticDeclare = {
       end: 0,
       start: 0,
-      type: ctx.GLOBAL ? 'global' : 'static',
+      type: 'VariableDeclaration',
+      name: ctx.GLOBAL ? 'global' : 'static',
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
 
@@ -210,7 +211,8 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const toReturn: ASTNodeVariableDeclare = {
       end: 0,
       start: 0,
-      type: ctx.VAL ? 'val' : 'var',
+      type: 'VariableDeclaration',
+      name: ctx.VAL ? 'val' : 'var',
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
 

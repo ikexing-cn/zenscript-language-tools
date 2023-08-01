@@ -29,7 +29,8 @@ export interface ASTProgram extends ASTNode<'program'> {
   body: ASTNodeBody<'program'>['body']
 }
 
-export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<T> {
+export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<'VariableDeclaration'> {
+  name: T
   value?: ASTNode
   vType?: ASTNodeTypeLiteral
 }
@@ -51,7 +52,7 @@ export interface ASTNodeParameterList extends ASTNode<'parameter-list'> {
   params: ASTNodeParameter[]
 }
 
-export interface ASTNodeImport extends ASTNode<'import'> {
+export interface ASTNodeImportDeclaration extends ASTNode<'import'> {
   name: ASTNodeQualifiedName
 }
 

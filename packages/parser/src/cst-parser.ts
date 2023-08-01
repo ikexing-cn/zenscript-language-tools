@@ -184,6 +184,7 @@ export class ZenScriptParser extends CstParser {
         GATE: () => this.LA(1).tokenType === L_PAREN,
         ALT: () => this.SUBRULE(this.BlockStatement, { LABEL: 'statement' }),
       },
+      { ALT: () => this.SUBRULE(this.VariableDeclaration, { LABEL: 'statement' }) },
       { ALT: () => this.SUBRULE(this.ReturnStatement, { LABEL: 'statement' }) },
       { ALT: () => this.SUBRULE(this.BreakStatement, { LABEL: 'statement' }) },
       { ALT: () => this.SUBRULE(this.ContinueStatement, { LABEL: 'statement' }) },
