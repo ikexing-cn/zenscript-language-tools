@@ -73,6 +73,6 @@ describe('AST Parser', () => {
     it('bracket handler expr case', () => expect(parser('<minecraft:apple:*>;')).toMatchSnapshot())
     it('lambda function expr case', () => expect(parser('function(a,b,c){};')).toMatchSnapshot())
     it('array init expr case', () => expect(parser('[1,3,4,5];')).toMatchSnapshot())
-    it('map init expr case', () => expect(parser('{a : 1, b : 2};')).toMatchSnapshot())
+    it('map init expr case', () => expect(parser('val map = {a : 1, b : 2};')).toMatchSnapshot())
   })
 })

@@ -181,7 +181,7 @@ export class ZenScriptParser extends CstParser {
   private Statement = this.RULE('Statement', () => {
     this.OR([
       {
-        GATE: () => this.LA(1).tokenType === L_PAREN,
+        GATE: () => this.LA(1).tokenType === L_CURLY,
         ALT: () => this.SUBRULE(this.BlockStatement, { LABEL: 'statement' }),
       },
       { ALT: () => this.SUBRULE(this.VariableDeclaration, { LABEL: 'statement' }) },
@@ -192,13 +192,12 @@ export class ZenScriptParser extends CstParser {
       { ALT: () => this.SUBRULE(this.ForeachStatement, { LABEL: 'statement' }) },
       { ALT: () => this.SUBRULE(this.WhileStatement, { LABEL: 'statement' }) },
       { ALT: () => this.SUBRULE(this.ExpressionStatement, { LABEL: 'statement' }) },
-      { ALT: () => this.SUBRULE(this.VariableDeclaration, { LABEL: 'statement' }) },
     ])
   })
 
   private BlockStatement = this.RULE('BlockStatement', () => {
     this.CONSUME(L_CURLY)
-    this.MANY(() => {
+    this.OPTION(() => {
       this.SUBRULE(this.Statement)
     })
     this.CONSUME(R_CURLY)

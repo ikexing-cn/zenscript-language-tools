@@ -35,7 +35,7 @@ describe('CST Parser', () => {
     expect(parser('function(a as string) as string {};')).toBe(0)
   })
 
-  it('MapInitializerExpression', () => expect(parser('{a: 1};')).toBe(0))
+  it('MapInitializerExpression', () => expect(parser('val map = {a: 1};')).toBe(0))
 
   it('ArrayInitializerExpression', () => expect(parser('[1,3,4,5];')).toBe(0))
 

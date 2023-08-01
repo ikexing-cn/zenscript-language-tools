@@ -848,52 +848,54 @@ exports[`AST Parser > PrimaryExpression > literal case 1`] = `
 
 exports[`AST Parser > PrimaryExpression > map init expr case 1`] = `
 {
-  "end": 14,
-  "expression": {
-    "end": 13,
+  "end": 24,
+  "id": "map",
+  "name": "val",
+  "start": 0,
+  "type": "VariableDeclaration",
+  "value": {
+    "end": 23,
     "entries": [
       {
-        "end": 5,
+        "end": 15,
         "key": {
-          "end": 1,
+          "end": 11,
           "name": "a",
-          "start": 1,
+          "start": 11,
           "type": "identifier",
         },
-        "start": 1,
+        "start": 11,
         "type": "map-entry",
         "value": {
-          "end": 5,
+          "end": 15,
           "raw": "1",
-          "start": 5,
+          "start": 15,
           "type": "literal",
           "value": 1,
         },
       },
       {
-        "end": 12,
+        "end": 22,
         "key": {
-          "end": 8,
+          "end": 18,
           "name": "b",
-          "start": 8,
+          "start": 18,
           "type": "identifier",
         },
-        "start": 8,
+        "start": 18,
         "type": "map-entry",
         "value": {
-          "end": 12,
+          "end": 22,
           "raw": "2",
-          "start": 12,
+          "start": 22,
           "type": "literal",
           "value": 2,
         },
       },
     ],
-    "start": 0,
+    "start": 10,
     "type": "map-initializer-expression",
   },
-  "start": 0,
-  "type": "expression-statement",
 }
 `;
 

@@ -1,7 +1,7 @@
 import type { CstNode, CstNodeLocation, IToken } from 'chevrotain'
 import { objectAssign, objectOmit } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
-import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeIdentifier, ASTNodeImport, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
+import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeIdentifier, ASTNodeImportDeclaration, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
 import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
 import { getLastBody, getTypeLiteral, getTypeLiteralValue, isPrimitiveType } from './visitor-helper'
 
@@ -150,10 +150,10 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       const nodes = this.$zsVisitArray(ctx.ClassDeclaration)
       program.body.push(...nodes)
     }
-    if (ctx.Statement)
-      ctx.Statement.forEach(item => program.body.push(this.$zsVisit(item)))
-      // const nodes = this.zsVisitArray(ctx.Statement)
-      // program.body.push(...nodes)
+    if (ctx.Statement) {
+      const nodes = this.$zsVisitArray(ctx.Statement)
+      program.body.push(...nodes)
+    }
 
     return objectAssign(program, { end: program.body[program.body.length - 1].end })
   }
@@ -180,7 +180,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return objectAssign(toReturn, { defaultValue, pType })
   }
 
-  ImportDeclaration(ctx: ImportDeclarationCstChildren): ASTNodeImport {
+  ImportDeclaration(ctx: ImportDeclarationCstChildren): ASTNodeImportDeclaration {
     return {
       end: 0,
       start: 0,
