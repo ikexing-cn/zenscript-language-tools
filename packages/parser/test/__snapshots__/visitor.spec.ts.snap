@@ -318,6 +318,12 @@ exports[`AST Parser > ClassDeclaration 2`] = `
         "start": 104,
         "type": "parameter-list",
       },
+      "returnType": {
+        "end": -1,
+        "name": "any",
+        "start": -1,
+        "type": "type-literal",
+      },
       "start": 93,
       "type": "function",
     },
@@ -803,15 +809,15 @@ exports[`AST Parser > PrimaryExpression > identifier case 1`] = `
 
 exports[`AST Parser > PrimaryExpression > lambda function expr case 1`] = `
 {
-  "end": 17,
+  "end": 26,
   "expression": {
     "body": {
       "body": [],
-      "end": 16,
-      "start": 15,
+      "end": 25,
+      "start": 24,
       "type": "block-statement",
     },
-    "end": 16,
+    "end": 25,
     "paramList": {
       "end": 13,
       "params": [
@@ -836,6 +842,12 @@ exports[`AST Parser > PrimaryExpression > lambda function expr case 1`] = `
       ],
       "start": 9,
       "type": "parameter-list",
+    },
+    "returnType": {
+      "end": 22,
+      "name": "void",
+      "start": 19,
+      "type": "type-literal",
     },
     "start": 0,
     "type": "lambda-function",

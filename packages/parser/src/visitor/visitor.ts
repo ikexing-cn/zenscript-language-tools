@@ -97,20 +97,27 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   ) {
     const paramList = ctx.ParameterList && this.$zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
 
-    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
-    const fType = ctx.returnType && this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
+    const returnType: ASTNodeTypeLiteral = ctx?.returnType
+      ? this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
+      : {
+          name: 'any',
+          type: 'type-literal',
+          start: -1,
+          end: -1,
+        }
 
     const toReturn: ASTNodeFunctionDeclaration<IS_EXPAND> = {
-      id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
-      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
-      start: 0,
       end: 0,
+      start: 0,
+      returnType,
+      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
+      id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
       body: ctx?.functionBody
         ? this.$zsVisit<ASTNodeBlockStatement>(ctx.functionBody[0])
         : null,
     }
 
-    return objectAssign(toReturn, { paramList, returnType: fType })
+    return objectAssign(toReturn, { paramList })
   }
 
   // ========================================

@@ -18,9 +18,6 @@ function parser(code: string, debug?: boolean) {
   const visitor = new ZenScriptVisitor()
   const ast = visitor.visit(cst) as ASTProgram
 
-  if (debug)
-    console.log(visitor.err)
-
   return ast.body[0]
 }
 
@@ -82,7 +79,7 @@ describe('AST Parser', () => {
     it('literal case', () => expect(parser('1;')).toMatchSnapshot())
     it('identifier case', () => expect(parser('abc;')).toMatchSnapshot())
     it('bracket handler expr case', () => expect(parser('<minecraft:apple:*>;')).toMatchSnapshot())
-    it('lambda function expr case', () => expect(parser('function(a,b,c){};')).toMatchSnapshot())
+    it('lambda function expr case', () => expect(parser('function(a,b,c) as void {};')).toMatchSnapshot())
     it('array init expr case', () => expect(parser('[1,3,4,5];')).toMatchSnapshot())
     it('map init expr case', () => expect(parser('val map = {a : 1, b : 2};')).toMatchSnapshot())
   })
@@ -106,8 +103,4 @@ describe('AST Parser', () => {
       expect(parser('while(a > b) {}')).toMatchSnapshot()
     })
   })
-})
-
-describe('Ast Parser with errors', () => {
-
 })
