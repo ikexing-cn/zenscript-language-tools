@@ -1,9 +1,9 @@
 import type { CstNode } from 'chevrotain'
 import { ZSCstParser } from '../cst-parser'
 import type {
-  ASTBasicProgram, ASTNode, ASTNodeFunction, ASTNodeGlobalStaticDeclare, ASTNodeParameter,
-  ASTNodeParameterList,
-  ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor,
+  ASTBasicProgram, ASTNode, ASTNodeClassDeclaration, ASTNodeConstructorDeclaration, ASTNodeFunctionDeclaration,
+  ASTNodeGlobalStaticDeclare,
+  ASTNodeParameter, ASTNodeParameterList, ASTNodeVariableDeclaration,
 } from '../types/zs-ast'
 import type {
   ClassDeclarationCstChildren, ConstructorDeclarationCstChildren, FunctionDeclarationCstChildren,
@@ -56,7 +56,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
 
     if (ctx.FunctionDeclaration) {
       for (const declaration of ctx.FunctionDeclaration!) {
-        const child: ASTNodeFunction = this.zsVisit(declaration)
+        const child: ASTNodeFunctionDeclaration = this.zsVisit(declaration)
         if (child.id in this.program.scopes) {
           this.program.errors.push({
             start: child.start,
@@ -78,7 +78,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
 
   private handleClassDeclaration(ctx: ProgramCstChildren) {
     for (const declaration of ctx.ClassDeclaration!) {
-      const child: ASTNodeZenClass = this.zsVisit(declaration)
+      const child: ASTNodeClassDeclaration = this.zsVisit(declaration)
       if (child.id in this.program.scopes) {
         this.program.errors.push({
           start: child.start,
@@ -128,7 +128,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
   }
 
-  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclare {
+  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclaration {
     return {
       start: 0,
       end: 0,
@@ -151,7 +151,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
   }
 
-  FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
+  FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunctionDeclaration {
     return {
       type: 'function',
       start: 0,
@@ -206,7 +206,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
   }
 
-  ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeZenClass {
+  ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeClassDeclaration {
     return {
       type: 'zen-class',
       start: 0,
@@ -215,7 +215,7 @@ export class ZenScriptBasicVisitor extends BasicCstVisitor {
     }
   }
 
-  ConstructorDeclaration(ctx: ConstructorDeclarationCstChildren): ASTNodeZenConstructor {
+  ConstructorDeclaration(ctx: ConstructorDeclarationCstChildren): ASTNodeConstructorDeclaration {
     return {
       type: 'zen-constructor',
       start: 0,

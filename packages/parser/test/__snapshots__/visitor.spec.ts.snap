@@ -235,12 +235,7 @@ exports[`AST Parser > CallExpression 1`] = `
 
 exports[`AST Parser > ClassDeclaration 1`] = `
 {
-  "body": {
-    "body": [],
-    "end": 12,
-    "start": 13,
-    "type": "class-body",
-  },
+  "body": [],
   "end": 13,
   "id": "To",
   "start": 0,
@@ -250,82 +245,83 @@ exports[`AST Parser > ClassDeclaration 1`] = `
 
 exports[`AST Parser > ClassDeclaration 2`] = `
 {
-  "body": {
-    "body": [
-      {
-        "end": 57,
-        "parameterList": {
-          "end": 53,
-          "params": [
-            {
+  "body": [
+    {
+      "end": 57,
+      "parameterList": {
+        "end": 53,
+        "params": [
+          {
+            "end": 53,
+            "id": "a",
+            "pType": {
               "end": 53,
-              "id": "a",
-              "pType": {
-                "end": 53,
-                "name": "int",
-                "start": 51,
-                "type": "type-literal",
-              },
-              "start": 46,
-              "type": "parameter",
+              "name": "int",
+              "start": 51,
+              "type": "type-literal",
             },
-          ],
-          "start": 46,
-          "type": "parameter-list",
-        },
-        "start": 31,
-        "type": "zen-constructor",
+            "start": 46,
+            "type": "parameter",
+          },
+        ],
+        "start": 46,
+        "type": "parameter-list",
       },
-      {
-        "end": 85,
-        "id": "b",
-        "name": "val",
-        "start": 65,
-        "type": "VariableDeclaration",
-        "vType": {
-          "end": 79,
-          "name": "string",
-          "start": 74,
-          "type": "type-literal",
-        },
-        "value": {
-          "end": 84,
-          "raw": "''",
-          "start": 83,
-          "type": "literal",
-          "value": "",
-        },
+      "start": 31,
+      "type": "zen-constructor",
+    },
+    {
+      "end": 85,
+      "id": "b",
+      "name": "val",
+      "start": 65,
+      "type": "VariableDeclaration",
+      "vType": {
+        "end": 79,
+        "name": "string",
+        "start": 74,
+        "type": "type-literal",
       },
-      {
+      "value": {
+        "end": 84,
+        "raw": "''",
+        "start": 83,
+        "type": "literal",
+        "value": "",
+      },
+    },
+    {
+      "body": {
+        "body": [],
         "end": 116,
-        "id": "c",
-        "paramList": {
-          "end": 112,
-          "params": [
-            {
-              "end": 112,
-              "id": "c",
-              "pType": {
-                "end": 112,
-                "name": "bool",
-                "start": 109,
-                "type": "type-literal",
-              },
-              "start": 104,
-              "type": "parameter",
-            },
-          ],
-          "start": 104,
-          "type": "parameter-list",
-        },
-        "start": 93,
-        "type": "function",
+        "start": 115,
+        "type": "block-statement",
       },
-    ],
-    "end": 121,
-    "start": 24,
-    "type": "class-body",
-  },
+      "end": 116,
+      "id": "c",
+      "paramList": {
+        "end": 112,
+        "params": [
+          {
+            "end": 112,
+            "id": "c",
+            "pType": {
+              "end": 112,
+              "name": "bool",
+              "start": 109,
+              "type": "type-literal",
+            },
+            "start": 104,
+            "type": "parameter",
+          },
+        ],
+        "start": 104,
+        "type": "parameter-list",
+      },
+      "start": 93,
+      "type": "function",
+    },
+  ],
   "end": 122,
   "id": "TheClass",
   "start": 5,
@@ -368,6 +364,12 @@ exports[`AST Parser > ConditionalExpression 1`] = `
 
 exports[`AST Parser > FunctionDeclaration 1`] = `
 {
+  "body": {
+    "body": [],
+    "end": 26,
+    "start": 25,
+    "type": "block-statement",
+  },
   "end": 26,
   "id": "fun",
   "returnType": {
@@ -383,6 +385,12 @@ exports[`AST Parser > FunctionDeclaration 1`] = `
 
 exports[`AST Parser > FunctionDeclaration 2`] = `
 {
+  "body": {
+    "body": [],
+    "end": 39,
+    "start": 38,
+    "type": "block-statement",
+  },
   "end": 39,
   "expandType": {
     "end": 13,
@@ -797,6 +805,12 @@ exports[`AST Parser > PrimaryExpression > lambda function expr case 1`] = `
 {
   "end": 17,
   "expression": {
+    "body": {
+      "body": [],
+      "end": 16,
+      "start": 15,
+      "type": "block-statement",
+    },
     "end": 16,
     "paramList": {
       "end": 13,
@@ -896,6 +910,204 @@ exports[`AST Parser > PrimaryExpression > map init expr case 1`] = `
     "start": 10,
     "type": "map-initializer-expression",
   },
+}
+`;
+
+exports[`AST Parser > Statement > block statement 1`] = `
+{
+  "body": [
+    {
+      "end": 6,
+      "expression": {
+        "end": 5,
+        "left": {
+          "end": 1,
+          "name": "a",
+          "start": 1,
+          "type": "identifier",
+        },
+        "operator": "=",
+        "right": {
+          "end": 5,
+          "raw": "1",
+          "start": 5,
+          "type": "literal",
+          "value": 1,
+        },
+        "start": 1,
+        "type": "assign-expression",
+      },
+      "start": 1,
+      "type": "expression-statement",
+    },
+  ],
+  "end": 7,
+  "start": 0,
+  "type": "block-statement",
+}
+`;
+
+exports[`AST Parser > Statement > break or continue statement 1`] = `
+{
+  "end": 5,
+  "start": 0,
+  "type": "break-statement",
+}
+`;
+
+exports[`AST Parser > Statement > break or continue statement 2`] = `
+{
+  "end": 8,
+  "start": 0,
+  "type": "continue-statement",
+}
+`;
+
+exports[`AST Parser > Statement > foreach statement 1`] = `
+{
+  "body": {
+    "body": [],
+    "end": 12,
+    "start": 11,
+    "type": "block-statement",
+  },
+  "end": 12,
+  "left": [
+    {
+      "end": 4,
+      "name": "a",
+      "start": 4,
+      "type": "identifier",
+    },
+  ],
+  "right": {
+    "end": 9,
+    "name": "b",
+    "start": 9,
+    "type": "identifier",
+  },
+  "start": 0,
+  "type": "foreach-statement",
+}
+`;
+
+exports[`AST Parser > Statement > foreach statement 2`] = `
+{
+  "body": {
+    "body": [],
+    "end": 18,
+    "start": 17,
+    "type": "block-statement",
+  },
+  "end": 18,
+  "left": [
+    {
+      "end": 4,
+      "name": "a",
+      "start": 4,
+      "type": "identifier",
+    },
+  ],
+  "right": {
+    "end": 15,
+    "left": [
+      {
+        "end": 9,
+        "raw": "0",
+        "start": 9,
+        "type": "literal",
+        "value": 0,
+      },
+    ],
+    "right": {
+      "end": 15,
+      "raw": "10",
+      "start": 14,
+      "type": "literal",
+      "value": 10,
+    },
+    "start": 9,
+    "type": "postfix-expression-range",
+  },
+  "start": 0,
+  "type": "foreach-statement",
+}
+`;
+
+exports[`AST Parser > Statement > return statement 1`] = `
+{
+  "argument": null,
+  "end": 6,
+  "start": 0,
+  "type": "return-statement",
+}
+`;
+
+exports[`AST Parser > Statement > return statement 2`] = `
+{
+  "argument": {
+    "end": 10,
+    "raw": "null",
+    "start": 7,
+    "type": "literal",
+    "value": null,
+  },
+  "end": 11,
+  "start": 0,
+  "type": "return-statement",
+}
+`;
+
+exports[`AST Parser > Statement > while statement 1`] = `
+{
+  "body": {
+    "body": [],
+    "end": 13,
+    "start": 12,
+    "type": "block-statement",
+  },
+  "end": 13,
+  "start": 0,
+  "test": {
+    "end": 9,
+    "raw": "true",
+    "start": 6,
+    "type": "literal",
+    "value": true,
+  },
+  "type": "while-statement",
+}
+`;
+
+exports[`AST Parser > Statement > while statement 2`] = `
+{
+  "body": {
+    "body": [],
+    "end": 14,
+    "start": 13,
+    "type": "block-statement",
+  },
+  "end": 14,
+  "start": 0,
+  "test": {
+    "end": 10,
+    "left": {
+      "end": 6,
+      "name": "a",
+      "start": 6,
+      "type": "identifier",
+    },
+    "operator": ">",
+    "right": {
+      "end": 10,
+      "name": "b",
+      "start": 10,
+      "type": "identifier",
+    },
+    "start": 6,
+    "type": "binary-expression",
+  },
+  "type": "while-statement",
 }
 `;
 

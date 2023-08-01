@@ -5,10 +5,17 @@ import { ZenScriptVisitor } from '../src/visitor/visitor'
 import type { ASTProgram } from '../src/types/zs-ast'
 
 describe('AST Parser', () => {
-  function parser(code: string) {
+  function parser(code: string, debug?: boolean) {
     const lexResult = ZSLexer.tokenize(code)
     const cst = ZSCstParser.parse(lexResult.tokens)
+    /* eslint-disable no-console */
+    if (debug) {
+      console.log(lexResult.tokens)
+      console.log(ZSCstParser.errors)
+    }
+
     expect(ZSCstParser.errors.length).toBe(0)
+
     const ast = new ZenScriptVisitor().visit(cst) as ASTProgram
 
     return ast.body[0]
@@ -74,5 +81,25 @@ describe('AST Parser', () => {
     it('lambda function expr case', () => expect(parser('function(a,b,c){};')).toMatchSnapshot())
     it('array init expr case', () => expect(parser('[1,3,4,5];')).toMatchSnapshot())
     it('map init expr case', () => expect(parser('val map = {a : 1, b : 2};')).toMatchSnapshot())
+  })
+
+  describe('Statement', () => {
+    it('block statement', () => expect(parser('{a = 1;}')).toMatchSnapshot())
+    it('break or continue statement', () => {
+      expect(parser('break;')).toMatchSnapshot()
+      expect(parser('continue;')).toMatchSnapshot()
+    })
+    it('return statement', () => {
+      expect(parser('return;')).toMatchSnapshot()
+      expect(parser('return null;')).toMatchSnapshot()
+    })
+    it('foreach statement', () => {
+      expect(parser('for a in b {}')).toMatchSnapshot()
+      expect(parser('for a in 0 to 10 {}')).toMatchSnapshot()
+    })
+    it('while statement', () => {
+      expect(parser('while(true) {}')).toMatchSnapshot()
+      expect(parser('while(a > b) {}')).toMatchSnapshot()
+    })
   })
 })

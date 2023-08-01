@@ -20,13 +20,42 @@ export interface ASTBasicProgram {
   errors: ASTError[]
 }
 
-export interface ASTNodeBody<T extends 'program-body' | 'class-body' | 'function-body'> extends Offset {
-  type: T
-  body: ASTNode[]
+export interface ASTProgram extends ASTNode<'program'> {
+  body: (
+    | ASTNodeImportDeclaration
+    | ASTNodeGlobalStaticDeclare
+    | ASTNodeFunctionDeclaration
+    | ASTNodeDExpandFunctionDeclaration
+    | ASTNodeClassDeclaration
+    | ASTNodeStatement
+  )[]
 }
 
-export interface ASTProgram extends ASTNode<'program'> {
-  body: ASTNodeBody<'program'>['body']
+export type ASTNodeStatement = ASTNodeVariableDeclaration | ASTNodeBlockStatement | ASTNodeIfStatement
+
+export interface ASTNodeBlockStatement extends ASTNode<'block-statement'> {
+  body: ASTNodeStatement[]
+}
+
+export interface ASTNodeReturnStatement extends ASTNode<'return-statement'> {
+  argument: ASTNodeExpression | null
+}
+
+export interface ASTNodeIfStatement extends ASTNode<'if-statement'> {
+  test: ASTNodeExpression
+  consequent: ASTNodeBlockStatement
+  alternate: ASTNodeIfStatement | ASTNodeBlockStatement | null
+}
+
+export interface ASTNodeForeachStatement extends ASTNode<'foreach-statement'> {
+  left: ASTNodeIdentifier[]
+  right: ASTNodeExpression
+  body: ASTNodeBlockStatement | null
+}
+
+export interface ASTNodeWhileStatement extends ASTNode<'while-statement'> {
+  test: ASTNodeExpression
+  body: ASTNodeBlockStatement | null
 }
 
 export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<'VariableDeclaration'> {
@@ -37,7 +66,7 @@ export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> e
 
 export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare<'global' | 'static'> {}
 
-export interface ASTNodeVariableDeclare extends ASTNodeDeclare<'var' | 'val'> {}
+export interface ASTNodeVariableDeclaration extends ASTNodeDeclare<'var' | 'val'> {}
 
 export interface ASTNodeQualifiedName extends ASTNode<'qualified-name'> {
   ids: string[]
@@ -57,21 +86,21 @@ export interface ASTNodeImportDeclaration extends ASTNode<'import'> {
 }
 
 export type FunctionId = 'function' | 'expand-function' | 'lambda-function'
-export interface ASTNodeFunction<T extends FunctionId = 'function'> extends ASTNodeHasId<T> {
+export interface ASTNodeFunctionDeclaration<T extends FunctionId = 'function'> extends ASTNodeHasId<T> {
   returnType?: ASTNodeTypeLiteral
   paramList?: ASTNodeParameterList
-  body?: ASTNodeBody<'function-body'>
+  body: ASTNodeBlockStatement | null
 }
 
-export interface ASTNodeDExpandFunction extends ASTNodeFunction<'expand-function'> {
+export interface ASTNodeDExpandFunctionDeclaration extends ASTNodeFunctionDeclaration<'expand-function'> {
   expandType: ASTNodeTypeLiteral
 }
 
-export interface ASTNodeZenClass extends ASTNodeHasId<'zen-class'> {
-  body?: ASTNodeBody<'class-body'>
+export interface ASTNodeClassDeclaration extends ASTNodeHasId<'zen-class'> {
+  body?: (ASTNodeVariableDeclaration | ASTNodeConstructorDeclaration | ASTNodeFunctionDeclaration)[]
 }
 
-export interface ASTNodeZenConstructor extends ASTNode<'zen-constructor'> {
+export interface ASTNodeConstructorDeclaration extends ASTNode<'zen-constructor'> {
   parameterList?: ASTNodeParameterList
 }
 
@@ -193,7 +222,7 @@ export interface ASTNodeMapInitializerExpression extends ASTNode<'map-initialize
   entries?: ASTNodeMapEntry[]
 }
 
-export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunction<'lambda-function'>, 'id'>
+export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunctionDeclaration<'lambda-function'>, 'id'>
 
 export interface ASTNodeMapEntry extends ASTNode<'map-entry'> {
   key: ASTNodeAssignExpression

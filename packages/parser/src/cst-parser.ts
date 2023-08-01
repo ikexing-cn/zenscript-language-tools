@@ -68,7 +68,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(AS)
       this.SUBRULE(this.TypeLiteral, { LABEL: 'returnType' })
     })
-    this.SUBRULE(this.FunctionBody)
+    this.SUBRULE(this.BlockStatement, { LABEL: 'functionBody' })
   })
 
   private DExpandFunctionDeclaration = this.RULE('DExpandFunctionDeclaration', () => {
@@ -85,15 +85,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(AS)
       this.SUBRULE2(this.TypeLiteral, { LABEL: 'returnType' })
     })
-    this.SUBRULE(this.FunctionBody)
-  })
-
-  private FunctionBody = this.RULE('FunctionBody', () => {
-    this.CONSUME(L_CURLY)
-    this.MANY(() => {
-      this.SUBRULE(this.Statement)
-    })
-    this.CONSUME(R_CURLY)
+    this.SUBRULE(this.BlockStatement, { LABEL: 'functionBody' })
   })
 
   private ParameterList = this.RULE('ParameterList', () => {
@@ -197,7 +189,7 @@ export class ZenScriptParser extends CstParser {
 
   private BlockStatement = this.RULE('BlockStatement', () => {
     this.CONSUME(L_CURLY)
-    this.OPTION(() => {
+    this.MANY(() => {
       this.SUBRULE(this.Statement)
     })
     this.CONSUME(R_CURLY)
@@ -223,24 +215,28 @@ export class ZenScriptParser extends CstParser {
 
   private IfStatement = this.RULE('IfStatement', () => {
     this.CONSUME(IF)
-    this.SUBRULE(this.Expression)
-    this.SUBRULE(this.Statement, { LABEL: 'then' })
+    this.SUBRULE(this.Expression, { LABEL: 'test' })
+    this.SUBRULE(this.BlockStatement, { LABEL: 'consequent' })
     this.OPTION(() => {
       this.CONSUME(ELSE)
-      this.SUBRULE2(this.Statement, { LABEL: 'else' })
+      this.OR([
+        { ALT: () => this.SUBRULE2(this.IfStatement, { LABEL: 'alternate' }) },
+        { ALT: () => this.SUBRULE2(this.BlockStatement, { LABEL: 'alternate' }) },
+      ])
     })
   })
 
   private ForeachStatement = this.RULE('ForeachStatement', () => {
     this.CONSUME(FOR)
-    this.CONSUME(L_PAREN)
+    this.OPTION(() => this.CONSUME(L_PAREN))
     this.AT_LEAST_ONE_SEP({
       SEP: COMMA,
-      DEF: () => this.CONSUME(IDENTIFIER),
+      DEF: () => this.SUBRULE(this.Identifier),
     })
     this.CONSUME(IN)
     this.SUBRULE(this.Expression)
-    this.CONSUME(R_PAREN)
+    this.OPTION2(() => this.CONSUME(R_PAREN))
+    this.SUBRULE(this.BlockStatement)
   })
 
   private WhileStatement = this.RULE('WhileStatement', () => {
@@ -248,7 +244,7 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(L_PAREN)
     this.SUBRULE(this.Expression)
     this.CONSUME(R_PAREN)
-    this.SUBRULE(this.Statement)
+    this.SUBRULE(this.BlockStatement)
   })
 
   private ExpressionStatement = this.RULE('ExpressionStatement', () => {
@@ -606,7 +602,7 @@ export class ZenScriptParser extends CstParser {
       this.CONSUME(AS)
       this.SUBRULE(this.TypeLiteral, { LABEL: 'returnType' })
     })
-    this.SUBRULE(this.FunctionBody)
+    this.SUBRULE(this.BlockStatement, { LABEL: 'functionBody' })
   })
 
   // ============================================================

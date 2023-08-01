@@ -221,8 +221,9 @@
       },
       {
         "type": "NonTerminal",
-        "name": "FunctionBody",
-        "idx": 0
+        "name": "BlockStatement",
+        "idx": 0,
+        "label": "functionBody"
       }
     ]
   },
@@ -302,40 +303,9 @@
       },
       {
         "type": "NonTerminal",
-        "name": "FunctionBody",
-        "idx": 0
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "FunctionBody",
-    "orgText": "",
-    "definition": [
-      {
-        "type": "Terminal",
-        "name": "LCURLY",
-        "label": "LCURLY",
+        "name": "BlockStatement",
         "idx": 0,
-        "pattern": "\\{"
-      },
-      {
-        "type": "Repetition",
-        "idx": 0,
-        "definition": [
-          {
-            "type": "NonTerminal",
-            "name": "Statement",
-            "idx": 0
-          }
-        ]
-      },
-      {
-        "type": "Terminal",
-        "name": "RCURLY",
-        "label": "RCURLY",
-        "idx": 0,
-        "pattern": "\\}"
+        "label": "functionBody"
       }
     ]
   },
@@ -835,6 +805,17 @@
             "definition": [
               {
                 "type": "NonTerminal",
+                "name": "VariableDeclaration",
+                "idx": 0,
+                "label": "statement"
+              }
+            ]
+          },
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "NonTerminal",
                 "name": "ReturnStatement",
                 "idx": 0,
                 "label": "statement"
@@ -902,17 +883,6 @@
               {
                 "type": "NonTerminal",
                 "name": "ExpressionStatement",
-                "idx": 0,
-                "label": "statement"
-              }
-            ]
-          },
-          {
-            "type": "Alternative",
-            "definition": [
-              {
-                "type": "NonTerminal",
-                "name": "VariableDeclaration",
                 "idx": 0,
                 "label": "statement"
               }
@@ -1043,13 +1013,14 @@
       {
         "type": "NonTerminal",
         "name": "Expression",
-        "idx": 0
+        "idx": 0,
+        "label": "test"
       },
       {
         "type": "NonTerminal",
-        "name": "Statement",
+        "name": "BlockStatement",
         "idx": 0,
-        "label": "then"
+        "label": "consequent"
       },
       {
         "type": "Option",
@@ -1063,10 +1034,32 @@
             "pattern": "else"
           },
           {
-            "type": "NonTerminal",
-            "name": "Statement",
-            "idx": 2,
-            "label": "else"
+            "type": "Alternation",
+            "idx": 0,
+            "definition": [
+              {
+                "type": "Alternative",
+                "definition": [
+                  {
+                    "type": "NonTerminal",
+                    "name": "IfStatement",
+                    "idx": 2,
+                    "label": "alternate"
+                  }
+                ]
+              },
+              {
+                "type": "Alternative",
+                "definition": [
+                  {
+                    "type": "NonTerminal",
+                    "name": "BlockStatement",
+                    "idx": 2,
+                    "label": "alternate"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
@@ -1085,11 +1078,17 @@
         "pattern": "for"
       },
       {
-        "type": "Terminal",
-        "name": "LPAREN",
-        "label": "LPAREN",
+        "type": "Option",
         "idx": 0,
-        "pattern": "\\("
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "LPAREN",
+            "label": "LPAREN",
+            "idx": 0,
+            "pattern": "\\("
+          }
+        ]
       },
       {
         "type": "RepetitionMandatoryWithSeparator",
@@ -1103,11 +1102,9 @@
         },
         "definition": [
           {
-            "type": "Terminal",
-            "name": "IDENTIFIER",
-            "label": "IDENTIFIER",
-            "idx": 0,
-            "pattern": "[a-zA-Z_][a-zA-Z_0-9]*"
+            "type": "NonTerminal",
+            "name": "Identifier",
+            "idx": 0
           }
         ]
       },
@@ -1124,11 +1121,22 @@
         "idx": 0
       },
       {
-        "type": "Terminal",
-        "name": "RPAREN",
-        "label": "RPAREN",
-        "idx": 0,
-        "pattern": "\\)"
+        "type": "Option",
+        "idx": 2,
+        "definition": [
+          {
+            "type": "Terminal",
+            "name": "RPAREN",
+            "label": "RPAREN",
+            "idx": 0,
+            "pattern": "\\)"
+          }
+        ]
+      },
+      {
+        "type": "NonTerminal",
+        "name": "BlockStatement",
+        "idx": 0
       }
     ]
   },
@@ -1165,7 +1173,7 @@
       },
       {
         "type": "NonTerminal",
-        "name": "Statement",
+        "name": "BlockStatement",
         "idx": 0
       }
     ]
@@ -2934,8 +2942,9 @@
       },
       {
         "type": "NonTerminal",
-        "name": "FunctionBody",
-        "idx": 0
+        "name": "BlockStatement",
+        "idx": 0,
+        "label": "functionBody"
       }
     ]
   },

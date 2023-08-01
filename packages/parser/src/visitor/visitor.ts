@@ -1,8 +1,8 @@
 import type { CstNode, CstNodeLocation, IToken } from 'chevrotain'
 import { objectAssign, objectOmit } from '@zenscript-language-tools/shared'
 import { ZSCstParser } from '../cst-parser'
-import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBracketHandlerExpression, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeDExpandFunction, ASTNodeExpressionStatement, ASTNodeFunction, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeIdentifier, ASTNodeImportDeclaration, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclare, ASTNodeZenClass, ASTNodeZenConstructor, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
-import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BracketHandlerExpressionCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstChildren, IdentifierCstNode, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
+import type { ASTError, ASTNode, ASTNodeArrayInitializerExpression, ASTNodeArrayType, ASTNodeAssignExpression, ASTNodeBinaryExpression, ASTNodeBlockStatement, ASTNodeBracketHandlerExpression, ASTNodeClassDeclaration, ASTNodeClassType, ASTNodeConditionalExpression, ASTNodeConstructorDeclaration, ASTNodeDExpandFunctionDeclaration, ASTNodeExpression, ASTNodeExpressionStatement, ASTNodeForeachStatement, ASTNodeFunctionDeclaration, ASTNodeFunctionType, ASTNodeGlobalStaticDeclare, ASTNodeIdentifier, ASTNodeIfStatement, ASTNodeImportDeclaration, ASTNodeLambdaFunctionDeclaration, ASTNodeListType, ASTNodeMapEntry, ASTNodeMapInitializerExpression, ASTNodeMapType, ASTNodeParameter, ASTNodeParameterList, ASTNodePostfixExpression, ASTNodePostfixExpressionFunctionCall, ASTNodePostfixExpressionMemberAccess, ASTNodePostfixExpressionRange, ASTNodePrimaryExpression, ASTNodeQualifiedName, ASTNodeReturnStatement, ASTNodeStatement, ASTNodeTypeLiteral, ASTNodeUnaryExpression, ASTNodeVariableDeclaration, ASTNodeWhileStatement, ASTProgram, FunctionId, PrimitiveType } from '../types/zs-ast'
+import type { AddExpressionCstChildren, AndAndExpressionCstChildren, AndExpressionCstChildren, ArrayInitializerExpressionCstChildren, ArrayTypeCstChildren, AssignExpressionCstChildren, BlockStatementCstChildren, BracketHandlerExpressionCstChildren, BreakStatementCstChildren, ClassDeclarationCstChildren, CompareExpressionCstChildren, ConditionalExpressionCstChildren, ConstructorDeclarationCstChildren, ContinueStatementCstChildren, DExpandFunctionDeclarationCstChildren, ExpressionCstChildren, ExpressionStatementCstChildren, ForeachStatementCstChildren, FunctionDeclarationCstChildren, FunctionTypeCstChildren, GlobalStaticDeclarationCstChildren, IdentifierCstChildren, IdentifierCstNode, IfStatementCstChildren, ImportDeclarationCstChildren, LambdaFunctionDeclarationCstChildren, ListTypeCstChildren, MapEntryCstChildren, MapInitializerExpressionCstChildren, MapTypeCstChildren, MultiplyExpressionCstChildren, OrExpressionCstChildren, OrOrExpressionCstChildren, ParameterCstChildren, ParameterListCstChildren, PostfixExpressionArrayCstChildren, PostfixExpressionCstChildren, PostfixExpressionFunctionCallCstChildren, PostfixExpressionMemberAccessCstChildren, PostfixExpressionRangeCstChildren, PrimaryExpressionCstChildren, ProgramCstChildren, QualifiedNameCstChildren, ReturnStatementCstChildren, StatementCstChildren, TypeLiteralCstChildren, UnaryExpressionCstChildren, VariableDeclarationCstChildren, WhileStatementCstChildren, XorExpressionCstChildren } from '../types/zs-cst'
 import { getLastBody, getTypeLiteral, getTypeLiteralValue, isPrimitiveType } from './visitor-helper'
 
 const BasicCstVisitor = ZSCstParser.getBaseCstVisitorConstructor()
@@ -12,7 +12,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
 
   constructor() {
     super()
-    // this.validateVisitor()
+    this.validateVisitor()
   }
 
   private $zsVisitArray<T extends ASTNode<string>>(
@@ -46,28 +46,6 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     }
 
     return node
-  }
-
-  private $generateFunctionAst<
-    T extends boolean = false,
-    IS_EXPAND extends FunctionId = T extends true ? 'expand-function' : 'function',
-  >(
-    ctx: Pick<FunctionDeclarationCstChildren, 'ParameterList' | 'returnType' | 'Identifier'>,
-    isDxpand?: T,
-  ) {
-    const paramList = ctx.ParameterList && this.$zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
-
-    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
-    const fType = ctx.returnType && this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
-
-    const toReturn: ASTNodeFunction<IS_EXPAND> = {
-      id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
-      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
-      start: 0,
-      end: 0,
-    }
-
-    return objectAssign(toReturn, { paramList, returnType: fType })
   }
 
   private $parseBinaryExpression(
@@ -112,6 +90,31 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return root
   }
 
+  private $generateFunctionAst<
+    T extends boolean = false,
+    IS_EXPAND extends FunctionId = T extends true ? 'expand-function' : 'function',
+  >(
+    ctx: Pick<FunctionDeclarationCstChildren, 'ParameterList' | 'returnType' | 'Identifier' | 'functionBody'>,
+    isDxpand?: T,
+  ) {
+    const paramList = ctx.ParameterList && this.$zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
+
+    // TODO: I guess no many people will writing this type of code, so we need to try to infer it.
+    const fType = ctx.returnType && this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.returnType[0], ctx.returnType[0].location)
+
+    const toReturn: ASTNodeFunctionDeclaration<IS_EXPAND> = {
+      id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
+      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
+      start: 0,
+      end: 0,
+      body: ctx?.functionBody
+        ? this.$zsVisit<ASTNodeBlockStatement>(ctx.functionBody[0])
+        : null,
+    }
+
+    return objectAssign(toReturn, { paramList, returnType: fType })
+  }
+
   // ========================================
   // ================Program=================
   // ========================================
@@ -129,29 +132,28 @@ export class ZenScriptVisitor extends BasicCstVisitor {
      *  - class
      *  - statement(expression / variable / etc.)
      */
-
     if (ctx.ImportDeclaration) {
-      const nodes = this.$zsVisitArray(ctx.ImportDeclaration)
+      const nodes = this.$zsVisitArray<ASTNodeImportDeclaration>(ctx.ImportDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.GlobalStaticDeclaration) {
-      const nodes = this.$zsVisitArray(ctx.GlobalStaticDeclaration)
+      const nodes = this.$zsVisitArray<ASTNodeGlobalStaticDeclare>(ctx.GlobalStaticDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.FunctionDeclaration) {
-      const nodes = this.$zsVisitArray(ctx.FunctionDeclaration)
+      const nodes = this.$zsVisitArray<ASTNodeFunctionDeclaration>(ctx.FunctionDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.DExpandFunctionDeclaration) {
-      const nodes = this.$zsVisitArray(ctx.DExpandFunctionDeclaration)
+      const nodes = this.$zsVisitArray<ASTNodeDExpandFunctionDeclaration>(ctx.DExpandFunctionDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.ClassDeclaration) {
-      const nodes = this.$zsVisitArray(ctx.ClassDeclaration)
+      const nodes = this.$zsVisitArray<ASTNodeClassDeclaration>(ctx.ClassDeclaration)
       program.body.push(...nodes)
     }
     if (ctx.Statement) {
-      const nodes = this.$zsVisitArray(ctx.Statement)
+      const nodes = this.$zsVisitArray<ASTNodeStatement>(ctx.Statement)
       program.body.push(...nodes)
     }
 
@@ -204,11 +206,11 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return objectAssign(toReturn, { value, vType })
   }
 
-  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclare {
+  VariableDeclaration(ctx: VariableDeclarationCstChildren): ASTNodeVariableDeclaration {
     const value = ctx.initializer && this.$zsVisit(ctx.initializer[0])
     const vType = ctx.TypeLiteral && this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.TypeLiteral[0], ctx.TypeLiteral[0].location)
 
-    const toReturn: ASTNodeVariableDeclare = {
+    const toReturn: ASTNodeVariableDeclaration = {
       end: 0,
       start: 0,
       type: 'VariableDeclaration',
@@ -219,11 +221,11 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return objectAssign(toReturn, { value, vType })
   }
 
-  FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunction {
+  FunctionDeclaration(ctx: FunctionDeclarationCstChildren): ASTNodeFunctionDeclaration {
     return this.$generateFunctionAst(ctx)
   }
 
-  DExpandFunctionDeclaration(ctx: DExpandFunctionDeclarationCstChildren): ASTNodeDExpandFunction {
+  DExpandFunctionDeclaration(ctx: DExpandFunctionDeclarationCstChildren): ASTNodeDExpandFunctionDeclaration {
     const baseFunctionAst = this.$generateFunctionAst<true>(ctx, true)
     const expandType = this.$zsVisitWithArgs<ASTNodeTypeLiteral>(ctx.expandType[0], ctx.expandType[0].location)
 
@@ -245,24 +247,19 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return objectAssign(toReturn, { params })
   }
 
-  ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeZenClass {
+  ClassDeclaration(ctx: ClassDeclarationCstChildren): ASTNodeClassDeclaration {
     return {
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
       start: 0,
       end: 0,
       type: 'zen-class',
-      body: {
-        start: ctx.LCURLY[0].startOffset + 1,
-        end: ctx.RCURLY[0].startOffset - 1,
-        type: 'class-body',
-        body: ctx.classBody ? this.$zsVisitArray(ctx.classBody) : [],
-      },
+      body: ctx.classBody ? this.$zsVisitArray(ctx.classBody) : [],
     }
   }
 
-  ConstructorDeclaration(ctx: ConstructorDeclarationCstChildren): ASTNodeZenConstructor {
+  ConstructorDeclaration(ctx: ConstructorDeclarationCstChildren): ASTNodeConstructorDeclaration {
     const parameterList = ctx.ParameterList && this.$zsVisit<ASTNodeParameterList>(ctx.ParameterList[0])
-    const toReturn: ASTNodeZenConstructor = {
+    const toReturn: ASTNodeConstructorDeclaration = {
       end: 0,
       start: 0,
       type: 'zen-constructor',
@@ -471,6 +468,80 @@ export class ZenScriptVisitor extends BasicCstVisitor {
   // ========================================
   Statement(ctx: StatementCstChildren) {
     return ctx.statement && this.$zsVisit(ctx.statement[0])
+  }
+
+  BlockStatement(ctx: BlockStatementCstChildren): ASTNodeBlockStatement {
+    return {
+      end: 0,
+      start: 0,
+      type: 'block-statement',
+      body: ctx.Statement ? this.$zsVisitArray(ctx.Statement) : [],
+    }
+  }
+
+  ReturnStatement(ctx: ReturnStatementCstChildren): ASTNodeReturnStatement {
+    return {
+      end: 0,
+      start: 0,
+      type: 'return-statement',
+      argument: ctx.Expression
+        ? this.$zsVisit<ASTNodeExpression>(ctx.Expression[0])
+        : null,
+    }
+  }
+
+  BreakStatement(_ctx: BreakStatementCstChildren): ASTNode<'break-statement'> {
+    return {
+      end: 0,
+      start: 0,
+      type: 'break-statement',
+    }
+  }
+
+  ContinueStatement(_ctx: ContinueStatementCstChildren): ASTNode<'continue-statement'> {
+    return {
+      end: 0,
+      start: 0,
+      type: 'continue-statement',
+    }
+  }
+
+  IfStatement(ctx: IfStatementCstChildren): ASTNodeIfStatement {
+    return {
+      end: 0,
+      start: 0,
+      type: 'if-statement',
+      test: this.$zsVisit(ctx.test[0]),
+      consequent: this.$zsVisit(ctx.consequent[0]),
+      alternate: ctx.alternate
+        ? this.$zsVisit<ASTNodeIfStatement | ASTNodeBlockStatement>(ctx.alternate[0])
+        : null,
+    }
+  }
+
+  ForeachStatement(ctx: ForeachStatementCstChildren): ASTNodeForeachStatement {
+    return {
+      end: 0,
+      start: 0,
+      type: 'foreach-statement',
+      left: this.$zsVisitArray(ctx.Identifier),
+      right: this.$zsVisit(ctx.Expression[0]),
+      body: ctx.BlockStatement
+        ? this.$zsVisit<ASTNodeBlockStatement>(ctx.BlockStatement[0])
+        : null,
+    }
+  }
+
+  WhileStatement(ctx: WhileStatementCstChildren): ASTNodeWhileStatement {
+    return {
+      end: 0,
+      start: 0,
+      type: 'while-statement',
+      test: this.$zsVisit(ctx.Expression[0]),
+      body: ctx.BlockStatement
+        ? this.$zsVisit<ASTNodeBlockStatement>(ctx.BlockStatement[0])
+        : null,
+    }
   }
 
   ExpressionStatement(ctx: ExpressionStatementCstChildren): ASTNodeExpressionStatement {

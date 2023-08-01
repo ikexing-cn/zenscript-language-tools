@@ -41,7 +41,7 @@ export type FunctionDeclarationCstChildren = {
   RPAREN: IToken[];
   AS?: IToken[];
   returnType?: TypeLiteralCstNode[];
-  FunctionBody: FunctionBodyCstNode[];
+  functionBody: BlockStatementCstNode[];
 };
 
 export interface DExpandFunctionDeclarationCstNode extends CstNode {
@@ -59,18 +59,7 @@ export type DExpandFunctionDeclarationCstChildren = {
   RPAREN: IToken[];
   AS?: IToken[];
   returnType?: TypeLiteralCstNode[];
-  FunctionBody: FunctionBodyCstNode[];
-};
-
-export interface FunctionBodyCstNode extends CstNode {
-  name: "FunctionBody";
-  children: FunctionBodyCstChildren;
-}
-
-export type FunctionBodyCstChildren = {
-  LCURLY: IToken[];
-  Statement?: StatementCstNode[];
-  RCURLY: IToken[];
+  functionBody: BlockStatementCstNode[];
 };
 
 export interface ParameterListCstNode extends CstNode {
@@ -182,7 +171,7 @@ export interface StatementCstNode extends CstNode {
 }
 
 export type StatementCstChildren = {
-  statement?: (BlockStatementCstNode | ReturnStatementCstNode | BreakStatementCstNode | ContinueStatementCstNode | IfStatementCstNode | ForeachStatementCstNode | WhileStatementCstNode | ExpressionStatementCstNode | VariableDeclarationCstNode)[];
+  statement?: (BlockStatementCstNode | VariableDeclarationCstNode | ReturnStatementCstNode | BreakStatementCstNode | ContinueStatementCstNode | IfStatementCstNode | ForeachStatementCstNode | WhileStatementCstNode | ExpressionStatementCstNode)[];
 };
 
 export interface BlockStatementCstNode extends CstNode {
@@ -234,10 +223,10 @@ export interface IfStatementCstNode extends CstNode {
 
 export type IfStatementCstChildren = {
   IF: IToken[];
-  Expression: ExpressionCstNode[];
-  then: StatementCstNode[];
+  test: ExpressionCstNode[];
+  consequent: BlockStatementCstNode[];
   ELSE?: IToken[];
-  else?: StatementCstNode[];
+  alternate?: (IfStatementCstNode | BlockStatementCstNode)[];
 };
 
 export interface ForeachStatementCstNode extends CstNode {
@@ -247,12 +236,13 @@ export interface ForeachStatementCstNode extends CstNode {
 
 export type ForeachStatementCstChildren = {
   FOR: IToken[];
-  LPAREN: IToken[];
-  IDENTIFIER: IToken[];
+  LPAREN?: IToken[];
+  Identifier: IdentifierCstNode[];
   COMMA?: IToken[];
   IN: IToken[];
   Expression: ExpressionCstNode[];
-  RPAREN: IToken[];
+  RPAREN?: IToken[];
+  BlockStatement: BlockStatementCstNode[];
 };
 
 export interface WhileStatementCstNode extends CstNode {
@@ -265,7 +255,7 @@ export type WhileStatementCstChildren = {
   LPAREN: IToken[];
   Expression: ExpressionCstNode[];
   RPAREN: IToken[];
-  Statement: StatementCstNode[];
+  BlockStatement: BlockStatementCstNode[];
 };
 
 export interface ExpressionStatementCstNode extends CstNode {
@@ -571,7 +561,7 @@ export type LambdaFunctionDeclarationCstChildren = {
   RPAREN: IToken[];
   AS?: IToken[];
   returnType?: TypeLiteralCstNode[];
-  FunctionBody: FunctionBodyCstNode[];
+  functionBody: BlockStatementCstNode[];
 };
 
 export interface ClassDeclarationCstNode extends CstNode {
@@ -605,7 +595,6 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   ImportDeclaration(children: ImportDeclarationCstChildren, param?: IN): OUT;
   FunctionDeclaration(children: FunctionDeclarationCstChildren, param?: IN): OUT;
   DExpandFunctionDeclaration(children: DExpandFunctionDeclarationCstChildren, param?: IN): OUT;
-  FunctionBody(children: FunctionBodyCstChildren, param?: IN): OUT;
   ParameterList(children: ParameterListCstChildren, param?: IN): OUT;
   Parameter(children: ParameterCstChildren, param?: IN): OUT;
   Identifier(children: IdentifierCstChildren, param?: IN): OUT;
