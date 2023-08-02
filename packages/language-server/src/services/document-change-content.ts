@@ -31,6 +31,10 @@ export default async function (document: TextDocument) {
     zServer.files.set(documentUri.path, file)
   }
 
+  // when the file is not loaded or is new, don't parse
+  if (document.getText().replace(/\b/g, '') === '')
+    return
+
   const file = zServer.files
     .get(documentUri.path)!
     .text(document.getText())

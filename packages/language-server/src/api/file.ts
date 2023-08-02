@@ -46,10 +46,6 @@ export class ZsFile {
   }
 
   public parse() {
-    // when the file is not loaded, just don't parse
-    if (!this.content || this.content.replace(/\b/g, '') === '')
-      return
-
     const lexResult = ZSLexer.tokenize(this.content!)
     const comments = lexResult.groups.COMMENT
     this.tokens = lexResult.tokens.filter(token => !comments.includes(token))
