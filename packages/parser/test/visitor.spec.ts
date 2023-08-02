@@ -45,7 +45,7 @@ describe('AST Parser', () => {
   })
 
   it('TypeLiteral', () => {
-    expect(parser('a as string[int][string][]')).toMatchSnapshot()
+    expect(parser('a as string[int][string][];')).toMatchSnapshot()
     expect(parser('b as [function(string)void[]];')).toMatchSnapshot()
     expect(parser('c as a.b.C[];')).toMatchSnapshot()
     expect(parser('c as C[];')).toMatchSnapshot()

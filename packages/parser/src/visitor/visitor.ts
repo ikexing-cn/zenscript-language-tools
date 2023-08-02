@@ -90,7 +90,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
 
   private $generateFunctionAst<
     T extends boolean = false,
-    IS_EXPAND extends FunctionId = T extends true ? 'expand-function' : 'function',
+    IS_EXPAND extends FunctionId = T extends true ? 'expand-function-declaration' : 'function-declaration',
   >(
     ctx: Pick<FunctionDeclarationCstChildren, 'ParameterList' | 'returnType' | 'Identifier' | 'functionBody'>,
     isDxpand?: T,
@@ -110,7 +110,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       end: 0,
       start: 0,
       returnType,
-      type: (isDxpand ? 'expand-function' : 'function') as IS_EXPAND,
+      type: (isDxpand ? 'expand-function-declaration' : 'function-declaration') as IS_EXPAND,
       id: ctx.Identifier?.[0] ? this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name : 'unknow',
       body: ctx?.functionBody
         ? this.$zsVisit<ASTNodeBlockStatement>(ctx.functionBody[0])
@@ -193,7 +193,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     return {
       end: 0,
       start: 0,
-      type: 'import',
+      type: 'import-declaration',
       name: this.$zsVisit(ctx.QualifiedName[0]),
     }
   }
@@ -205,7 +205,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const toReturn: ASTNodeGlobalStaticDeclare = {
       end: 0,
       start: 0,
-      type: 'VariableDeclaration',
+      type: 'variable-declaration',
       name: ctx.GLOBAL ? 'global' : 'static',
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
@@ -220,7 +220,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const toReturn: ASTNodeVariableDeclaration = {
       end: 0,
       start: 0,
-      type: 'VariableDeclaration',
+      type: 'variable-declaration',
       name: ctx.VAL ? 'val' : 'var',
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
     }
@@ -259,7 +259,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
       id: this.$zsVisit<ASTNodeIdentifier>(ctx.Identifier[0]).name,
       start: 0,
       end: 0,
-      type: 'zen-class',
+      type: 'class-declaration',
       body: ctx.classBody ? this.$zsVisitArray(ctx.classBody) : [],
     }
   }
@@ -269,7 +269,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const toReturn: ASTNodeConstructorDeclaration = {
       end: 0,
       start: 0,
-      type: 'zen-constructor',
+      type: 'constructor-declaration',
     }
 
     return objectAssign(toReturn, { parameterList })
@@ -817,7 +817,7 @@ export class ZenScriptVisitor extends BasicCstVisitor {
     const baseFunctionAst = objectOmit(this.$generateFunctionAst({ ...ctx, Identifier: [] }), ['id'])
     return {
       ...baseFunctionAst,
-      type: 'lambda-function',
+      type: 'lambda-function-declaration',
     }
   }
 

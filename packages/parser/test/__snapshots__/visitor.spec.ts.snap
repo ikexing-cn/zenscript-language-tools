@@ -239,7 +239,7 @@ exports[`AST Parser > ClassDeclaration 1`] = `
   "end": 13,
   "id": "To",
   "start": 0,
-  "type": "zen-class",
+  "type": "class-declaration",
 }
 `;
 
@@ -268,14 +268,14 @@ exports[`AST Parser > ClassDeclaration 2`] = `
         "type": "parameter-list",
       },
       "start": 31,
-      "type": "zen-constructor",
+      "type": "constructor-declaration",
     },
     {
       "end": 85,
       "id": "b",
       "name": "val",
       "start": 65,
-      "type": "VariableDeclaration",
+      "type": "variable-declaration",
       "vType": {
         "end": 79,
         "name": "string",
@@ -325,13 +325,13 @@ exports[`AST Parser > ClassDeclaration 2`] = `
         "type": "type-literal",
       },
       "start": 93,
-      "type": "function",
+      "type": "function-declaration",
     },
   ],
   "end": 122,
   "id": "TheClass",
   "start": 5,
-  "type": "zen-class",
+  "type": "class-declaration",
 }
 `;
 
@@ -385,7 +385,7 @@ exports[`AST Parser > FunctionDeclaration 1`] = `
     "type": "type-literal",
   },
   "start": 0,
-  "type": "function",
+  "type": "function-declaration",
 }
 `;
 
@@ -412,7 +412,7 @@ exports[`AST Parser > FunctionDeclaration 2`] = `
     "type": "type-literal",
   },
   "start": 0,
-  "type": "expand-function",
+  "type": "expand-function-declaration",
 }
 `;
 
@@ -422,7 +422,7 @@ exports[`AST Parser > GlobalStaticDeclaration 1`] = `
   "id": "a",
   "name": "global",
   "start": 0,
-  "type": "VariableDeclaration",
+  "type": "variable-declaration",
   "vType": {
     "end": 15,
     "name": "bool",
@@ -445,7 +445,7 @@ exports[`AST Parser > GlobalStaticDeclaration 2`] = `
   "id": "b",
   "name": "static",
   "start": 0,
-  "type": "VariableDeclaration",
+  "type": "variable-declaration",
   "vType": {
     "end": 17,
     "name": "string",
@@ -476,7 +476,7 @@ exports[`AST Parser > ImportDeclaration 1`] = `
     "type": "qualified-name",
   },
   "start": 0,
-  "type": "import",
+  "type": "import-declaration",
 }
 `;
 
@@ -850,7 +850,7 @@ exports[`AST Parser > PrimaryExpression > lambda function expr case 1`] = `
       "type": "type-literal",
     },
     "start": 0,
-    "type": "lambda-function",
+    "type": "lambda-function-declaration",
   },
   "start": 0,
   "type": "expression-statement",
@@ -878,7 +878,7 @@ exports[`AST Parser > PrimaryExpression > map init expr case 1`] = `
   "id": "map",
   "name": "val",
   "start": 0,
-  "type": "VariableDeclaration",
+  "type": "variable-declaration",
   "value": {
     "end": 23,
     "entries": [
@@ -1125,7 +1125,7 @@ exports[`AST Parser > Statement > while statement 2`] = `
 
 exports[`AST Parser > TypeLiteral 1`] = `
 {
-  "end": 25,
+  "end": 26,
   "expression": {
     "end": 25,
     "left": {

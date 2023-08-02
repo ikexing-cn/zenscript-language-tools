@@ -27,7 +27,12 @@ export interface ASTProgram extends ASTNode<'program'> {
   )[]
 }
 
-export type ASTNodeStatement = ASTNodeVariableDeclaration | ASTNodeBlockStatement | ASTNodeIfStatement
+export type ASTNodeStatement =
+  | ASTNodeVariableDeclaration
+  | ASTNodeBlockStatement
+  | ASTNodeIfStatement
+  | ASTNodeForeachStatement
+  | ASTNodeWhileStatement
 
 export interface ASTNodeBlockStatement extends ASTNode<'block-statement'> {
   body: ASTNodeStatement[]
@@ -54,7 +59,8 @@ export interface ASTNodeWhileStatement extends ASTNode<'while-statement'> {
   body: ASTNodeBlockStatement | null
 }
 
-export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'> extends ASTNodeHasId<'VariableDeclaration'> {
+export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'>
+  extends ASTNodeHasId<'variable-declaration'> {
   name: T
   value?: ASTNode
   vType?: ASTNodeTypeLiteral
@@ -77,26 +83,26 @@ export interface ASTNodeParameterList extends ASTNode<'parameter-list'> {
   params: ASTNodeParameter[]
 }
 
-export interface ASTNodeImportDeclaration extends ASTNode<'import'> {
+export interface ASTNodeImportDeclaration extends ASTNode<'import-declaration'> {
   name: ASTNodeQualifiedName
 }
 
-export type FunctionId = 'function' | 'expand-function' | 'lambda-function'
-export interface ASTNodeFunctionDeclaration<T extends FunctionId = 'function'> extends ASTNodeHasId<T> {
+export type FunctionId = 'function-declaration' | 'expand-function-declaration' | 'lambda-function-declaration'
+export interface ASTNodeFunctionDeclaration<T extends FunctionId = 'function-declaration'> extends ASTNodeHasId<T> {
   returnType?: ASTNodeTypeLiteral
   paramList?: ASTNodeParameterList
   body: ASTNodeBlockStatement | null
 }
 
-export interface ASTNodeDExpandFunctionDeclaration extends ASTNodeFunctionDeclaration<'expand-function'> {
+export interface ASTNodeDExpandFunctionDeclaration extends ASTNodeFunctionDeclaration<'expand-function-declaration'> {
   expandType: ASTNodeTypeLiteral
 }
 
-export interface ASTNodeClassDeclaration extends ASTNodeHasId<'zen-class'> {
+export interface ASTNodeClassDeclaration extends ASTNodeHasId<'class-declaration'> {
   body?: (ASTNodeVariableDeclaration | ASTNodeConstructorDeclaration | ASTNodeFunctionDeclaration)[]
 }
 
-export interface ASTNodeConstructorDeclaration extends ASTNode<'zen-constructor'> {
+export interface ASTNodeConstructorDeclaration extends ASTNode<'constructor-declaration'> {
   parameterList?: ASTNodeParameterList
 }
 
@@ -218,7 +224,7 @@ export interface ASTNodeMapInitializerExpression extends ASTNode<'map-initialize
   entries?: ASTNodeMapEntry[]
 }
 
-export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunctionDeclaration<'lambda-function'>, 'id'>
+export type ASTNodeLambdaFunctionDeclaration = Omit<ASTNodeFunctionDeclaration<'lambda-function-declaration'>, 'id'>
 
 export interface ASTNodeMapEntry extends ASTNode<'map-entry'> {
   key: ASTNodeAssignExpression

@@ -49,7 +49,7 @@ export default async function (document: TextDocument) {
     })
   })
 
-  file.basicVisitError.forEach((error) => {
+  file.helper?.errors.forEach((error) => {
     diagnostics.push({
       severity: DiagnosticSeverity.Error,
       range: {

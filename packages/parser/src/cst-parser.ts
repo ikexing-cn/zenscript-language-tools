@@ -249,8 +249,7 @@ export class ZenScriptParser extends CstParser {
 
   private ExpressionStatement = this.RULE('ExpressionStatement', () => {
     this.SUBRULE(this.Expression)
-    // this is a hack to make the parser work
-    this.OPTION(() => this.CONSUME(SEMICOLON))
+    this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
   })
 
   protected GlobalStaticDeclaration = this.RULE(
