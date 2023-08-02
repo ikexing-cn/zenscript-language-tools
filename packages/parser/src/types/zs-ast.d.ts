@@ -19,7 +19,6 @@ export interface ASTError extends Offset {
 export interface ASTProgram extends ASTNode<'program'> {
   body: (
     | ASTNodeImportDeclaration
-    | ASTNodeGlobalStaticDeclare
     | ASTNodeFunctionDeclaration
     | ASTNodeDExpandFunctionDeclaration
     | ASTNodeClassDeclaration
@@ -59,17 +58,11 @@ export interface ASTNodeWhileStatement extends ASTNode<'while-statement'> {
   body: ASTNodeBlockStatement | null
 }
 
-export interface ASTNodeDeclare<T extends 'global' | 'static' | 'var' | 'val'>
-  extends ASTNodeHasId<'variable-declaration'> {
-  name: T
+export interface ASTNodeVariableDeclaration extends ASTNodeHasId<'variable-declaration'> {
+  kind: 'global' | 'static' | 'var' | 'val'
   value?: ASTNode
   vType?: ASTNodeTypeLiteral
 }
-
-export interface ASTNodeGlobalStaticDeclare extends ASTNodeDeclare<'global' | 'static'> {}
-
-export interface ASTNodeVariableDeclaration extends ASTNodeDeclare<'var' | 'val'> {}
-
 export interface ASTNodeQualifiedName extends ASTNode<'qualified-name'> {
   ids: string[]
 }

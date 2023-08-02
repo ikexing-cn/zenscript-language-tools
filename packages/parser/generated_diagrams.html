@@ -49,16 +49,6 @@
                 "definition": [
                   {
                     "type": "NonTerminal",
-                    "name": "GlobalStaticDeclaration",
-                    "idx": 0
-                  }
-                ]
-              },
-              {
-                "type": "Alternative",
-                "definition": [
-                  {
-                    "type": "NonTerminal",
                     "name": "FunctionDeclaration",
                     "idx": 0
                   }
@@ -1189,92 +1179,6 @@
         "idx": 0
       },
       {
-        "type": "Option",
-        "idx": 0,
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "SEMICOLON",
-            "label": "SEMICOLON",
-            "idx": 0,
-            "pattern": ";"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "Rule",
-    "name": "GlobalStaticDeclaration",
-    "orgText": "",
-    "definition": [
-      {
-        "type": "Alternation",
-        "idx": 0,
-        "definition": [
-          {
-            "type": "Alternative",
-            "definition": [
-              {
-                "type": "Terminal",
-                "name": "GLOBAL",
-                "label": "GLOBAL",
-                "idx": 0,
-                "pattern": "global"
-              }
-            ]
-          },
-          {
-            "type": "Alternative",
-            "definition": [
-              {
-                "type": "Terminal",
-                "name": "STATIC",
-                "label": "STATIC",
-                "idx": 0,
-                "pattern": "static"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "NonTerminal",
-        "name": "Identifier",
-        "idx": 0
-      },
-      {
-        "type": "Option",
-        "idx": 0,
-        "definition": [
-          {
-            "type": "Terminal",
-            "name": "AS",
-            "label": "AS",
-            "idx": 0,
-            "pattern": "as"
-          },
-          {
-            "type": "NonTerminal",
-            "name": "TypeLiteral",
-            "idx": 0
-          }
-        ]
-      },
-      {
-        "type": "Terminal",
-        "name": "ASSIGN",
-        "label": "ASSIGN",
-        "idx": 0,
-        "pattern": "="
-      },
-      {
-        "type": "NonTerminal",
-        "name": "Expression",
-        "idx": 0,
-        "label": "value"
-      },
-      {
         "type": "Terminal",
         "name": "SEMICOLON",
         "label": "SEMICOLON",
@@ -1300,6 +1204,7 @@
                 "name": "VAR",
                 "label": "VAR",
                 "idx": 0,
+                "terminalLabel": "kind",
                 "pattern": "var"
               }
             ]
@@ -1312,7 +1217,34 @@
                 "name": "VAL",
                 "label": "VAL",
                 "idx": 0,
+                "terminalLabel": "kind",
                 "pattern": "val"
+              }
+            ]
+          },
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "GLOBAL",
+                "label": "GLOBAL",
+                "idx": 0,
+                "terminalLabel": "kind",
+                "pattern": "global"
+              }
+            ]
+          },
+          {
+            "type": "Alternative",
+            "definition": [
+              {
+                "type": "Terminal",
+                "name": "STATIC",
+                "label": "STATIC",
+                "idx": 0,
+                "terminalLabel": "kind",
+                "pattern": "static"
               }
             ]
           }

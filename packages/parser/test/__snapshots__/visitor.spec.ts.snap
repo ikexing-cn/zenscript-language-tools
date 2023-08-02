@@ -273,7 +273,7 @@ exports[`AST Parser > ClassDeclaration 2`] = `
     {
       "end": 85,
       "id": "b",
-      "name": "val",
+      "kind": "val",
       "start": 65,
       "type": "variable-declaration",
       "vType": {
@@ -413,52 +413,6 @@ exports[`AST Parser > FunctionDeclaration 2`] = `
   },
   "start": 0,
   "type": "expand-function-declaration",
-}
-`;
-
-exports[`AST Parser > GlobalStaticDeclaration 1`] = `
-{
-  "end": 24,
-  "id": "a",
-  "name": "global",
-  "start": 0,
-  "type": "variable-declaration",
-  "vType": {
-    "end": 15,
-    "name": "bool",
-    "start": 12,
-    "type": "type-literal",
-  },
-  "value": {
-    "end": 23,
-    "raw": "false",
-    "start": 19,
-    "type": "literal",
-    "value": false,
-  },
-}
-`;
-
-exports[`AST Parser > GlobalStaticDeclaration 2`] = `
-{
-  "end": 23,
-  "id": "b",
-  "name": "static",
-  "start": 0,
-  "type": "variable-declaration",
-  "vType": {
-    "end": 17,
-    "name": "string",
-    "start": 12,
-    "type": "type-literal",
-  },
-  "value": {
-    "end": 22,
-    "raw": "''",
-    "start": 21,
-    "type": "literal",
-    "value": "",
-  },
 }
 `;
 
@@ -876,7 +830,7 @@ exports[`AST Parser > PrimaryExpression > map init expr case 1`] = `
 {
   "end": 24,
   "id": "map",
-  "name": "val",
+  "kind": "val",
   "start": 0,
   "type": "variable-declaration",
   "value": {
@@ -1067,6 +1021,52 @@ exports[`AST Parser > Statement > return statement 2`] = `
   "end": 11,
   "start": 0,
   "type": "return-statement",
+}
+`;
+
+exports[`AST Parser > Statement > variable declaration 1`] = `
+{
+  "end": 24,
+  "id": "a",
+  "kind": "global",
+  "start": 0,
+  "type": "variable-declaration",
+  "vType": {
+    "end": 15,
+    "name": "bool",
+    "start": 12,
+    "type": "type-literal",
+  },
+  "value": {
+    "end": 23,
+    "raw": "false",
+    "start": 19,
+    "type": "literal",
+    "value": false,
+  },
+}
+`;
+
+exports[`AST Parser > Statement > variable declaration 2`] = `
+{
+  "end": 23,
+  "id": "b",
+  "kind": "static",
+  "start": 0,
+  "type": "variable-declaration",
+  "vType": {
+    "end": 17,
+    "name": "string",
+    "start": 12,
+    "type": "type-literal",
+  },
+  "value": {
+    "end": 22,
+    "raw": "''",
+    "start": 21,
+    "type": "literal",
+    "value": "",
+  },
 }
 `;
 

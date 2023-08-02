@@ -34,7 +34,6 @@ export class ZenScriptParser extends CstParser {
 
     this.MANY2(() => {
       this.OR([
-        { ALT: () => this.SUBRULE(this.GlobalStaticDeclaration) },
         { ALT: () => this.SUBRULE(this.FunctionDeclaration) },
         { ALT: () => this.SUBRULE(this.DExpandFunctionDeclaration) },
         { ALT: () => this.SUBRULE(this.ClassDeclaration) },
@@ -252,30 +251,12 @@ export class ZenScriptParser extends CstParser {
     this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
   })
 
-  protected GlobalStaticDeclaration = this.RULE(
-    'GlobalStaticDeclaration',
-    () => {
-      this.OR([
-        { ALT: () => this.CONSUME(GLOBAL) },
-        { ALT: () => this.CONSUME(STATIC) },
-      ])
-      this.SUBRULE(this.Identifier)
-      this.OPTION(() => {
-        this.CONSUME(AS)
-        this.SUBRULE(this.TypeLiteral)
-      })
-      this.CONSUME(ASSIGN, {
-        ERR_MSG: 'Global or Static variables must be initialized.',
-      })
-      this.SUBRULE(this.Expression, { LABEL: 'value' })
-      this.CONSUME(SEMICOLON, { ERR_MSG: '; expected' })
-    },
-  )
-
   private VariableDeclaration = this.RULE('VariableDeclaration', () => {
     this.OR([
-      { ALT: () => this.CONSUME(VAR) },
-      { ALT: () => this.CONSUME(VAL) },
+      { ALT: () => this.CONSUME(VAR, { LABEL: 'kind' }) },
+      { ALT: () => this.CONSUME(VAL, { LABEL: 'kind' }) },
+      { ALT: () => this.CONSUME(GLOBAL, { LABEL: 'kind' }) },
+      { ALT: () => this.CONSUME(STATIC, { LABEL: 'kind' }) },
     ])
     this.SUBRULE(this.Identifier)
     this.OPTION(() => {

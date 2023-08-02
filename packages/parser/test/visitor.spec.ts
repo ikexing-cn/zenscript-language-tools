@@ -24,11 +24,6 @@ function parser(code: string, debug?: boolean) {
 describe('AST Parser', () => {
   it('ImportDeclaration', () => expect(parser('import xxx.xxx.xxx;')).toMatchSnapshot())
 
-  it('GlobalStaticDeclaration', () => {
-    expect(parser('global a as bool = false;')).toMatchSnapshot()
-    expect(parser('static b as string = \'\';')).toMatchSnapshot()
-  })
-
   it('ClassDeclaration', () => {
     expect(parser('zenClass To {}')).toMatchSnapshot()
     expect(parser(`
@@ -101,6 +96,10 @@ describe('AST Parser', () => {
     it('while statement', () => {
       expect(parser('while(true) {}')).toMatchSnapshot()
       expect(parser('while(a > b) {}')).toMatchSnapshot()
+    })
+    it('variable declaration', () => {
+      expect(parser('global a as bool = false;')).toMatchSnapshot()
+      expect(parser('static b as string = \'\';')).toMatchSnapshot()
     })
   })
 })

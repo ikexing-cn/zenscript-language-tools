@@ -7,7 +7,6 @@ export interface ProgramCstNode extends CstNode {
 
 export type ProgramCstChildren = {
   ImportDeclaration?: ImportDeclarationCstNode[];
-  GlobalStaticDeclaration?: GlobalStaticDeclarationCstNode[];
   FunctionDeclaration?: FunctionDeclarationCstNode[];
   DExpandFunctionDeclaration?: DExpandFunctionDeclarationCstNode[];
   ClassDeclaration?: ClassDeclarationCstNode[];
@@ -265,22 +264,6 @@ export interface ExpressionStatementCstNode extends CstNode {
 
 export type ExpressionStatementCstChildren = {
   Expression: ExpressionCstNode[];
-  SEMICOLON?: IToken[];
-};
-
-export interface GlobalStaticDeclarationCstNode extends CstNode {
-  name: "GlobalStaticDeclaration";
-  children: GlobalStaticDeclarationCstChildren;
-}
-
-export type GlobalStaticDeclarationCstChildren = {
-  GLOBAL?: IToken[];
-  STATIC?: IToken[];
-  Identifier: IdentifierCstNode[];
-  AS?: IToken[];
-  TypeLiteral?: TypeLiteralCstNode[];
-  ASSIGN: IToken[];
-  value: ExpressionCstNode[];
   SEMICOLON: IToken[];
 };
 
@@ -290,8 +273,7 @@ export interface VariableDeclarationCstNode extends CstNode {
 }
 
 export type VariableDeclarationCstChildren = {
-  VAR?: IToken[];
-  VAL?: IToken[];
+  kind?: (IToken)[];
   Identifier: IdentifierCstNode[];
   AS?: IToken[];
   TypeLiteral?: TypeLiteralCstNode[];
@@ -613,7 +595,6 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   ForeachStatement(children: ForeachStatementCstChildren, param?: IN): OUT;
   WhileStatement(children: WhileStatementCstChildren, param?: IN): OUT;
   ExpressionStatement(children: ExpressionStatementCstChildren, param?: IN): OUT;
-  GlobalStaticDeclaration(children: GlobalStaticDeclarationCstChildren, param?: IN): OUT;
   VariableDeclaration(children: VariableDeclarationCstChildren, param?: IN): OUT;
   Expression(children: ExpressionCstChildren, param?: IN): OUT;
   AssignExpression(children: AssignExpressionCstChildren, param?: IN): OUT;
