@@ -58,10 +58,8 @@ export class ASTHelper {
       resetNames()
       for (const node of statement.body) {
         if (node.type === 'variable-declaration') {
-          checkForDuplicateNames({
-            node,
-            name: node.id,
-          })
+          checkForDuplicateNames({ node, name: node.id })
+          this.variableInitializerChecker(node)
         }
         else if (node.type === 'foreach-statement') {
           checkForeachStatementNames(node)
@@ -83,17 +81,20 @@ export class ASTHelper {
             })
             break
           }
-          case 'class-declaration':
+          case 'variable-declaration': {
+            checkForDuplicateNames({ name: node.id, node })
+            this.variableInitializerChecker(node)
+            break
+          }
           case 'function-declaration':
-          case 'variable-declaration':
-          case 'expand-function-declaration': {
-            checkForDuplicateNames({
-              node,
-              name: node.id,
-            })
-
-            if (node.type === 'function-declaration' || node.type === 'expand-function-declaration')
-              this.functionNode.push(node)
+          case 'expand-function-declaration':
+          {
+            checkForDuplicateNames({ node, name: node.id })
+            this.functionNode.push(node)
+            break
+          }
+          case 'class-declaration' :{
+            checkForDuplicateNames({ node, name: node.id })
             break
           }
           case 'block-statement': {
@@ -132,5 +133,17 @@ export class ASTHelper {
 
     checkTopLevelNames()
     checkFunction()
+  }
+
+  private variableInitializerChecker(node: ASTNodeVariableDeclaration) {
+    if (node.kind !== 'var') {
+      if (!node.value) {
+        this.visitError.push({
+          end: node.end,
+          start: node.start,
+          message: `Variable '${node.id}' must be initialized`,
+        })
+      }
+    }
   }
 }
