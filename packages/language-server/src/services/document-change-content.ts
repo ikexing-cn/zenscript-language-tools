@@ -53,7 +53,7 @@ export default async function (document: TextDocument) {
     })
   })
 
-  file.helper?.errors.forEach((error) => {
+  file.checker?.errors.forEach((error) => {
     diagnostics.push({
       severity: DiagnosticSeverity.Error,
       range: {

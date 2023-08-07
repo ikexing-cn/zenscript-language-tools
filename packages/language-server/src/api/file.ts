@@ -4,8 +4,8 @@ import type { URI } from 'vscode-uri'
 import { ZSCstParser, ZSLexer, ZenScriptVisitor } from '@zenscript-language-tools/parser'
 import type { IRecognitionException, IToken } from 'chevrotain'
 import type { ASTProgram } from '@zenscript-language-tools/parser'
-import { zServer } from './server'
-import { ASTHelper } from './ast-helper'
+import { ASTHelper } from '../compilation/helper'
+import { ASTErrorChecker } from '../compilation/checker'
 
 type ParseStep = 'NotLoaded' | 'Loaded' | 'Preprocessed' | 'Parsed'
 
@@ -22,8 +22,9 @@ export class ZsFile {
 
   parseErrors: IRecognitionException[] = []
   tokens: IToken[] = []
-  ast: ASTProgram = {} as any
+  ast: ASTProgram = {} as ASTProgram
   helper: ASTHelper | null = null
+  checker: ASTErrorChecker | null = null
 
   private step: ParseStep = 'NotLoaded'
 
@@ -58,7 +59,9 @@ export class ZsFile {
     if (this.parseErrors.length === 0) {
       this.ast = this.visitor.visit(cst) as ASTProgram
       this.helper = new ASTHelper(this.ast)
-      this.helper.execute()
+      this.helper.traverse()
+      this.checker = new ASTErrorChecker(this.helper)
+      this.checker.execute()
     }
 
     return this
@@ -73,10 +76,11 @@ export class ZsFile {
 
   private reset() {
     this.tokens = []
-    this.ast = {} as any
     this.parseErrors = []
-    this.helper && (this.helper.errors = [])
-    zServer.scopes.delete(this.pkg)
+    this.ast = {} as ASTProgram
+
+    this.helper = null
+    this.checker = null
   }
 
   public get isParsed() {

@@ -3,6 +3,8 @@ export interface Offset {
   end?: number
 }
 
+export type AnyASTNode = ASTNode<string>
+
 export interface ASTNode<T extends string> extends Offset {
   type: T
 }
