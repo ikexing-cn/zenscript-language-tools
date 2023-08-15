@@ -38,43 +38,44 @@ export class ASTErrorChecker {
       variableNames.push(topLevelNode.name)
     }
 
-    for (const scopeStatementNode of this.astHelper.scopeStatementNodes) {
-      variableNames.length = 0
-      if (scopeStatementNode.node.type !== 'block-statement')
-        continue
+    // TODO: fix this
+    // for (const scopeStatementNode of this.astHelper.scopeParentMap) {
+    //   variableNames.length = 0
+    //   if (scopeStatementNode.node.type !== 'block-statement')
+    //     continue
 
-      for (const node of scopeStatementNode.node.body) {
-        if (node.type === 'variable-declaration') {
-          if (variableNames.includes(node.id)) {
-            this.visitError.push({
-              end: node.end,
-              start: node.start,
-              message: `Variable '${node.id}' is already defined`,
-            })
-            continue
-          }
-          variableNames.push(node.id)
-          this.variableInitializerChecker(node)
-        }
-        else if (node.type === 'foreach-statement') {
-          const foreachLeftNames: string[] = []
-          for (const name of node.left.map(id => id.name)) {
-            if (foreachLeftNames.includes(name)) {
-              this.visitError.push({
-                end: node.end,
-                start: node.start,
-                message: `Foreach identifier '${name}' is already defined`,
-              })
-              continue
-            }
-            foreachLeftNames.push(name)
-          }
-        }
-      }
-    }
+    //   for (const node of scopeStatementNode.node.body) {
+    //     if (node.type === 'variable-declaration') {
+    //       if (variableNames.includes(node.id)) {
+    //         this.visitError.push({
+    //           end: node.end,
+    //           start: node.start,
+    //           message: `Variable '${node.id}' is already defined`,
+    //         })
+    //         continue
+    //       }
+    //       variableNames.push(node.id)
+    //       this.variableInitializerChecker(node)
+    //     }
+    //     else if (node.type === 'foreach-statement') {
+    //       const foreachLeftNames: string[] = []
+    //       for (const name of node.left.map(id => id.name)) {
+    //         if (foreachLeftNames.includes(name)) {
+    //           this.visitError.push({
+    //             end: node.end,
+    //             start: node.start,
+    //             message: `Foreach identifier '${name}' is already defined`,
+    //           })
+    //           continue
+    //         }
+    //         foreachLeftNames.push(name)
+    //       }
+    //     }
+    //   }
+    // }
 
     const functionParamsNames: string[] = []
-    for (const functionNode of this.astHelper.functionNodes) {
+    for (const functionNode of this.astHelper.funcNodes) {
       functionParamsNames.length = 0
       if (!functionNode.paramList)
         return

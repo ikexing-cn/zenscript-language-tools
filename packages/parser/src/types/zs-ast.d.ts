@@ -3,7 +3,7 @@ export interface Offset {
   end?: number
 }
 
-export type AnyASTNode = ASTNode<string>
+export type ASTNodeAny = ASTNode<string>
 
 export interface ASTNode<T extends string> extends Offset {
   type: T
@@ -18,22 +18,25 @@ export interface ASTError extends Offset {
   autoFix?: boolean
 }
 
+export type ASTNodeStatementWithBlcock =
+  | ASTNodeWhileStatement
+  | ASTNodeIfStatement
+  | ASTNodeBlockStatement
+  | ASTNodeForeachStatement
+
+export type ASTNodeStatement = ASTNodeVariableDeclaration | ASTNodeExpressionStatement | ASTNodeStatementWithBlcock
+
+export type AstNodeTopLevelNode =
+  | ASTNodeImportDeclaration
+  | ASTNodeFunctionDeclaration
+  | ASTNodeDExpandFunctionDeclaration
+  | ASTNodeClassDeclaration
+  | ASTNodeStatement
+
 export interface ASTProgram extends ASTNode<'program'> {
-  body: (
-    | ASTNodeImportDeclaration
-    | ASTNodeFunctionDeclaration
-    | ASTNodeDExpandFunctionDeclaration
-    | ASTNodeClassDeclaration
-    | ASTNodeStatement
-  )[]
+  body: AstNodeTopLevelNode[]
 }
 
-export type ASTNodeStatement =
-  | ASTNodeVariableDeclaration
-  | ASTNodeBlockStatement
-  | ASTNodeIfStatement
-  | ASTNodeForeachStatement
-  | ASTNodeWhileStatement
 
 export interface ASTNodeBlockStatement extends ASTNode<'block-statement'> {
   body: ASTNodeStatement[]

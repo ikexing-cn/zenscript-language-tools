@@ -1,23 +1,16 @@
-import type { ASTNodeBlockStatement, ASTNodeClassDeclaration, ASTNodeDExpandFunctionDeclaration, ASTNodeForeachStatement, ASTNodeFunctionDeclaration, ASTNodeIfStatement, ASTNodeImportDeclaration, ASTNodeVariableDeclaration, ASTNodeWhileStatement, ASTProgram } from '@zenscript-language-tools/parser'
-
-export type ScopeStatementNode = ASTNodeBlockStatement | ASTNodeWhileStatement | ASTNodeForeachStatement | ASTNodeIfStatement
-export type TopLevelNode = ASTNodeClassDeclaration | ASTNodeFunctionDeclaration | ASTNodeDExpandFunctionDeclaration | ASTNodeImportDeclaration | ASTNodeVariableDeclaration
-export interface ScopeStatement {
-  parent?: ScopeStatement
-  node: ScopeStatementNode
-}
+import type { ASTNodeClassDeclaration, ASTNodeFunctionDeclaration, ASTProgram, AstNodeTopLevelNode } from '@zenscript-language-tools/parser'
 
 export class ASTHelper {
   private ast: ASTProgram
-  public scopeStatementNodes: ScopeStatement[] = []
-  public topLevelNodes: { name: string; node: TopLevelNode }[] = []
-  public functionNodes: Omit<ASTNodeFunctionDeclaration, 'type'>[] = []
+
+  public funcNodes: Omit<ASTNodeFunctionDeclaration, 'type'>[] = []
+  public topLevelNodes: { name: string; node: AstNodeTopLevelNode }[] = []
 
   constructor(ast: ASTProgram) {
     this.ast = ast
   }
 
-  traverse() {
+  public traverse() {
     for (const node of this.ast.body) {
       switch (node.type) {
         case 'import-declaration':
@@ -32,53 +25,18 @@ export class ASTHelper {
           break
         case 'function-declaration':
         case 'expand-function-declaration':
-          this.functionNodes.push(node)
+          this.funcNodes.push(node)
           this.putNameToTopLevelNodes(node.id, node)
-          node.body && this.traverseBlockStatement(node.body)
-          break
-        default:
-          this.traverseBlockStatement(node)
           break
       }
     }
   }
 
-  private putNameToTopLevelNodes(name: string, node: TopLevelNode) {
+  private putNameToTopLevelNodes(name: string, node: AstNodeTopLevelNode) {
     this.topLevelNodes.push({ name, node })
   }
 
   private traverseClassDeclaration(_classNode: ASTNodeClassDeclaration) {
     // TODO handle class
-  }
-
-  private traverseBlockStatement(
-    statement: ScopeStatementNode,
-    parent?: ScopeStatement,
-  ) {
-    const scopeStatement: ScopeStatement = {
-      parent,
-      node: statement,
-    }
-    switch (statement.type) {
-      case 'foreach-statement':
-        statement.body && this.traverseBlockStatement(statement.body, scopeStatement)
-        break
-      case 'if-statement':
-        statement.consequent && this.traverseBlockStatement(statement.consequent, scopeStatement)
-        break
-      case 'while-statement':
-        statement.body && this.traverseBlockStatement(statement.body, scopeStatement)
-        break
-      case 'block-statement': {
-        statement.body.forEach((node) => {
-          if (node.type === 'variable-declaration')
-            return
-
-          this.traverseBlockStatement(node, scopeStatement)
-        })
-        this.scopeStatementNodes.push(scopeStatement)
-        break
-      }
-    }
   }
 }
